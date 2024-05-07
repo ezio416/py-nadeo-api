@@ -8,4 +8,14 @@
 What this package is and hopes to achieve
 -----------------------------------------
 
-This is a library to assist with accessing Nadeo's undocumented (officially) web services API.
+A library to assist with accessing Nadeo's undocumented (officially) web services API.
+
+Installing the package from PyPI:
+```
+python -m pip install nadeo-api
+```
+
+Using the package:
+```
+import nadeo_api
+```
