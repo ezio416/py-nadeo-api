@@ -1,5 +1,5 @@
 # Files
-scripts/upload_copy_pypi.py
+pypi_key.txt
 
 # Extensions
 *.log
