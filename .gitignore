@@ -11,6 +11,6 @@ _build/
 .tox/
 dist/
 env*/
-nadeo-api.egg-info/
+nadeo_api.egg-info/
 
 # Various
