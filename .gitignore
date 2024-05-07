@@ -1,0 +1,16 @@
+# Files
+upload_copy_pypi.py
+
+# Extensions
+*.log
+
+# Folders
+__pycache__/
+_build/
+.pytest_cache/
+.tox/
+dist/
+env*/
+nadeo-api.egg-info/
+
+# Various
