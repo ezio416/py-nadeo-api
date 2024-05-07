@@ -5,9 +5,6 @@
 <!-- [![PyPI](https://badge.fury.io/py/py416.svg)](https://pypi.org/project/nadeo-api/) -->
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-What this package is and hopes to achieve
------------------------------------------
-
 A library to assist with accessing Nadeo's undocumented (officially) web services API.
 
 Installing the package from PyPI:
