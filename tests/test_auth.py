@@ -1,7 +1,7 @@
 '''
-| Author:  Ezio416
-| Created: 2024-05-07
-| Updated: 2024-05-07
+| Author:   Ezio416
+| Created:  2024-05-07
+| Modified: 2024-05-12
 
 - Tests for nadeo_api.auth
 '''
@@ -14,4 +14,4 @@ import src.nadeo_api.auth as auth
 
 
 if __name__ == '__main__':
-    print(auth.get_token())
+    pass
