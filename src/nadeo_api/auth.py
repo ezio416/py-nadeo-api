@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-07
-| Modified: 2024-05-12
+| Modified: 2024-05-13
 
 - Functions for interacting with authentication tokens to use with the API
 '''
@@ -59,14 +59,14 @@ class Token():
     token_decoded:  dict
 
     def __init__(self, access_token: str, audience: str, refresh_token: str = '', server_account: bool = False, expiration: int = 0):
-        self.access_token   = access_token
-        self.audience       = audience
-        self.refresh_token  = refresh_token
+        self.access_token = access_token
+        self.audience = audience
+        self.refresh_token = refresh_token
         self.server_account = server_account
 
-        try:  # will fail if passed a ticket (not a JWT) instead of a token
-            self.token_decoded  = loads(urlsafe_b64decode(f'{self.access_token.split('.')[1]}==').decode('utf-8'))
-        except UnicodeDecodeError as e:
+        try:
+            self.token_decoded = decode_jwt_from_token(self.access_token)
+        except UnicodeDecodeError:
             pass
 
         if expiration != 0:
@@ -74,7 +74,7 @@ class Token():
         else:
             try:
                 self.expiration = self.token_decoded['exp']
-            except Exception as e:
+            except KeyError:
                 self.expiration = int(time.time()) + 3600
 
     def __repr__(self) -> str:
@@ -88,7 +88,49 @@ class Token():
         return int(time.time()) >= self.expiration
 
     def refresh(self) -> None:
-        pass
+        '''
+        - refreshes a set of tokens if applicable
+        - raises a `RuntimeError` if called on an OAuth2 token
+        '''
+
+        if self.audience == audience_oauth:
+            raise RuntimeError('You may not refresh an OAuth2 token - request a new one instead.')
+
+        req = post(
+            f'{url_core}/v2/authentication/token/refresh',
+            headers={'Authorization': self.refresh_token},
+            # json={'audience': self.audience}  # seems to not actually be required
+        )
+
+        if req.status_code >= 400:
+            raise ConnectionError(f'Bad response refreshing token for {self.audience}: code {req.status_code}, response {req.text}')
+
+        json: dict = req.json()
+        self.access_token = f'nadeo_v1 t={json['accessToken']}'
+        self.refresh_token = f'nadeo_v1 t={json['refreshToken']}'
+
+        try:
+            self.token_decoded = decode_jwt_from_token(self.access_token)
+            self.expiration = self.token_decoded['exp']
+        except KeyError:
+            self.expiration = 0
+        except UnicodeDecodeError:
+            self.expiration = 0
+            self.token_decoded = {}
+
+
+def decode_jwt_from_token(token: str) -> dict:
+    '''
+    - decodes a JSON web token into a dictionary using its payload section
+    - will fail if passed an invalid token such as an Ubisoft ticket
+    '''
+
+    payload: str = token.split('.')[1]
+    decoded_bytes: bytes = urlsafe_b64decode(f'{payload}==')
+    decoded_str: str = decoded_bytes.decode('utf-8')
+    result: dict = loads(decoded_str)
+
+    return result
 
 
 def get_token(audience: str, agent: str, username: str, password: str, server_account: bool = False) -> Token:
@@ -103,19 +145,20 @@ def get_token(audience: str, agent: str, username: str, password: str, server_ac
         - valid: `NadeoServices`/`core`/`prod`, `NadeoLiveServices`/`live`/`meet`/`club`, `OAuth`/`OAuth2`
 
     agent: str
-        - user agent, ideally with your program's name and a way to contact you
-        - Ubisoft can block you without this being properly set
+        - user agent with your program's name and a way to contact you
+        - Ubisoft can block your request without this being properly set
 
     username: str
         - Ubisoft/dedicated server account username
-        - for OAuth, this is the identifier
+        - for OAuth2, this is the identifier
 
     password: str
         - Ubisoft/dedicated server account password
-        - for OAuth, this is the secret
+        - for OAuth2, this is the secret
 
     server_account: bool
         - whether you're using a dedicated server account instead of a Ubisoft account
+        - ignored when using OAuth2
         - default: `False`
     '''
 
