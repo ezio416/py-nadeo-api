@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-07
-| Modified: 2024-05-13
+| Modified: 2024-05-14
 
 - Functions for interacting with authentication tokens to use with the API
 '''
@@ -125,10 +125,10 @@ def decode_jwt_from_token(token: str) -> dict:
     - will fail if passed an invalid token such as an Ubisoft ticket
     '''
 
-    payload: str = token.split('.')[1]
+    payload:       str = token.split('.')[1]
     decoded_bytes: bytes = urlsafe_b64decode(f'{payload}==')
-    decoded_str: str = decoded_bytes.decode('utf-8')
-    result: dict = loads(decoded_str)
+    decoded_str:   str = decoded_bytes.decode('utf-8')
+    result:        dict = loads(decoded_str)
 
     return result
 
