@@ -90,11 +90,11 @@ class Token():
     def refresh(self) -> None:
         '''
         - refreshes a set of tokens if applicable
-        - raises a `RuntimeError` if called on an OAuth2 token
+        - raises a `ValueError` if called on an OAuth2 token
         '''
 
         if self.audience == audience_oauth:
-            raise RuntimeError('You may not refresh an OAuth2 token - request a new one instead.')
+            raise ValueError('You may not refresh an OAuth2 token - request a new one instead.')
 
         req = post(
             f'{url_core}/v2/authentication/token/refresh',
