@@ -1,27 +1,29 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-07
-| Modified: 2024-05-14
+| Modified: 2024-05-15
 
 - Functions for interacting with authentication tokens to use with the API
+- Also contains variables and functions intended for internal use
 '''
 
 from base64 import b64encode, urlsafe_b64decode
 from dataclasses import dataclass
 from datetime import datetime as dt
-from json import loads
+import json
 import time
 
-from requests import post
+import requests
 
 
 audience_core:  str = 'NadeoServices'
-audience_live:  str = 'NadeoLiveServices'  # also used for 'meet' endpoints (formerly known as club)
+audience_live:  str = 'NadeoLiveServices'  # also used for Meet endpoints (formerly known as Club)
 audience_oauth: str = 'OAuth2'
 tmnext_app_id:  str = '86263886-327a-4328-ac69-527f0d20a237'
 url_core:       str = 'https://prod.trackmania.core.nadeo.online'
 url_live:       str = 'https://live-services.trackmania.nadeo.live'
 url_meet:       str = 'https://meet.trackmania.nadeo.club'
+url_oauth:      str = 'https://api.trackmania.com'
 
 
 @dataclass
@@ -96,7 +98,7 @@ class Token():
         if self.audience == audience_oauth:
             raise ValueError('You may not refresh an OAuth2 token - request a new one instead.')
 
-        req = post(
+        req: requests.Response = requests.post(
             f'{url_core}/v2/authentication/token/refresh',
             headers={'Authorization': self.refresh_token},
             # json={'audience': self.audience}  # seems to not actually be required
@@ -128,9 +130,72 @@ def decode_jwt_from_token(token: str) -> dict:
     payload:       str = token.split('.')[1]
     decoded_bytes: bytes = urlsafe_b64decode(f'{payload}==')
     decoded_str:   str = decoded_bytes.decode('utf-8')
-    result:        dict = loads(decoded_str)
+    result:        dict = json.loads(decoded_str)
 
     return result
+
+
+def _get(token: Token, base_url: str, endpoint: str, params: dict = {}) -> dict:
+    '''
+    - sends a GET request to a specified API
+    - this is for internal use - you should use an API-specific `get` function instead
+
+    Parameters
+    ----------
+    token: Token
+        - authentication token gotten from `get_token`
+
+    base_url: str
+        - base URL of desired API
+        - must match your token's audience
+        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+
+    params: dict
+        - parameters for request if applicable
+        - if you specified parameters at the end of the `endpoint`, do not specify them here else they will be duplicated
+        - default: `{}` (empty)
+    '''
+
+    if base_url not in (url_core, url_live, url_meet, url_oauth):
+        raise ValueError(f'Given base URL is invalid: {base_url}')
+
+    base_name: str = 'Core'
+
+    if base_url == url_core:
+        if token.audience != audience_core:
+            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
+
+    elif base_url in (url_live, url_meet):
+        if token.audience != audience_live:
+            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
+
+        base_name = 'Live' if base_url == url_live else 'Meet'
+
+    else:
+        if token.audience != audience_oauth:
+            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
+
+        base_name = audience_oauth
+
+    if token.expired:
+        token.refresh()
+
+    if endpoint.startswith(base_url):
+        endpoint = endpoint.split(base_url)[1]
+
+    if endpoint.startswith('/'):
+        endpoint = endpoint[1:]
+
+    req: requests.Response = requests.get(f'{base_url}/{endpoint}', params, headers={'Authorization': token.access_token})
+
+    if req.status_code == 401:  # token may have expired prematurely
+        token.refresh()
+        req = requests.get(f'{base_url}/{endpoint}', params, headers={'Authorization': token.access_token})
+
+    if req.status_code >= 400:
+        raise ConnectionError(f'Bad response from {base_name} API: code {req.status_code}, response {req.text}')
+
+    return req.json()
 
 
 def get_token(audience: str, agent: str, username: str, password: str, server_account: bool = False) -> Token:
@@ -174,7 +239,7 @@ def get_token(audience: str, agent: str, username: str, password: str, server_ac
         raise ValueError(f'Given audience is not valid: {audience}')
 
     if audience == audience_oauth:
-        req = post(
+        req: requests.Response = requests.post(
             'https://api.trackmania.com/api/access_token',
             headers={'Content-Type': 'application/x-www-form-urlencoded'},
             data={
@@ -190,7 +255,7 @@ def get_token(audience: str, agent: str, username: str, password: str, server_ac
         json: dict = req.json()
         return Token(json['access_token'], audience, expiration=int(time.time()) + json['expires_in'])
 
-    req = post(
+    req: requests.Response = requests.post(
         f'{url_core}/v2/authentication/token/basic' if server_account else 'https://public-ubiservices.ubi.com/v3/profiles/sessions',
         headers={
             'Authorization': f'Basic {b64encode(f'{username}:{password}'.encode('utf-8')).decode('ascii')}',
@@ -211,7 +276,7 @@ def get_token(audience: str, agent: str, username: str, password: str, server_ac
 
     ticket: Token = Token(f'ubi_v1 t={json['ticket']}', json['platformType'], expiration=int(dt.fromisoformat(json['expiration']).timestamp()))
 
-    req2 = post(
+    req2: requests.Response = requests.post(
         f'{url_core}/v2/authentication/token/ubiservices',
         headers={'Authorization': ticket.access_token},
         json={'audience': audience}
