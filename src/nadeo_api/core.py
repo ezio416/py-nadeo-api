@@ -15,15 +15,15 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict:
 
     Parameters
     ----------
+    token: auth.Token
+        - authentication token gotten from `auth.get_token`
+
     endpoint: str
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
         - trailing parameters are optional, i.e. `?param1=true&param2=0`
         - it is your responsibility to ensure there are no invalid characters such as commas
-
-    token: auth.Token
-        - authentication token gotten from `auth.get_token`
 
     params: dict
         - parameters for request if applicable
@@ -57,7 +57,7 @@ def routes(token: auth.Token, usage: str = 'Client') -> dict:
     Returns
     -------
     dict
-        - data returned from request
+        - valid routes for given usage
     '''
 
     if usage not in ('Client', 'Server'):
@@ -79,7 +79,7 @@ def zones(token: auth.Token) -> dict:
     Returns
     -------
     dict
-        - data returned from request
+        - zones sorted alphabetically
     '''
 
     return get(token, 'zones')
