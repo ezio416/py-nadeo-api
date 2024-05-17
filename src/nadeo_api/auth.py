@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-07
-| Modified: 2024-05-15
+| Modified: 2024-05-16
 
 - Functions for interacting with authentication tokens to use with the API
 - Also contains variables and functions intended for internal use
@@ -198,7 +198,7 @@ def _get(token: Token, base_url: str, endpoint: str, params: dict = {}) -> dict:
     return req.json()
 
 
-def get_token(audience: str, agent: str, username: str, password: str, server_account: bool = False) -> Token:
+def get_token(audience: str, username: str, password: str, agent: str = '', server_account: bool = False) -> Token:
     '''
     - requests an authentication token for a given audience
 
@@ -209,10 +209,6 @@ def get_token(audience: str, agent: str, username: str, password: str, server_ac
         - capitalization is ignored
         - valid: `NadeoServices`/`core`/`prod`, `NadeoLiveServices`/`live`/`meet`/`club`, `OAuth`/`OAuth2`
 
-    agent: str
-        - user agent with your program's name and a way to contact you
-        - Ubisoft can block your request without this being properly set
-
     username: str
         - Ubisoft/dedicated server account username
         - for OAuth2, this is the identifier
@@ -220,6 +216,12 @@ def get_token(audience: str, agent: str, username: str, password: str, server_ac
     password: str
         - Ubisoft/dedicated server account password
         - for OAuth2, this is the secret
+
+    agent: str
+        - user agent with your program's name and a way to contact you
+        - Ubisoft can block your request without this being properly set
+        - not required for OAuth2
+        - default: `''` (empty)
 
     server_account: bool
         - whether you're using a dedicated server account instead of a Ubisoft account
@@ -254,6 +256,9 @@ def get_token(audience: str, agent: str, username: str, password: str, server_ac
 
         json: dict = req.json()
         return Token(json['access_token'], audience, expiration=int(time.time()) + json['expires_in'])
+
+    if agent == '':
+        raise ValueError('For web services endpoints, you must specify a user agent')
 
     req: requests.Response = requests.post(
         f'{url_core}/v2/authentication/token/basic' if server_account else 'https://public-ubiservices.ubi.com/v3/profiles/sessions',
