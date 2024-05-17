@@ -1,14 +1,18 @@
-nadeo-api Introduction
-==================
+nadeo-api
+=========
 
 A library to assist with accessing Nadeo's web services API and the public Trackmania API (OAuth2).
 
-The web services API has community-driven documentation [here](https://webservices.openplanet.dev/).\
-The main section of this API (named "Core") has an up-to-date list of valid endpoints being kept [here](https://github.com/openplanet-nl/core-api-tracking).\
-Most of these endpoints are not documented at all, but you may help supplement the documentation [here](https://github.com/openplanet-nl/nadeoapi-docs).
+The web services API has community-driven documentation at https://webservices.openplanet.dev/ .
 
-The public Trackmania API has official documentation [here](https://api.trackmania.com/doc).\
-There is also community-driven documentation [here](https://webservices.openplanet.dev/oauth/reference) which should be a bit more useful.
+The main section of this API (named "Core") has an up-to-date list of valid endpoints being kept at https://github.com/openplanet-nl/core-api-tracking .
+
+Most of these endpoints are not documented at all, but you may help supplement the documentation at https://github.com/openplanet-nl/nadeoapi-docs .
+
+
+The public Trackmania API has official documentation at https://api.trackmania.com/doc.
+
+There is also community-driven documentation at https://webservices.openplanet.dev/oauth/reference which should be a bit more useful.
 
 Installing the package from PyPI:
 ```
