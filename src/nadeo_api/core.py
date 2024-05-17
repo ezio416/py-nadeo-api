@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-14
-| Modified: 2024-05-15
+| Modified: 2024-05-16
 
 - Functions for interacting with the web services Core API
 '''
@@ -23,7 +23,6 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict:
         - base URL is optional
         - leading forward slash is optional
         - trailing parameters are optional, i.e. `?param1=true&param2=0`
-        - it is your responsibility to ensure there are no invalid characters such as commas
 
     params: dict
         - parameters for request if applicable
