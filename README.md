@@ -11,7 +11,8 @@ The web services API has community-driven documentation [here](https://webservic
 The main section of this API (named "Core") has an up-to-date list of valid endpoints being kept [here](https://github.com/openplanet-nl/core-api-tracking).\
 Most of these endpoints are not documented at all, but you may help supplement the documentation [here](https://github.com/openplanet-nl/nadeoapi-docs).
 
-The public Trackmania API has official documentation [here](https://api.trackmania.com/doc).
+The public Trackmania API has official documentation [here](https://api.trackmania.com/doc).\
+There is also community-driven documentation [here](https://webservices.openplanet.dev/oauth/reference) which should be a bit more useful.
 
 Installing the package from PyPI:
 ```
