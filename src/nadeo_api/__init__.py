@@ -10,7 +10,7 @@ import base64
 import re
 
 
-__version__: tuple = 0, 3, 1
+__version__: tuple = 0, 3, 2
 
 
 def account_id_from_login(account_login: str) -> str:
