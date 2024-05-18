@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-07
-| Modified: 2024-05-17
+| Modified: 2024-05-18
 
 - A library to assist with accessing Nadeo's web services API and the public Trackmania API (OAuth2).
 '''
@@ -15,7 +15,7 @@ __version__: tuple = 0, 3, 0
 
 def account_id_from_login(account_login: str) -> str:
     '''
-    - converts an base64-encoded login to an Ubisoft account ID (UUID)
+    - converts a base64-encoded login to an Ubisoft account ID (UUID)
 
     Parameters
     ----------
