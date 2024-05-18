@@ -1,15 +1,15 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-14
-| Modified: 2024-05-16
+| Modified: 2024-05-18
 
 - Functions for interacting with the web services Core API
 '''
 
-import auth
+from .auth import url_core, Token, _get
 
 
-def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict:
+def get(token: Token, endpoint: str, params: dict = {}) -> dict:
     '''
     - sends a GET request to the Core API
 
@@ -34,10 +34,10 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict:
         - data returned from request
     '''
 
-    return auth._get(token, auth.url_core, endpoint, params)
+    return _get(token, url_core, endpoint, params)
 
 
-def routes(token: auth.Token, usage: str = 'Client') -> dict:
+def routes(token: Token, usage: str = 'Client') -> dict:
     '''
     - gets the valid Core API routes
     - https://webservices.openplanet.dev/core/meta/routes
@@ -65,7 +65,7 @@ def routes(token: auth.Token, usage: str = 'Client') -> dict:
     return get(token, 'api/routes', {'usage': usage})
 
 
-def zones(token: auth.Token) -> dict:
+def zones(token: Token) -> dict:
     '''
     - gets the valid regions a player may choose from
     - https://webservices.openplanet.dev/core/meta/zones
