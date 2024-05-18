@@ -8,10 +8,10 @@
 
 from typing import Iterable
 
-from .auth import url_oauth, Token, _get
+from . import auth
 
 
-def get(token: Token, endpoint: str, params: dict = {}) -> dict:
+def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict:
     '''
     - sends a GET request to the OAuth2 API
 
@@ -36,17 +36,17 @@ def get(token: Token, endpoint: str, params: dict = {}) -> dict:
         - data returned from request
     '''
 
-    return _get(token, url_oauth, endpoint, params)
+    return auth._get(token, auth.url_oauth, endpoint, params)
 
 
-def account_names_from_ids(token: Token, account_ids: str | Iterable[str]) -> dict:
+def account_names_from_ids(token: auth.Token, account_ids: str | Iterable[str]) -> dict:
     '''
     - gets Ubisoft account names given account IDs (UUID)
     - https://webservices.openplanet.dev/oauth/reference/accounts/id-to-name
 
     Parameters
     ----------
-    token: str
+    token: auth.Token
         - authentication token gotten from `auth.get_token`
 
     account_ids: str | Iterable[str]
@@ -71,14 +71,14 @@ def account_names_from_ids(token: Token, account_ids: str | Iterable[str]) -> di
     return get(token, f'api/display-names?accountId[]={'&accountId[]='.join(account_ids)}')
 
 
-def account_ids_from_names(token: Token, account_names: str | Iterable[str]) -> dict:
+def account_ids_from_names(token: auth.Token, account_names: str | Iterable[str]) -> dict:
     '''
     - gets Ubisoft account IDs (UUID) given account names
     - https://webservices.openplanet.dev/oauth/reference/accounts/name-to-id
 
     Parameters
     ----------
-    token: str
+    token: auth.Token
         - authentication token gotten from `auth.get_token`
 
     account_name: str | Iterable[str]

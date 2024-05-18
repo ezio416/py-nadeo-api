@@ -6,10 +6,10 @@
 - Functions for interacting with the web services Live API
 '''
 
-from .auth import url_live, Token, _get
+from . import auth
 
 
-def get(token: Token, endpoint: str, params: dict = {}) -> dict:
+def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict:
     '''
     - sends a GET request to the Live API
 
@@ -34,10 +34,10 @@ def get(token: Token, endpoint: str, params: dict = {}) -> dict:
         - data returned from request
     '''
 
-    return _get(token, url_live, endpoint, params)
+    return auth._get(token, auth.url_live, endpoint, params)
 
 
-def maps_campaign(token: Token, length: int, offset: int = 0) -> dict:
+def maps_campaign(token: auth.Token, length: int, offset: int = 0) -> dict:
     '''
     - gets official Nadeo seasonal campaigns
     - https://webservices.openplanet.dev/live/campaigns/campaigns
@@ -63,7 +63,7 @@ def maps_campaign(token: Token, length: int, offset: int = 0) -> dict:
     return get(token, 'api/token/campaign/official', {'length': length, 'offset': offset})
 
 
-def maps_royal(token: Token, length: int, offset: int = 0) -> dict:
+def maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
     '''
     - gets Royal maps
     - https://webservices.openplanet.dev/live/campaigns/totds
@@ -89,7 +89,7 @@ def maps_royal(token: Token, length: int, offset: int = 0) -> dict:
     return get(token, '/api/token/campaign/month', {'length': length, 'offset': offset, 'royal': 'true'})
 
 
-def maps_totd(token: Token, length: int, offset: int = 0) -> dict:
+def maps_totd(token: auth.Token, length: int, offset: int = 0) -> dict:
     '''
     - gets Tracks of the Day
     - https://webservices.openplanet.dev/live/campaigns/totds

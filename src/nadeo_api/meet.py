@@ -6,10 +6,10 @@
 - Functions for interacting with the web services Meet API
 '''
 
-from .auth import url_meet, Token, _get
+from . import auth
 
 
-def get(token: Token, endpoint: str, params: dict = {}) -> dict:
+def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict:
     '''
     - sends a GET request to the Meet API
 
@@ -34,10 +34,10 @@ def get(token: Token, endpoint: str, params: dict = {}) -> dict:
         - data returned from request
     '''
 
-    return _get(token, url_meet, endpoint, params)
+    return auth._get(token, auth.url_meet, endpoint, params)
 
 
-def current_cotd(token: Token) -> dict:
+def current_cotd(token: auth.Token) -> dict:
     '''
     - gets info on the current cross-platform Cup of the Day
     - https://webservices.openplanet.dev/meet/cup-of-the-day/current
