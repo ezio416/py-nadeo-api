@@ -1,6 +1,6 @@
 .. toctree::
    :caption: Modules
-   :maxdepth: 1
+   :maxdepth: 2
    :hidden:
 
    nadeo_api
