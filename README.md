@@ -1,7 +1,7 @@
 # nadeo-api
 
 <!-- [![tests](https://github.com/ezio416/py416/actions/workflows/tests.yml/badge.svg)](https://github.com/ezio416/py-nadeo-api/actions) -->
-<!-- [![docs](https://readthedocs.org/projects/py416/badge/?version=latest)](https://nadeo-api.readthedocs.io/en/latest/) -->
+[![docs](https://readthedocs.org/projects/nadeo-api/badge/?version=latest)](https://nadeo-api.readthedocs.io/en/latest/)
 [![PyPI](https://badge.fury.io/py/nadeo-api.svg)](https://pypi.org/project/nadeo-api/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
