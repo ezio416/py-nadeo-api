@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-14
-| Modified: 2024-05-18
+| Modified: 2024-05-19
 
 - Functions for interacting with the web services Core API
 '''
@@ -63,6 +63,64 @@ def routes(token: auth.Token, usage: str = 'Client') -> dict:
         raise ValueError(f'Given usage is invalid: {usage}')
 
     return get(token, 'api/routes', {'usage': usage})
+
+
+def trophies_history(token: auth.Token, account_id: str, count: int, offset: int = 0) -> dict:
+    '''
+    - gets a list of trophy gain history
+    - requires a Ubisoft account (Client usage)
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token gotten from `auth.get_token`
+
+    account_id: str
+        - account ID to get data for
+
+    count: int
+        - number of history entries to get
+        - if you set this too high, the request may time out (response 504)
+
+    offset: int
+        - number of history entries to skip, looking backwards from the most recent
+        - default: 0
+
+    Returns
+    -------
+    dict
+        - history entries sorted newest to oldest
+    '''
+
+    if token.server_account:
+        raise ValueError('This endpoint requires a Ubisoft account (Client usage)')
+
+    return get(token, f'accounts/{account_id}/trophies', {'offset': offset, 'count': count})
+
+
+def trophies_last_year_summary(token: auth.Token, account_id: str) -> dict:
+    '''
+    - gets a summary of the trophies gained in the last year
+    - requires a Ubisoft account (Client usage)
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token gotten from `auth.get_token`
+
+    account_id: str
+        - account ID to get data for
+
+    Returns
+    -------
+    dict
+        - data on given account
+    '''
+
+    if token.server_account:
+        raise ValueError('This endpoint requires a Ubisoft account (Client usage)')
+
+    return get(token, f'accounts/{account_id}/trophies/lastYearSummary')
 
 
 def zones(token: auth.Token) -> dict:

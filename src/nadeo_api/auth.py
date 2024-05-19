@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-07
-| Modified: 2024-05-16
+| Modified: 2024-05-19
 
 - Functions for interacting with authentication tokens to use with the API
 - Also contains variables and functions intended for internal use
@@ -224,7 +224,7 @@ def get_token(audience: str, username: str, password: str, agent: str = '', serv
         - default: `''` (empty)
 
     server_account: bool
-        - whether you're using a dedicated server account instead of a Ubisoft account
+        - whether you're using a dedicated server account (Server usage) instead of a Ubisoft account (Client usage)
         - ignored when using OAuth2
         - default: `False`
     '''
