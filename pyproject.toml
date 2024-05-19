@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nadeo-api"
-version = "0.3.3"
+version = "0.3.4"
 authors = [
   { name="Ezio416", email="e@e416.dev" },
 ]
@@ -23,6 +23,6 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/ezio416/py-nadeo-api"
 "Bug Tracker" = "https://github.com/ezio416/py-nadeo-api/issues"
 "Documentation" = "https://nadeo-api.readthedocs.io/en/latest/"
+"Repository" = "https://github.com/ezio416/py-nadeo-api"

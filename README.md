@@ -21,7 +21,7 @@ python -m pip install nadeo-api
 
 Using the package:
 ```py
-import nadeo_api
+import nadeo_api        # main module - has some functions not related to endpoints
 import nadeo_api.auth   # authentication - required for any endpoint
 import nadeo_api.core   # web services Core endpoints
 import nadeo_api.live   # web services Live endpoints
