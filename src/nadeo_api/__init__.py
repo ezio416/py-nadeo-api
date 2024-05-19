@@ -1,16 +1,17 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-07
-| Modified: 2024-05-18
+| Modified: 2024-05-19
 
 - A library to assist with accessing Nadeo's web services API and the public Trackmania API (OAuth2).
+- This is the main module - most of what you need is in sub-modules.
 '''
 
 import base64
 import re
 
 
-__version__: tuple = 0, 3, 2
+__version__: tuple = 0, 3, 3
 
 
 def account_id_from_login(account_login: str) -> str:
