@@ -68,7 +68,7 @@ def routes(token: auth.Token, usage: str = 'Client') -> dict:
 def trophies_history(token: auth.Token, account_id: str, count: int, offset: int = 0) -> dict:
     '''
     - gets a list of trophy gain history
-    - requires a Ubisoft account (Client usage)
+    - requires a Ubisoft account (client usage)
 
     Parameters
     ----------
@@ -93,7 +93,7 @@ def trophies_history(token: auth.Token, account_id: str, count: int, offset: int
     '''
 
     if token.server_account:
-        raise ValueError('This endpoint requires a Ubisoft account (Client usage)')
+        raise ValueError('This endpoint requires a Ubisoft account (client usage)')
 
     return get(token, f'accounts/{account_id}/trophies', {'offset': offset, 'count': count})
 
@@ -101,7 +101,7 @@ def trophies_history(token: auth.Token, account_id: str, count: int, offset: int
 def trophies_last_year_summary(token: auth.Token, account_id: str) -> dict:
     '''
     - gets a summary of the trophies gained in the last year
-    - requires a Ubisoft account (Client usage)
+    - requires a Ubisoft account (client usage)
 
     Parameters
     ----------
@@ -118,7 +118,7 @@ def trophies_last_year_summary(token: auth.Token, account_id: str) -> dict:
     '''
 
     if token.server_account:
-        raise ValueError('This endpoint requires a Ubisoft account (Client usage)')
+        raise ValueError('This endpoint requires a Ubisoft account (client usage)')
 
     return get(token, f'accounts/{account_id}/trophies/lastYearSummary')
 
