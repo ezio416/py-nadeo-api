@@ -7,7 +7,7 @@
 - This is the main module - most of what you need is in sub-modules.
 '''
 
-from .util import *
+from .util import *  # NOQA
 
 
 __version__: tuple = 0, 5, 0
