@@ -1,12 +1,13 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-14
-| Modified: 2024-05-19
+| Modified: 2024-05-20
 
 - Functions for interacting with the web services Core API
 '''
 
 from . import auth
+from . import util
 
 
 def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict:
@@ -92,6 +93,9 @@ def trophies_history(token: auth.Token, account_id: str, count: int, offset: int
         - history entries sorted newest to oldest
     '''
 
+    if not util.valid_uuid(account_id):
+        raise ValueError(f'Given account ID is invalid: {account_id}')
+
     if token.server_account:
         raise ValueError('This endpoint requires a Ubisoft account (client usage)')
 
@@ -116,6 +120,9 @@ def trophies_last_year_summary(token: auth.Token, account_id: str) -> dict:
     dict
         - data on given account
     '''
+
+    if not util.valid_uuid(account_id):
+        raise ValueError(f'Given account ID is invalid: {account_id}')
 
     if token.server_account:
         raise ValueError('This endpoint requires a Ubisoft account (client usage)')

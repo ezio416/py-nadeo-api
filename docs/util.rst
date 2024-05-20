@@ -1,7 +1,7 @@
-nadeo_api
-=========
+util
+====
 
-.. automodule:: src.nadeo_api.__init__
+.. automodule:: src.nadeo_api.util
    :members:
    :undoc-members:
    :show-inheritance:
