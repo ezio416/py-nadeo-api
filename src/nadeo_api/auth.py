@@ -153,53 +153,22 @@ def _get(token: Token, base_url: str, endpoint: str, params: dict = {}) -> dict 
         - must match your token's audience
         - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
 
+    endpoint: str
+        - desired endpoint or full URL
+        - base URL and leading slash (`'https://.../'`) optional
+
     params: dict
-        - parameters for request if applicable
-        - if you specified parameters at the end of the `endpoint`, do not specify them here else they will be duplicated
+        - request parameters if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
         - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
     '''
 
-    if base_url not in (url_core, url_live, url_meet, url_oauth):
-        raise ValueError(f'Given base URL is invalid: {base_url}')
-
-    base_name: str = 'Core'
-
-    if base_url == url_core:
-        if token.audience != audience_core:
-            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
-
-    elif base_url in (url_live, url_meet):
-        if token.audience != audience_live:
-            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
-
-        base_name = 'Live' if base_url == url_live else 'Meet'
-
-    else:
-        if token.audience != audience_oauth:
-            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
-
-        base_name = audience_oauth
-
-    if token.expired:
-        token.refresh()
-
-    if endpoint.startswith(base_url):
-        endpoint = endpoint.split(base_url)[1]
-
-    if endpoint.startswith('/'):
-        endpoint = endpoint[1:]
-
-    _wait()
-    req: requests.Response = requests.get(f'{base_url}/{endpoint}', params, headers={'Authorization': token.access_token})
-
-    if req.status_code == 401:  # token may have expired prematurely
-        token.refresh()
-        req = requests.get(f'{base_url}/{endpoint}', params, headers={'Authorization': token.access_token})
-
-    if req.status_code >= 400:
-        raise ConnectionError(f'Bad response from {base_name} API: code {req.status_code}, response {req.text}')
-
-    return req.json()
+    return _request(token, base_url, endpoint, params)
 
 
 def get_token(audience: str, username: str, password: str, agent: str = '', server_account: bool = False) -> Token:
@@ -296,6 +265,99 @@ def get_token(audience: str, username: str, password: str, agent: str = '', serv
 
     json2: dict = req2.json()
     return Token(f'nadeo_v1 t={json2['accessToken']}', audience, f'nadeo_v1 t={json2['refreshToken']}')
+
+
+def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, method: str = 'get', body: dict = {}) -> dict | list:
+    '''
+    - sends a request to a specified API
+    - this is for internal use - you should use an explicit function like `core.get()` instead
+
+    Parameters
+    ----------
+    token: Token
+        - authentication token from `auth.get_token()`
+
+    base_url: str
+        - base URL of desired API
+        - must match your token's audience
+        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+
+    endpoint: str
+        - desired endpoint or full URL
+        - base URL and leading slash (`'https://.../'`) optional
+
+    params: dict
+        - parameters for request if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
+        - default: `{}` (empty)
+
+    method: str
+        - type of request to send
+        - valid: `'delete'`, `'get'`, `'head'`, `'options'`, `'patch'`, `'post'`, `'put'`
+        - default: `'get'`
+
+    body: dict
+        - request body
+        - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
+    '''
+
+    if (base_url := base_url.lower()) not in (url_core, url_live, url_meet, url_oauth):
+        raise ValueError(f'Given base URL is invalid: {base_url}')
+
+    if (method := method.lower()) not in ('delete', 'get', 'head', 'options', 'patch', 'post', 'put'):
+        raise ValueError(f'Given method is invalid: {method}')
+
+    base_name: str = 'Core'
+
+    if base_url == url_core:
+        if token.audience != audience_core:
+            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
+
+    elif base_url in (url_live, url_meet):
+        if token.audience != audience_live:
+            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
+
+        base_name = 'Live' if base_url == url_live else 'Meet'
+
+    else:
+        if token.audience != audience_oauth:
+            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
+
+        base_name = audience_oauth
+
+    if token.expired:
+        token.refresh()
+
+    if endpoint.startswith(base_url):
+        endpoint = endpoint.split(base_url)[1]
+
+    if endpoint.startswith('/'):
+        endpoint = endpoint[1:]
+
+    def __request() -> requests.Response:
+        _wait()
+        return getattr(requests, method)(  # trust that requests never breaks this
+            url=f'{base_url}/{endpoint}',
+            params=params,
+            headers={'Authorization': token.access_token},
+            json=body
+        )
+
+    req: requests.Response = __request()
+
+    if req.status_code == 401:  # token may have expired prematurely
+        token.refresh()
+        req = __request()
+
+    if req.status_code >= 400:
+        raise ConnectionError(f'Bad response from {base_name} API: code {req.status_code}, response {req.text}')
+
+    return req.json()
 
 
 def _wait() -> None:
