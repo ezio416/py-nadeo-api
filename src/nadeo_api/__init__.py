@@ -11,4 +11,4 @@ from .state import *  # NOQA
 from .util import *  # NOQA
 
 
-__version__: tuple = 0, 5, 1
+__version__: tuple = 0, 6, 0
