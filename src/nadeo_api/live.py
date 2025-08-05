@@ -13,6 +13,9 @@ AUDIENCE: str = auth.audience_live
 URL:      str = auth.url_live
 
 
+######################################################### BASE #########################################################
+
+
 def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a DELETE request to the Live API
@@ -229,30 +232,7 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
     return auth._put(token, URL, endpoint, params, body)
 
 
-def maps_campaign(token: auth.Token, length: int, offset: int = 0) -> dict:
-    '''
-    - gets official Nadeo seasonal campaigns
-    - https://webservices.openplanet.dev/live/campaigns/campaigns
-
-    Parameters
-    ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
-
-    length: int
-        - number of campaigns to get
-
-    offset: int
-        - number of campaigns to skip, looking backwards from the current campaign
-        - default: `0`
-
-    Returns
-    -------
-    dict
-        - campaigns sorted newest to oldest
-    '''
-
-    return get(token, 'api/campaign/official', {'length': length, 'offset': offset})
+###################################################### ENDPOINTS #######################################################
 
 
 def get_maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
@@ -359,6 +339,9 @@ def get_maps_weekly(token: auth.Token, length: int, offset: int = 0) -> dict:
     '''
 
     return get(token, '/api/campaign/weekly-shorts', {'length': length, 'offset': offset})
+
+
+###################################################### DEPRECATED ######################################################
 
 
 def maps_campaign(token: auth.Token, length: int, offset: int = 0) -> dict:

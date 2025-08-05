@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-14
-| Modified: 2025-08-04
+| Modified: 2025-08-05
 
 - Functions for interacting with the web services Core API
 '''
@@ -14,6 +14,9 @@ from . import util
 
 AUDIENCE: str = auth.audience_core
 URL:      str = auth.url_core
+
+
+######################################################### BASE #########################################################
 
 
 def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
@@ -232,7 +235,10 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
     return auth._put(token, URL, endpoint, params, body)
 
 
-def map_info_multiple(token: auth.Token, uids: typing.Iterable[str]) -> list[dict]:
+###################################################### ENDPOINTS #######################################################
+
+
+def get_map_info(token: auth.Token, uids: typing.Iterable[str]) -> list[dict]:
     '''
     - gets info on multiple maps from their UIDs
 
@@ -270,7 +276,7 @@ def map_info_multiple(token: auth.Token, uids: typing.Iterable[str]) -> list[dic
     return ret
 
 
-def routes(token: auth.Token, usage: str = 'Client') -> dict:
+def get_routes(token: auth.Token, usage: str = 'Client') -> dict:
     '''
     - gets the valid Core API routes
     - https://webservices.openplanet.dev/core/meta/routes
@@ -298,7 +304,7 @@ def routes(token: auth.Token, usage: str = 'Client') -> dict:
     return get(token, 'api/routes', {'usage': usage})
 
 
-def trophies_history(token: auth.Token, account_id: str, count: int, offset: int = 0) -> dict:
+def get_trophies_history(token: auth.Token, account_id: str, count: int, offset: int = 0) -> dict:
     '''
     - gets a list of trophy gain history
     - requires a Ubisoft account (client usage)
@@ -334,7 +340,7 @@ def trophies_history(token: auth.Token, account_id: str, count: int, offset: int
     return get(token, f'accounts/{account_id}/trophies', {'offset': offset, 'count': count})
 
 
-def trophies_last_year_summary(token: auth.Token, account_id: str) -> dict:
+def get_trophies_last_year_summary(token: auth.Token, account_id: str) -> dict:
     '''
     - gets a summary of the trophies gained in the last year
     - requires a Ubisoft account (client usage)
@@ -362,7 +368,7 @@ def trophies_last_year_summary(token: auth.Token, account_id: str) -> dict:
     return get(token, f'accounts/{account_id}/trophies/lastYearSummary')
 
 
-def zones(token: auth.Token) -> dict:
+def get_zones(token: auth.Token) -> list[dict]:
     '''
     - gets the valid regions a player may choose from
     - https://webservices.openplanet.dev/core/meta/zones
@@ -374,8 +380,43 @@ def zones(token: auth.Token) -> dict:
 
     Returns
     -------
-    dict
-        - zones sorted alphabetically by ID
+    list[dict]
+        - zones sorted alphabetically by name
     '''
 
     return get(token, 'zones')
+
+
+###################################################### DEPRECATED ######################################################
+
+
+def routes(token: auth.Token, usage: str = 'Client') -> dict:
+    '''
+    - DEPRECATED - use `get_routes` instead
+    '''
+
+    return get_routes(token, usage)
+
+
+def trophies_history(token: auth.Token, account_id: str, count: int, offset: int = 0) -> dict:
+    '''
+    - DEPRECATED - use `get_trophies_history` instead
+    '''
+
+    return get_trophies_history(token, account_id, count, offset)
+
+
+def trophies_last_year_summary(token: auth.Token, account_id: str) -> dict:
+    '''
+    - DEPRECATED - use `get_trophies_last_year_summary` instead
+    '''
+
+    return get_trophies_last_year_summary(token, account_id)
+
+
+def zones(token: auth.Token) -> list[dict]:
+    '''
+    - DEPRECATED - use `get_zones` instead
+    '''
+
+    return get_zones(token)
