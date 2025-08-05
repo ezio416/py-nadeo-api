@@ -235,6 +235,31 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
 ###################################################### ENDPOINTS #######################################################
 
 
+def get_club_campaign(token: auth.Token, club_id: int, campaign_id: int) -> dict:
+    '''
+    - gets info on a campaign in a club
+    - https://webservices.openplanet.dev/live/clubs/campaign-by-id
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token`
+
+    club_id: int
+        - club ID
+
+    campaign_id: int
+        - campaign ID (not activity ID - campaign ID should be a lot smaller)
+
+    Returns
+    -------
+    dict
+        - info on campaign
+    '''
+
+    return get(token, f'api/token/club/{club_id}/campaign/{campaign_id}')
+
+
 def get_maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
     '''
     - gets Royal maps

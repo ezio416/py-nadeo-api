@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-12-04
-| Modified: 2025-08-04
+| Modified: 2025-08-05
 
 - Tests for nadeo_api.live
 '''
@@ -27,6 +27,8 @@ def main() -> None:
     # maps = live.get_maps_seasonal(token, 144)
     # maps = live.get_maps_totd(token, 144)
     # maps = live.get_maps_weekly(token, 144)
+
+    # req = live.get_club_campaign(token, 67469, 99524)  # toe3 cps
 
     pass
 
