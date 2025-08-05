@@ -11,11 +11,11 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import src.nadeo_api.auth as auth
-import src.nadeo_api.state as state
+import src.nadeo_api.config as config
 
 
 def main() -> None:
-    state.debug_logging = True
+    config.debug_logging = True
 
     pass
 

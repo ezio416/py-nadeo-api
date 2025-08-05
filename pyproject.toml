@@ -1,21 +1,29 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = [
+  "setuptools>=61.0"
+]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "nadeo-api"
-version = "0.6.0"
+version = "0.7.0"
 authors = [
-  { name="Ezio416", email="e@e416.dev" },
+  {name="Ezio416", email="e@e416.dev"},
 ]
 description = "Access Nadeo's web services API and the public Trackmania API"
-keywords = ["nadeo", "api", "trackmania"]
+keywords = [
+  "nadeo",
+  "api",
+  "trackmania"
+]
 readme = "README.md"
-license = { file="LICENSE.txt" }
+license = "MIT"
+license-files = [
+  "LICENSE.txt"
+]
 requires-python = ">=3.12"
 classifiers = [
   "Programming Language :: Python :: 3",
-  "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
 ]
 dependencies = [

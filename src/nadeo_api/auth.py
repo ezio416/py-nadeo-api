@@ -15,7 +15,7 @@ import time
 
 import requests
 
-from . import state
+from . import config
 from . import util
 
 
@@ -586,9 +586,9 @@ def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, meth
 
 def _wait() -> None:
     now: int = util.stamp(True)
-    if now - state._last_request_timestamp < state.wait_between_requests_ms:
+    if now - config._last_request_timestamp < config.wait_between_requests_ms:
         util._log('')
-        time.sleep(float(state._last_request_timestamp + state.wait_between_requests_ms - now) / 1000.0)
-        state._last_request_timestamp = util.stamp(True)
+        time.sleep(float(config._last_request_timestamp + config.wait_between_requests_ms - now) / 1000.0)
+        config._last_request_timestamp = util.stamp(True)
     else:
-        state._last_request_timestamp = now
+        config._last_request_timestamp = now

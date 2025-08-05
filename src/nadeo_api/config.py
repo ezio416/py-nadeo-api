@@ -4,7 +4,6 @@
 | Modified: 2025-08-05
 
 - Variables that be changed and used project-wide
-- You don't need to import this module - simply access these from the main module like `nadeo_api.<variable>`
 '''
 
 debug_logging:            bool = False

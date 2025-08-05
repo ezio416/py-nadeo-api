@@ -11,8 +11,8 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import src.nadeo_api.auth as auth
+import src.nadeo_api.config as config
 import src.nadeo_api.oauth as oauth
-import src.nadeo_api.state as state
 
 
 def main() -> None:
@@ -22,7 +22,7 @@ def main() -> None:
         os.environ['TM_OAUTH_SECRET']
     )
 
-    state.debug_logging = True
+    config.debug_logging = True
 
     pass
 

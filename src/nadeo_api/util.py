@@ -13,7 +13,7 @@ import sys
 import time
 import traceback as tb
 
-from . import state
+from . import config
 
 
 def account_id_from_login(account_login: str) -> str:
@@ -61,7 +61,7 @@ def account_login_from_id(account_id: str) -> str:
 
 
 def _log(msg: str) -> None:
-    if not state.debug_logging:
+    if not config.debug_logging:
         return
 
     summary: tb.StackSummary = tb.extract_stack(sys._getframe())

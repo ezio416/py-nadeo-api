@@ -11,8 +11,8 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import src.nadeo_api.auth as auth
+import src.nadeo_api.config as config
 import src.nadeo_api.core as core
-import src.nadeo_api.state as state
 
 
 def main() -> None:
@@ -24,7 +24,7 @@ def main() -> None:
         True
     )
 
-    state.debug_logging = True
+    config.debug_logging = True
 
     req = core.get_zones(token)
 
