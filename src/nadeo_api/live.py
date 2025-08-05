@@ -9,6 +9,38 @@
 from . import auth
 
 
+def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+    '''
+    - sends a DELETE request to the Live API
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token`
+
+    endpoint: str
+        - desired endpoint
+        - base URL is optional
+        - leading forward slash is optional
+        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+
+    params: dict
+        - parameters for request if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
+
+    body: dict
+        - request body if applicable
+        - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
+    '''
+
+    return auth._delete(token, auth.url_live, endpoint, params, body)
+
+
 def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
     '''
     - sends a GET request to the Live API
@@ -31,10 +63,166 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
     Returns
     -------
     dict | list
-        - data returned from request
+        - response body
     '''
 
     return auth._get(token, auth.url_live, endpoint, params)
+
+
+def head(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
+    '''
+    - sends a HEAD request to the Live API
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token`
+
+    endpoint: str
+        - desired endpoint
+        - base URL is optional
+        - leading forward slash is optional
+        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+
+    params: dict
+        - parameters for request if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
+
+    Returns
+    -------
+    dict | list
+        - response body
+    '''
+
+    return auth._head(token, auth.url_live, endpoint, params)
+
+
+def options(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+    '''
+    - sends an OPTIONS request to the Live API
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token`
+
+    endpoint: str
+        - desired endpoint
+        - base URL is optional
+        - leading forward slash is optional
+        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+
+    params: dict
+        - parameters for request if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
+
+    body: dict
+        - request body if applicable
+        - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
+    '''
+
+    return auth._options(token, auth.url_live, endpoint, params, body)
+
+
+def patch(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+    '''
+    - sends a PATCH request to the Live API
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token`
+
+    endpoint: str
+        - desired endpoint
+        - base URL is optional
+        - leading forward slash is optional
+        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+
+    params: dict
+        - parameters for request if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
+
+    body: dict
+        - request body if applicable
+        - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
+    '''
+
+    return auth._patch(token, auth.url_live, endpoint, params, body)
+
+
+def post(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+    '''
+    - sends a POST request to the Live API
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token`
+
+    endpoint: str
+        - desired endpoint
+        - base URL is optional
+        - leading forward slash is optional
+        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+
+    params: dict
+        - parameters for request if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
+
+    body: dict
+        - request body if applicable
+        - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
+    '''
+
+    return auth._post(token, auth.url_live, endpoint, params, body)
+
+
+def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+    '''
+    - sends a PUT request to the Live API
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token`
+
+    endpoint: str
+        - desired endpoint
+        - base URL is optional
+        - leading forward slash is optional
+        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+
+    params: dict
+        - parameters for request if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
+
+    body: dict
+        - request body if applicable
+        - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
+    '''
+
+    return auth._put(token, auth.url_live, endpoint, params, body)
 
 
 def maps_campaign(token: auth.Token, length: int, offset: int = 0) -> dict:

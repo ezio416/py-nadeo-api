@@ -138,6 +138,43 @@ def decode_jwt_from_token(token: str) -> dict:
     return result
 
 
+def _delete(token: Token, base_url: str, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+    '''
+    - sends a DELETE request to a specified API
+    - this is for internal use - you should use an API-specific `delete` function instead
+
+    Parameters
+    ----------
+    token: Token
+        - authentication token from `auth.get_token()`
+
+    base_url: str
+        - base URL of desired API
+        - must match your token's audience
+        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+
+    endpoint: str
+        - desired endpoint or full URL
+        - base URL and leading slash (`'https://.../'`) optional
+
+    params: dict
+        - request parameters if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
+        - default: `{}` (empty)
+
+    body: dict
+        - request body if applicable
+        - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
+    '''
+
+    return _request(token, base_url, endpoint, params, 'delete', body)
+
+
 def _get(token: Token, base_url: str, endpoint: str, params: dict = {}) -> dict | list:
     '''
     - sends a GET request to a specified API
@@ -265,6 +302,187 @@ def get_token(audience: str, username: str, password: str, agent: str = '', serv
 
     json2: dict = req2.json()
     return Token(f'nadeo_v1 t={json2['accessToken']}', audience, f'nadeo_v1 t={json2['refreshToken']}')
+
+
+def _head(token: Token, base_url: str, endpoint: str, params: dict = {}) -> dict | list:
+    '''
+    - sends a HEAD request to a specified API
+    - this is for internal use - you should use an API-specific `head` function instead
+
+    Parameters
+    ----------
+    token: Token
+        - authentication token from `auth.get_token()`
+
+    base_url: str
+        - base URL of desired API
+        - must match your token's audience
+        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+
+    endpoint: str
+        - desired endpoint or full URL
+        - base URL and leading slash (`'https://.../'`) optional
+
+    params: dict
+        - request parameters if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
+        - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
+    '''
+
+    return _request(token, base_url, endpoint, params, 'head')
+
+
+def _options(token: Token, base_url: str, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+    '''
+    - sends an OPTIONS request to a specified API
+    - this is for internal use - you should use an API-specific `options` function instead
+
+    Parameters
+    ----------
+    token: Token
+        - authentication token from `auth.get_token()`
+
+    base_url: str
+        - base URL of desired API
+        - must match your token's audience
+        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+
+    endpoint: str
+        - desired endpoint or full URL
+        - base URL and leading slash (`'https://.../'`) optional
+
+    params: dict
+        - request parameters if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
+        - default: `{}` (empty)
+
+    body: dict
+        - request body if applicable
+        - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
+    '''
+
+    return _request(token, base_url, endpoint, params, 'options', body)
+
+
+def _patch(token: Token, base_url: str, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+    '''
+    - sends a PATCH request to a specified API
+    - this is for internal use - you should use an API-specific `patch` function instead
+
+    Parameters
+    ----------
+    token: Token
+        - authentication token from `auth.get_token()`
+
+    base_url: str
+        - base URL of desired API
+        - must match your token's audience
+        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+
+    endpoint: str
+        - desired endpoint or full URL
+        - base URL and leading slash (`'https://.../'`) optional
+
+    params: dict
+        - request parameters if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
+        - default: `{}` (empty)
+
+    body: dict
+        - request body if applicable
+        - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
+    '''
+
+    return _request(token, base_url, endpoint, params, 'patch', body)
+
+
+def _post(token: Token, base_url: str, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+    '''
+    - sends a POST request to a specified API
+    - this is for internal use - you should use an API-specific `post` function instead
+
+    Parameters
+    ----------
+    token: Token
+        - authentication token from `auth.get_token()`
+
+    base_url: str
+        - base URL of desired API
+        - must match your token's audience
+        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+
+    endpoint: str
+        - desired endpoint or full URL
+        - base URL and leading slash (`'https://.../'`) optional
+
+    params: dict
+        - request parameters if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
+        - default: `{}` (empty)
+
+    body: dict
+        - request body if applicable
+        - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
+    '''
+
+    return _request(token, base_url, endpoint, params, 'post', body)
+
+
+def _put(token: Token, base_url: str, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+    '''
+    - sends a PUT request to a specified API
+    - this is for internal use - you should use an API-specific `put` function instead
+
+    Parameters
+    ----------
+    token: Token
+        - authentication token from `auth.get_token()`
+
+    base_url: str
+        - base URL of desired API
+        - must match your token's audience
+        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+
+    endpoint: str
+        - desired endpoint or full URL
+        - base URL and leading slash (`'https://.../'`) optional
+
+    params: dict
+        - request parameters if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
+        - default: `{}` (empty)
+
+    body: dict
+        - request body if applicable
+        - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
+    '''
+
+    return _request(token, base_url, endpoint, params, 'put', body)
 
 
 def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, method: str = 'get', body: dict = {}) -> dict | list:
