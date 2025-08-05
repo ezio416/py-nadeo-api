@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-15
-| Modified: 2024-05-18
+| Modified: 2025-08-04
 
 - Functions for interacting with the web services Live API
 '''
@@ -60,7 +60,7 @@ def maps_campaign(token: auth.Token, length: int, offset: int = 0) -> dict:
         - campaigns sorted newest to oldest
     '''
 
-    return get(token, 'api/token/campaign/official', {'length': length, 'offset': offset})
+    return get(token, 'api/campaign/official', {'length': length, 'offset': offset})
 
 
 def maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
