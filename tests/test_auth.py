@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-07
-| Modified: 2024-05-12
+| Modified: 2025-08-04
 
 - Tests for nadeo_api.auth
 '''
@@ -13,5 +13,9 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import src.nadeo_api.auth as auth
 
 
-if __name__ == '__main__':
+def main() -> None:
     pass
+
+
+if __name__ == '__main__':
+    main()
