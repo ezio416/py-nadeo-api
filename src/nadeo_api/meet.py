@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-15
-| Modified: 2025-08-04
+| Modified: 2025-08-05
 
 - Functions for interacting with the web services Meet API
 '''
@@ -11,6 +11,9 @@ from . import auth
 
 AUDIENCE: str = auth.audience_live
 URL:      str = auth.url_meet
+
+
+######################################################### BASE #########################################################
 
 
 def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
@@ -227,6 +230,9 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
     '''
 
     return auth._put(token, URL, endpoint, params, body)
+
+
+###################################################### ENDPOINTS #######################################################
 
 
 def current_cotd(token: auth.Token) -> dict:

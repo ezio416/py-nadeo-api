@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-15
-| Modified: 2025-08-04
+| Modified: 2025-08-05
 
 - Functions for interacting with the public Trackmania API
 '''
@@ -12,6 +12,9 @@ from . import auth
 
 
 URL: str = auth.url_oauth
+
+
+######################################################### BASE #########################################################
 
 
 def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
@@ -230,6 +233,36 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
     return auth._put(token, URL, endpoint, params, body)
 
 
+###################################################### ENDPOINTS #######################################################
+
+
+def account_ids_from_names(token: auth.Token, account_names: str | typing.Iterable[str]) -> dict:
+    '''
+    - gets Ubisoft account IDs (UUID) given account names
+    - https://webservices.openplanet.dev/oauth/reference/accounts/name-to-id
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token`
+
+    account_name: str | Iterable[str]
+        - account name
+        - may be an iterable of account names
+        - if a name is not found, it will be omitted from the results
+
+    Returns
+    -------
+    dict
+        - returned account IDs as values with given account names as keys
+    '''
+
+    if type(account_names) is str:
+        return get(token, 'api/display-names/account-ids', {'displayName[]': account_names})
+
+    return get(token, f'api/display-names/account-ids?displayName[]={'&displayName[]='.join(account_names)}')
+
+
 def account_names_from_ids(token: auth.Token, account_ids: str | typing.Iterable[str]) -> dict:
     '''
     - gets Ubisoft account names given account IDs (UUID)
@@ -260,30 +293,3 @@ def account_names_from_ids(token: auth.Token, account_ids: str | typing.Iterable
         raise ValueError(f'You can request a maximum of 50 account names. Requested: {num_ids}')
 
     return get(token, f'api/display-names?accountId[]={'&accountId[]='.join(account_ids)}')
-
-
-def account_ids_from_names(token: auth.Token, account_names: str | typing.Iterable[str]) -> dict:
-    '''
-    - gets Ubisoft account IDs (UUID) given account names
-    - https://webservices.openplanet.dev/oauth/reference/accounts/name-to-id
-
-    Parameters
-    ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
-
-    account_name: str | Iterable[str]
-        - account name
-        - may be an iterable of account names
-        - if a name is not found, it will be omitted from the results
-
-    Returns
-    -------
-    dict
-        - returned account IDs as values with given account names as keys
-    '''
-
-    if type(account_names) is str:
-        return get(token, 'api/display-names/account-ids', {'displayName[]': account_names})
-
-    return get(token, f'api/display-names/account-ids?displayName[]={'&displayName[]='.join(account_names)}')
