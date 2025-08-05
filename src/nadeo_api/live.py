@@ -296,7 +296,7 @@ def get_map_leaderboard(token: auth.Token, mapUid: str, groupUid: str = 'Persona
         if length > 100:
             raise ValueError('You can only request 100 records at a time')
 
-        if length + offset > 10000:
+        if length + offset > 10_000:
             raise ValueError('You can only retrieve records in the top 10,000')
 
         return get(token, f'api/token/leaderboard/group/{groupUid}/map/{mapUid}/top?onlyWorld=true&length={length}&offset={offset}')
