@@ -32,7 +32,7 @@ def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {})
         - trailing parameters are optional, i.e. `?param1=true&param2=0`
 
     params: dict
-        - parameters for request if applicable
+        - request parameters if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     body: dict
@@ -64,7 +64,7 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
         - trailing parameters are optional, i.e. `?param1=true&param2=0`
 
     params: dict
-        - parameters for request if applicable
+        - request parameters if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     Returns
@@ -92,7 +92,7 @@ def head(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
         - trailing parameters are optional, i.e. `?param1=true&param2=0`
 
     params: dict
-        - parameters for request if applicable
+        - request parameters if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     Returns
@@ -120,7 +120,7 @@ def options(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}
         - trailing parameters are optional, i.e. `?param1=true&param2=0`
 
     params: dict
-        - parameters for request if applicable
+        - request parameters if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     body: dict
@@ -152,7 +152,7 @@ def patch(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) 
         - trailing parameters are optional, i.e. `?param1=true&param2=0`
 
     params: dict
-        - parameters for request if applicable
+        - request parameters if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     body: dict
@@ -184,7 +184,7 @@ def post(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -
         - trailing parameters are optional, i.e. `?param1=true&param2=0`
 
     params: dict
-        - parameters for request if applicable
+        - request parameters if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     body: dict
@@ -216,7 +216,7 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
         - trailing parameters are optional, i.e. `?param1=true&param2=0`
 
     params: dict
-        - parameters for request if applicable
+        - request parameters if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     body: dict

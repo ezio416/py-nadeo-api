@@ -33,6 +33,8 @@ url_oauth:      str = 'https://api.trackmania.com'
 class Token():
     '''
     - holds data on an authentication token
+    - does not contain a base URL as a token could be used for multiple
+    - if you wish to use this with other request libraries (such as `requests`), add to the request header: `{'Authorization': token.access_token}`
 
     Parameters
     ----------
@@ -217,7 +219,7 @@ def get_token(audience: str, username: str, password: str, agent: str = '', serv
     audience: str
         - desired audience for token use
         - capitalization is ignored
-        - valid: `NadeoServices`/`core`/`prod`, `NadeoLiveServices`/`live`/`meet`/`club`, `OAuth`/`OAuth2`
+        - valid: `'NadeoServices'`/`'core'`/`'prod'`, `'NadeoLiveServices'`/`'live'`/`'meet'`/`'club'`, `'OAuth'`/`'OAuth2'`
 
     username: str
         - Ubisoft/dedicated server account username
