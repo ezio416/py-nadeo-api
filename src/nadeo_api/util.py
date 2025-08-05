@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-20
-| Modified: 2025-08-04
+| Modified: 2025-08-05
 
 - Various functions not directly related to any API
 - You don't need to import this module - simply call these from the main module like `nadeo_api.<function>`
@@ -61,9 +61,9 @@ def account_login_from_id(account_id: str) -> str:
 def _log(msg: str) -> None:
     summary: tb.StackSummary = tb.extract_stack(sys._getframe())
     print(
-        f'nadeo_api.{\
-        summary[-2].filename.replace('\\', '/').split('/')[-1].replace('.py', '')}.{\
-        summary[-2].name}: {msg}'
+        f'nadeo_api.{
+            summary[-2].filename.replace('\\', '/').split('/')[-1].replace('.py', '')}.{
+            summary[-2].name}: {msg}'
     )
 
 
@@ -85,6 +85,7 @@ def stamp(milliseconds: bool = False) -> int:
 
     now: float = time.time()
     return int(now * (1000 if milliseconds else 1))
+
 
 def valid_uuid(uuid: str) -> bool:
     '''
