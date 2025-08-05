@@ -19,7 +19,7 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
     Parameters
     ----------
     token: auth.Token
-        - authentication token gotten from `auth.get_token`
+        - authentication token from `auth.get_token`
 
     endpoint: str
         - desired endpoint
@@ -41,6 +41,23 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
 
 
 def map_info_multiple(token: auth.Token, uids: typing.Iterable[str]) -> list[dict]:
+    '''
+    - gets info on multiple maps from their UIDs
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token`
+
+    uids: Iterable[str]
+        - map UIDs
+
+    Returns
+    -------
+    list[dict]
+        - map info
+    '''
+
     UID_LIMIT: int = 291
 
     if len(uids) <= UID_LIMIT:
@@ -69,7 +86,7 @@ def routes(token: auth.Token, usage: str = 'Client') -> dict:
     Parameters
     ----------
     token: auth.Token
-        - authentication token gotten from `auth.get_token`
+        - authentication token from `auth.get_token`
 
     usage: str
         - which authorization type to get routes for
@@ -97,7 +114,7 @@ def trophies_history(token: auth.Token, account_id: str, count: int, offset: int
     Parameters
     ----------
     token: auth.Token
-        - authentication token gotten from `auth.get_token`
+        - authentication token from `auth.get_token`
 
     account_id: str
         - account ID to get data for
@@ -133,7 +150,7 @@ def trophies_last_year_summary(token: auth.Token, account_id: str) -> dict:
     Parameters
     ----------
     token: auth.Token
-        - authentication token gotten from `auth.get_token`
+        - authentication token from `auth.get_token`
 
     account_id: str
         - account ID to get data for
@@ -161,12 +178,12 @@ def zones(token: auth.Token) -> dict:
     Parameters
     ----------
     token: auth.Token
-        - authentication token gotten from `auth.get_token`
+        - authentication token from `auth.get_token`
 
     Returns
     -------
     dict
-        - zones sorted alphabetically
+        - zones sorted alphabetically by ID
     '''
 
     return get(token, 'zones')
