@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-15
-| Modified: 2025-08-04
+| Modified: 2025-08-05
 
 - Functions for interacting with the web services Live API
 '''
@@ -246,10 +246,10 @@ def get_club_campaign(token: auth.Token, club_id: int, campaign_id: int) -> dict
         - authentication token from `auth.get_token`
 
     club_id: int
-        - club ID
+        - the ID of the club
 
     campaign_id: int
-        - campaign ID (not activity ID - campaign ID should be a lot smaller)
+        - the ID of the campaign (not activity ID - campaign ID should be a lot smaller)
 
     Returns
     -------
@@ -258,6 +258,53 @@ def get_club_campaign(token: auth.Token, club_id: int, campaign_id: int) -> dict
     '''
 
     return get(token, f'api/token/club/{club_id}/campaign/{campaign_id}')
+
+
+def get_map_leaderboard(token: auth.Token, mapUid: str, groupUid: str = 'Personal_Best', onlyWorld: bool = True, length: int = 5, offset: int = 0) -> dict:
+    '''
+    - gets the top leaderboard records for a map
+    - can only retrieve records in the top 10,000
+    - https://webservices.openplanet.dev/live/leaderboards/top
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token`
+
+    mapUid: str
+        - the UID of the map
+
+    groupUid: str
+        - the UID of the group/season
+        - default: `'Personal_Best'`
+
+    onlyWorld: bool
+        - whether to only get records from the global leaderboard
+        - if `False`, a Ubisoft account is required and `length` and `offset` are ignored
+        - default: `True`
+
+    length: int
+        - number of records to get (max 100)
+        - default: `5`
+
+    offset: int
+        - number of records to skip
+        - default: `0`
+    '''
+
+    if onlyWorld:
+        if length > 100:
+            raise ValueError('You can only request 100 records at a time')
+
+        if length + offset > 10000:
+            raise ValueError('You can only retrieve records in the top 10,000')
+
+        return get(token, f'api/token/leaderboard/group/{groupUid}/map/{mapUid}/top?onlyWorld=true&length={length}&offset={offset}')
+
+    if token.server_account:
+        raise ValueError('This endpoint requires a Ubisoft account when onlyWorld is False')
+
+    return get(token, f'api/token/leaderboard/group/{groupUid}/map/{mapUid}/top?onlyWorld=false')
 
 
 def get_maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:

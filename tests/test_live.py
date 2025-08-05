@@ -30,6 +30,8 @@ def main() -> None:
 
     # req = live.get_club_campaign(token, 67469, 99524)  # toe3 cps
 
+    # req = live.get_map_leaderboard(token, 'rG2R2HJxzMLqv_jRmzQWjllWia4', length=100)  # totd 2025-08-04
+
     pass
 
 
