@@ -12,7 +12,7 @@ from . import auth
 from . import util
 
 
-def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict:
+def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
     '''
     - sends a GET request to the Core API
 
@@ -33,7 +33,7 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict:
 
     Returns
     -------
-    dict
+    dict | list
         - data returned from request
     '''
 

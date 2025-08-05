@@ -9,7 +9,7 @@
 from . import auth
 
 
-def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict:
+def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
     '''
     - sends a GET request to the Live API
 
@@ -30,7 +30,7 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict:
 
     Returns
     -------
-    dict
+    dict | list
         - data returned from request
     '''
 

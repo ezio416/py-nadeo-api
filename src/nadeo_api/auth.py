@@ -138,7 +138,7 @@ def decode_jwt_from_token(token: str) -> dict:
     return result
 
 
-def _get(token: Token, base_url: str, endpoint: str, params: dict = {}) -> dict:
+def _get(token: Token, base_url: str, endpoint: str, params: dict = {}) -> dict | list:
     '''
     - sends a GET request to a specified API
     - this is for internal use - you should use an API-specific `get` function instead
