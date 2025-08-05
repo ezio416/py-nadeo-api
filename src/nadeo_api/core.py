@@ -1,10 +1,12 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-14
-| Modified: 2024-05-20
+| Modified: 2025-08-04
 
 - Functions for interacting with the web services Core API
 '''
+
+import typing
 
 from . import auth
 from . import util
@@ -36,6 +38,27 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict:
     '''
 
     return auth._get(token, auth.url_core, endpoint, params)
+
+
+def map_info_multiple(token: auth.Token, uids: typing.Iterable[str]) -> list[dict]:
+    UID_LIMIT: int = 291
+
+    if len(uids) <= UID_LIMIT:
+        return get(token, f'maps/?mapUidList={','.join(uids)}')
+
+    ret: list[dict] = []
+
+    while len(uids):
+        uid_count: int = min(len(uids), UID_LIMIT)
+        uids_this_req: list[str] = uids[:uid_count]
+        uids = uids[uid_count:]
+        endpoint: str = f'maps/?mapUidList={','.join(uids_this_req)}'
+
+        req: list[dict] = get(token, endpoint)
+        for map in req:
+            ret.append(map)
+
+    return ret
 
 
 def routes(token: auth.Token, usage: str = 'Client') -> dict:
