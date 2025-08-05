@@ -255,7 +255,7 @@ def maps_campaign(token: auth.Token, length: int, offset: int = 0) -> dict:
     return get(token, 'api/campaign/official', {'length': length, 'offset': offset})
 
 
-def maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
+def get_maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
     '''
     - gets Royal maps
     - note: no longer being updated so it's probably fine to cache this data permanently
@@ -283,7 +283,33 @@ def maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
     return get(token, '/api/token/campaign/month', {'length': length, 'offset': offset, 'royal': 'true'})
 
 
-def maps_totd(token: auth.Token, length: int, offset: int = 0) -> dict:
+def get_maps_seasonal(token: auth.Token, length: int, offset: int = 0) -> dict:
+    '''
+    - gets official Nadeo seasonal campaigns
+    - https://webservices.openplanet.dev/live/campaigns/campaigns
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token`
+
+    length: int
+        - number of campaigns to get
+
+    offset: int
+        - number of campaigns to skip, looking backwards from the current campaign
+        - default: `0`
+
+    Returns
+    -------
+    dict
+        - campaigns sorted newest to oldest
+    '''
+
+    return get(token, 'api/campaign/official', {'length': length, 'offset': offset})
+
+
+def get_maps_totd(token: auth.Token, length: int, offset: int = 0) -> dict:
     '''
     - gets Tracks of the Day
     - https://webservices.openplanet.dev/live/campaigns/totds
@@ -309,7 +335,7 @@ def maps_totd(token: auth.Token, length: int, offset: int = 0) -> dict:
     return get(token, '/api/token/campaign/month', {'length': length, 'offset': offset})
 
 
-def maps_weekly(token: auth.Token, length: int, offset: int = 0) -> dict:
+def get_maps_weekly(token: auth.Token, length: int, offset: int = 0) -> dict:
     '''
     - gets Weekly Shorts
     - https://webservices.openplanet.dev/live/campaigns/weekly-shorts
@@ -333,3 +359,27 @@ def maps_weekly(token: auth.Token, length: int, offset: int = 0) -> dict:
     '''
 
     return get(token, '/api/campaign/weekly-shorts', {'length': length, 'offset': offset})
+
+
+def maps_campaign(token: auth.Token, length: int, offset: int = 0) -> dict:
+    '''
+    - DEPRECATED - use `get_maps_seasonal` instead
+    '''
+
+    return get_maps_seasonal(token, length, offset)
+
+
+def maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
+    '''
+    - DEPRECATED - use `get_maps_royal` instead
+    '''
+
+    return get_maps_royal(token, length, offset)
+
+
+def maps_totd(token: auth.Token, length: int, offset: int = 0) -> dict:
+    '''
+    - DEPRECATED - use `get_maps_totd` instead
+    '''
+
+    return get_maps_totd(token, length, offset)
