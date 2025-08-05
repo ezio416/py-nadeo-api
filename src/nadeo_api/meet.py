@@ -235,7 +235,7 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
 ###################################################### ENDPOINTS #######################################################
 
 
-def current_cotd(token: auth.Token) -> dict:
+def get_current_cotd(token: auth.Token) -> dict:
     '''
     - gets info on the current cross-platform Cup of the Day
     - https://webservices.openplanet.dev/meet/cup-of-the-day/current
@@ -252,3 +252,14 @@ def current_cotd(token: auth.Token) -> dict:
     '''
 
     return get(token, 'api/cup-of-the-day/current')
+
+
+###################################################### DEPRECATED ######################################################
+
+
+def current_cotd(token: auth.Token) -> dict:
+    '''
+    - DEPRECATED - use `get_current_cotd` instead
+    '''
+
+    return get_current_cotd(token)
