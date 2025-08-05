@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-07
-| Modified: 2024-05-19
+| Modified: 2025-08-05
 
 - Functions for interacting with authentication tokens to use with the API
 - Also contains variables and functions intended for internal use
@@ -14,6 +14,9 @@ import json
 import time
 
 import requests
+
+from . import state
+from . import util
 
 
 audience_core:  str = 'NadeoServices'
@@ -30,6 +33,8 @@ url_oauth:      str = 'https://api.trackmania.com'
 class Token():
     '''
     - holds data on an authentication token
+    - does not contain a base URL as a token could be used for multiple
+    - if you wish to use this with other request libraries (such as `requests`), add to the request header: `{'Authorization': token.access_token}`
 
     Parameters
     ----------
@@ -135,7 +140,44 @@ def decode_jwt_from_token(token: str) -> dict:
     return result
 
 
-def _get(token: Token, base_url: str, endpoint: str, params: dict = {}) -> dict:
+def _delete(token: Token, base_url: str, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+    '''
+    - sends a DELETE request to a specified API
+    - this is for internal use - you should use an API-specific `delete` function instead
+
+    Parameters
+    ----------
+    token: Token
+        - authentication token from `auth.get_token()`
+
+    base_url: str
+        - base URL of desired API
+        - must match your token's audience
+        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+
+    endpoint: str
+        - desired endpoint or full URL
+        - base URL and leading slash (`'https://.../'`) optional
+
+    params: dict
+        - request parameters if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
+        - default: `{}` (empty)
+
+    body: dict
+        - request body if applicable
+        - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
+    '''
+
+    return _request(token, base_url, endpoint, params, 'delete', body)
+
+
+def _get(token: Token, base_url: str, endpoint: str, params: dict = {}) -> dict | list:
     '''
     - sends a GET request to a specified API
     - this is for internal use - you should use an API-specific `get` function instead
@@ -143,59 +185,29 @@ def _get(token: Token, base_url: str, endpoint: str, params: dict = {}) -> dict:
     Parameters
     ----------
     token: Token
-        - authentication token gotten from `get_token`
+        - authentication token from `auth.get_token()`
 
     base_url: str
         - base URL of desired API
         - must match your token's audience
         - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
 
+    endpoint: str
+        - desired endpoint or full URL
+        - base URL and leading slash (`'https://.../'`) optional
+
     params: dict
-        - parameters for request if applicable
-        - if you specified parameters at the end of the `endpoint`, do not specify them here else they will be duplicated
+        - request parameters if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
         - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
     '''
 
-    if base_url not in (url_core, url_live, url_meet, url_oauth):
-        raise ValueError(f'Given base URL is invalid: {base_url}')
-
-    base_name: str = 'Core'
-
-    if base_url == url_core:
-        if token.audience != audience_core:
-            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
-
-    elif base_url in (url_live, url_meet):
-        if token.audience != audience_live:
-            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
-
-        base_name = 'Live' if base_url == url_live else 'Meet'
-
-    else:
-        if token.audience != audience_oauth:
-            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
-
-        base_name = audience_oauth
-
-    if token.expired:
-        token.refresh()
-
-    if endpoint.startswith(base_url):
-        endpoint = endpoint.split(base_url)[1]
-
-    if endpoint.startswith('/'):
-        endpoint = endpoint[1:]
-
-    req: requests.Response = requests.get(f'{base_url}/{endpoint}', params, headers={'Authorization': token.access_token})
-
-    if req.status_code == 401:  # token may have expired prematurely
-        token.refresh()
-        req = requests.get(f'{base_url}/{endpoint}', params, headers={'Authorization': token.access_token})
-
-    if req.status_code >= 400:
-        raise ConnectionError(f'Bad response from {base_name} API: code {req.status_code}, response {req.text}')
-
-    return req.json()
+    return _request(token, base_url, endpoint, params)
 
 
 def get_token(audience: str, username: str, password: str, agent: str = '', server_account: bool = False) -> Token:
@@ -207,7 +219,7 @@ def get_token(audience: str, username: str, password: str, agent: str = '', serv
     audience: str
         - desired audience for token use
         - capitalization is ignored
-        - valid: `NadeoServices`/`core`/`prod`, `NadeoLiveServices`/`live`/`meet`/`club`, `OAuth`/`OAuth2`
+        - valid: `'NadeoServices'`/`'core'`/`'prod'`, `'NadeoLiveServices'`/`'live'`/`'meet'`/`'club'`, `'OAuth'`/`'OAuth2'`
 
     username: str
         - Ubisoft/dedicated server account username
@@ -239,6 +251,8 @@ def get_token(audience: str, username: str, password: str, agent: str = '', serv
         audience = audience_oauth
     else:
         raise ValueError(f'Given audience is not valid: {audience}')
+
+    util._log(audience)
 
     if audience == audience_oauth:
         req: requests.Response = requests.post(
@@ -292,3 +306,289 @@ def get_token(audience: str, username: str, password: str, agent: str = '', serv
 
     json2: dict = req2.json()
     return Token(f'nadeo_v1 t={json2['accessToken']}', audience, f'nadeo_v1 t={json2['refreshToken']}')
+
+
+def _head(token: Token, base_url: str, endpoint: str, params: dict = {}) -> dict | list:
+    '''
+    - sends a HEAD request to a specified API
+    - this is for internal use - you should use an API-specific `head` function instead
+
+    Parameters
+    ----------
+    token: Token
+        - authentication token from `auth.get_token()`
+
+    base_url: str
+        - base URL of desired API
+        - must match your token's audience
+        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+
+    endpoint: str
+        - desired endpoint or full URL
+        - base URL and leading slash (`'https://.../'`) optional
+
+    params: dict
+        - request parameters if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
+        - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
+    '''
+
+    return _request(token, base_url, endpoint, params, 'head')
+
+
+def _options(token: Token, base_url: str, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+    '''
+    - sends an OPTIONS request to a specified API
+    - this is for internal use - you should use an API-specific `options` function instead
+
+    Parameters
+    ----------
+    token: Token
+        - authentication token from `auth.get_token()`
+
+    base_url: str
+        - base URL of desired API
+        - must match your token's audience
+        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+
+    endpoint: str
+        - desired endpoint or full URL
+        - base URL and leading slash (`'https://.../'`) optional
+
+    params: dict
+        - request parameters if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
+        - default: `{}` (empty)
+
+    body: dict
+        - request body if applicable
+        - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
+    '''
+
+    return _request(token, base_url, endpoint, params, 'options', body)
+
+
+def _patch(token: Token, base_url: str, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+    '''
+    - sends a PATCH request to a specified API
+    - this is for internal use - you should use an API-specific `patch` function instead
+
+    Parameters
+    ----------
+    token: Token
+        - authentication token from `auth.get_token()`
+
+    base_url: str
+        - base URL of desired API
+        - must match your token's audience
+        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+
+    endpoint: str
+        - desired endpoint or full URL
+        - base URL and leading slash (`'https://.../'`) optional
+
+    params: dict
+        - request parameters if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
+        - default: `{}` (empty)
+
+    body: dict
+        - request body if applicable
+        - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
+    '''
+
+    return _request(token, base_url, endpoint, params, 'patch', body)
+
+
+def _post(token: Token, base_url: str, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+    '''
+    - sends a POST request to a specified API
+    - this is for internal use - you should use an API-specific `post` function instead
+
+    Parameters
+    ----------
+    token: Token
+        - authentication token from `auth.get_token()`
+
+    base_url: str
+        - base URL of desired API
+        - must match your token's audience
+        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+
+    endpoint: str
+        - desired endpoint or full URL
+        - base URL and leading slash (`'https://.../'`) optional
+
+    params: dict
+        - request parameters if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
+        - default: `{}` (empty)
+
+    body: dict
+        - request body if applicable
+        - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
+    '''
+
+    return _request(token, base_url, endpoint, params, 'post', body)
+
+
+def _put(token: Token, base_url: str, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+    '''
+    - sends a PUT request to a specified API
+    - this is for internal use - you should use an API-specific `put` function instead
+
+    Parameters
+    ----------
+    token: Token
+        - authentication token from `auth.get_token()`
+
+    base_url: str
+        - base URL of desired API
+        - must match your token's audience
+        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+
+    endpoint: str
+        - desired endpoint or full URL
+        - base URL and leading slash (`'https://.../'`) optional
+
+    params: dict
+        - request parameters if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
+        - default: `{}` (empty)
+
+    body: dict
+        - request body if applicable
+        - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
+    '''
+
+    return _request(token, base_url, endpoint, params, 'put', body)
+
+
+def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, method: str = 'get', body: dict = {}) -> dict | list:
+    '''
+    - sends a request to a specified API
+    - this is for internal use - you should use an explicit function like `core.get()` instead
+
+    Parameters
+    ----------
+    token: Token
+        - authentication token from `auth.get_token()`
+
+    base_url: str
+        - base URL of desired API
+        - must match your token's audience
+        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+
+    endpoint: str
+        - desired endpoint or full URL
+        - base URL and leading slash (`'https://.../'`) optional
+
+    params: dict
+        - parameters for request if applicable
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
+        - default: `{}` (empty)
+
+    method: str
+        - type of request to send
+        - valid: `'delete'`, `'get'`, `'head'`, `'options'`, `'patch'`, `'post'`, `'put'`
+        - default: `'get'`
+
+    body: dict
+        - request body
+        - default: `{}` (empty)
+
+    Returns
+    -------
+    dict | list
+        - response body
+    '''
+
+    util._log(f'{method.upper()} {base_url}/{endpoint} | params: {params} | body: {body}')
+
+    if (base_url := base_url.lower()) not in (url_core, url_live, url_meet, url_oauth):
+        raise ValueError(f'Given base URL is invalid: {base_url}')
+
+    if (method := method.lower()) not in ('delete', 'get', 'head', 'options', 'patch', 'post', 'put'):
+        raise ValueError(f'Given method is invalid: {method}')
+
+    base_name: str = 'Core'
+
+    if base_url == url_core:
+        if token.audience != audience_core:
+            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
+
+    elif base_url in (url_live, url_meet):
+        if token.audience != audience_live:
+            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
+
+        base_name = 'Live' if base_url == url_live else 'Meet'
+
+    else:
+        if token.audience != audience_oauth:
+            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
+
+        base_name = audience_oauth
+
+    if token.expired:
+        token.refresh()
+
+    if endpoint.startswith(base_url):
+        endpoint = endpoint.split(base_url)[1]
+
+    if endpoint.startswith('/'):
+        endpoint = endpoint[1:]
+
+    def __request() -> requests.Response:
+        _wait()
+        return getattr(requests, method)(  # trust that requests never breaks this
+            url=f'{base_url}/{endpoint}',
+            params=params,
+            headers={'Authorization': token.access_token},
+            json=body
+        )
+
+    req: requests.Response = __request()
+
+    if req.status_code == 401:  # token may have expired prematurely
+        token.refresh()
+        req = __request()
+
+    if req.status_code >= 400:
+        raise ConnectionError(f'Bad response from {base_name} API: code {req.status_code}, response {req.text}')
+
+    return req.json()
+
+
+def _wait() -> None:
+    now: int = util.stamp(True)
+    if now - state._last_request_timestamp < state.wait_between_requests_ms:
+        util._log('')
+        time.sleep(float(state._last_request_timestamp + state.wait_between_requests_ms - now) / 1000.0)
+        state._last_request_timestamp = util.stamp(True)
+    else:
+        state._last_request_timestamp = now

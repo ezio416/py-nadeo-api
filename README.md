@@ -21,11 +21,18 @@ python -m pip install nadeo-api
 
 Using the package:
 ```py
-import nadeo_api        # main module - functions not related to endpoints
+import nadeo_api        # main module - various things
 import nadeo_api.auth   # authentication - required for any endpoint
 import nadeo_api.core   # web services Core endpoints
 import nadeo_api.live   # web services Live endpoints
 import nadeo_api.meet   # web services Meet endpoints
 import nadeo_api.oauth  # OAuth2 endpoints (public API)
+import nadeo_api.state  # unnecessary - use the main module instead
 import nadeo_api.util   # unnecessary - use the main module instead
+```
+
+There are also some options you can configure:
+```py
+nadeo_api.debug_logging = True            # enable debug logging
+nadeo_api.wait_between_requests_ms = 500  # change self rate limiting
 ```
