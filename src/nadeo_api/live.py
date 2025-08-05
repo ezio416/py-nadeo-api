@@ -113,3 +113,29 @@ def maps_totd(token: auth.Token, length: int, offset: int = 0) -> dict:
     '''
 
     return get(token, '/api/token/campaign/month', {'length': length, 'offset': offset})
+
+
+def maps_weekly(token: auth.Token, length: int, offset: int = 0) -> dict:
+    '''
+    - gets Weekly Shorts
+    - https://webservices.openplanet.dev/live/campaigns/weekly-shorts
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token gotten from `auth.get_token`
+
+    length: int
+        - number of weeks to get
+
+    offset: int
+        - number of weeks to skip, looking backwards from the current week
+        - default: `0`
+
+    Returns
+    -------
+    dict
+        - maps by week sorted newest to oldest
+    '''
+
+    return get(token, '/api/campaign/weekly-shorts', {'length': length, 'offset': offset})
