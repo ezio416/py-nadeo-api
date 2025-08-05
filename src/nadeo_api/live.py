@@ -16,7 +16,7 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
     Parameters
     ----------
     token: auth.Token
-        - authentication token gotten from `auth.get_token`
+        - authentication token from `auth.get_token`
 
     endpoint: str
         - desired endpoint
@@ -45,7 +45,7 @@ def maps_campaign(token: auth.Token, length: int, offset: int = 0) -> dict:
     Parameters
     ----------
     token: auth.Token
-        - authentication token gotten from `auth.get_token`
+        - authentication token from `auth.get_token`
 
     length: int
         - number of campaigns to get
@@ -66,18 +66,20 @@ def maps_campaign(token: auth.Token, length: int, offset: int = 0) -> dict:
 def maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
     '''
     - gets Royal maps
+    - note: no longer being updated so it's probably fine to cache this data permanently
     - https://webservices.openplanet.dev/live/campaigns/totds
 
     Parameters
     ----------
     token: auth.Token
-        - authentication token gotten from `auth.get_token`
+        - authentication token from `auth.get_token`
 
     length: int
         - number of months to get
 
     offset: int
         - number of months to skip, looking backwards from the current month
+        - note: the last Royal maps are from June 2025, but this endpoint still looks back from the current month
         - default: `0`
 
     Returns
@@ -97,7 +99,7 @@ def maps_totd(token: auth.Token, length: int, offset: int = 0) -> dict:
     Parameters
     ----------
     token: auth.Token
-        - authentication token gotten from `auth.get_token`
+        - authentication token from `auth.get_token`
 
     length: int
         - number of months to get
@@ -123,7 +125,7 @@ def maps_weekly(token: auth.Token, length: int, offset: int = 0) -> dict:
     Parameters
     ----------
     token: auth.Token
-        - authentication token gotten from `auth.get_token`
+        - authentication token from `auth.get_token`
 
     length: int
         - number of weeks to get
