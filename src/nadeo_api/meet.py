@@ -9,6 +9,10 @@
 from . import auth
 
 
+AUDIENCE: str = auth.audience_live
+URL:      str = auth.url_meet
+
+
 def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a DELETE request to the Meet API
@@ -38,7 +42,7 @@ def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {})
         - response body
     '''
 
-    return auth._delete(token, auth.url_meet, endpoint, params, body)
+    return auth._delete(token, URL, endpoint, params, body)
 
 
 def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
@@ -66,7 +70,7 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
         - response body
     '''
 
-    return auth._get(token, auth.url_meet, endpoint, params)
+    return auth._get(token, URL, endpoint, params)
 
 
 def head(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
@@ -94,7 +98,7 @@ def head(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
         - response body
     '''
 
-    return auth._head(token, auth.url_meet, endpoint, params)
+    return auth._head(token, URL, endpoint, params)
 
 
 def options(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
@@ -126,7 +130,7 @@ def options(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}
         - response body
     '''
 
-    return auth._options(token, auth.url_meet, endpoint, params, body)
+    return auth._options(token, URL, endpoint, params, body)
 
 
 def patch(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
@@ -158,7 +162,7 @@ def patch(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) 
         - response body
     '''
 
-    return auth._patch(token, auth.url_meet, endpoint, params, body)
+    return auth._patch(token, URL, endpoint, params, body)
 
 
 def post(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
@@ -190,7 +194,7 @@ def post(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -
         - response body
     '''
 
-    return auth._post(token, auth.url_meet, endpoint, params, body)
+    return auth._post(token, URL, endpoint, params, body)
 
 
 def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
@@ -222,7 +226,7 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
         - response body
     '''
 
-    return auth._put(token, auth.url_meet, endpoint, params, body)
+    return auth._put(token, URL, endpoint, params, body)
 
 
 def current_cotd(token: auth.Token) -> dict:
