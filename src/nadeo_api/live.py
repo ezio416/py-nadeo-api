@@ -26,7 +26,7 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
 
     params: dict
         - parameters for request if applicable
-        - if you specified parameters at the end of the `endpoint`, do not specify them here else they will be duplicated
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     Returns
     -------

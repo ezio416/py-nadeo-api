@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-15
-| Modified: 2024-05-18
+| Modified: 2025-08-04
 
 - Functions for interacting with the web services Meet API
 '''
@@ -9,14 +9,14 @@
 from . import auth
 
 
-def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict:
+def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
     '''
     - sends a GET request to the Meet API
 
     Parameters
     ----------
     token: auth.Token
-        - authentication token gotten from `auth.get_token`
+        - authentication token from `auth.get_token`
 
     endpoint: str
         - desired endpoint
@@ -26,11 +26,11 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict:
 
     params: dict
         - parameters for request if applicable
-        - if you specified parameters at the end of the `endpoint`, do not specify them here else they will be duplicated
+        - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     Returns
     -------
-    dict
+    dict | list
         - data returned from request
     '''
 
@@ -45,7 +45,7 @@ def current_cotd(token: auth.Token) -> dict:
     Parameters
     ----------
     token: auth.Token
-        - authentication token gotten from `auth.get_token`
+        - authentication token from `auth.get_token`
 
     Returns
     -------

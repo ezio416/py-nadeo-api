@@ -146,7 +146,7 @@ def _get(token: Token, base_url: str, endpoint: str, params: dict = {}) -> dict 
     Parameters
     ----------
     token: Token
-        - authentication token gotten from `get_token`
+        - authentication token from `auth.get_token()`
 
     base_url: str
         - base URL of desired API
