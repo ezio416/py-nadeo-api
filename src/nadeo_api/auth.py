@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-07
-| Modified: 2025-08-04
+| Modified: 2025-08-05
 
 - Functions for interacting with authentication tokens to use with the API
 - Also contains variables and functions intended for internal use
@@ -251,6 +251,8 @@ def get_token(audience: str, username: str, password: str, agent: str = '', serv
         audience = audience_oauth
     else:
         raise ValueError(f'Given audience is not valid: {audience}')
+
+    util._log(audience)
 
     if audience == audience_oauth:
         req: requests.Response = requests.post(
@@ -526,6 +528,8 @@ def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, meth
         - response body
     '''
 
+    util._log(f'{method.upper()} {base_url}/{endpoint} | params: {params} | body: {body}')
+
     if (base_url := base_url.lower()) not in (url_core, url_live, url_meet, url_oauth):
         raise ValueError(f'Given base URL is invalid: {base_url}')
 
@@ -583,6 +587,7 @@ def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, meth
 def _wait() -> None:
     now: int = util.stamp(True)
     if now - state._last_request_timestamp < state.wait_between_requests_ms:
+        util._log('')
         time.sleep(float(state._last_request_timestamp + state.wait_between_requests_ms - now) / 1000.0)
         state._last_request_timestamp = util.stamp(True)
     else:

@@ -7,5 +7,6 @@
 - You don't need to import this module - simply access these from the main module like `nadeo_api.<variable>`
 '''
 
-_last_request_timestamp:  int = 0
-wait_between_requests_ms: int = 1000
+debug_logging:            bool = False
+_last_request_timestamp:  int  = 0
+wait_between_requests_ms: int  = 1000

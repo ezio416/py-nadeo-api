@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-07
-| Modified: 2025-08-04
+| Modified: 2025-08-05
 
 - Tests for nadeo_api.auth
 '''
@@ -11,9 +11,12 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import src.nadeo_api.auth as auth
+import src.nadeo_api.state as state
 
 
 def main() -> None:
+    state.debug_logging = True
+
     pass
 
 

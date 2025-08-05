@@ -13,6 +13,8 @@ import sys
 import time
 import traceback as tb
 
+from . import state
+
 
 def account_id_from_login(account_login: str) -> str:
     '''
@@ -59,6 +61,9 @@ def account_login_from_id(account_id: str) -> str:
 
 
 def _log(msg: str) -> None:
+    if not state.debug_logging:
+        return
+
     summary: tb.StackSummary = tb.extract_stack(sys._getframe())
     print(
         f'nadeo_api.{

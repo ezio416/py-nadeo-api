@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2025-08-04
-| Modified: 2025-08-04
+| Modified: 2025-08-05
 
 - Tests for nadeo_api.meet
 '''
@@ -12,6 +12,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import src.nadeo_api.auth as auth
 import src.nadeo_api.meet as meet
+import src.nadeo_api.state as state
 
 
 def main() -> None:
@@ -22,6 +23,8 @@ def main() -> None:
         os.environ['TM_E416DEV_AGENT'],
         True
     )
+
+    state.debug_logging = True
 
     pass
 
