@@ -4,6 +4,7 @@
    :hidden:
 
    auth
+   config
    core
    live
    meet
