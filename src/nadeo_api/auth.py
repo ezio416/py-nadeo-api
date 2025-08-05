@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-07
-| Modified: 2024-05-19
+| Modified: 2025-08-04
 
 - Functions for interacting with authentication tokens to use with the API
 - Also contains variables and functions intended for internal use
@@ -14,6 +14,9 @@ import json
 import time
 
 import requests
+
+from . import state
+from . import util
 
 
 audience_core:  str = 'NadeoServices'
@@ -186,6 +189,7 @@ def _get(token: Token, base_url: str, endpoint: str, params: dict = {}) -> dict:
     if endpoint.startswith('/'):
         endpoint = endpoint[1:]
 
+    _wait()
     req: requests.Response = requests.get(f'{base_url}/{endpoint}', params, headers={'Authorization': token.access_token})
 
     if req.status_code == 401:  # token may have expired prematurely
@@ -292,3 +296,12 @@ def get_token(audience: str, username: str, password: str, agent: str = '', serv
 
     json2: dict = req2.json()
     return Token(f'nadeo_v1 t={json2['accessToken']}', audience, f'nadeo_v1 t={json2['refreshToken']}')
+
+
+def _wait() -> None:
+    now: int = util.stamp(True)
+    if now - state._last_request_timestamp < state.wait_between_requests_ms:
+        time.sleep(float(state._last_request_timestamp + state.wait_between_requests_ms - now) / 1000.0)
+        state._last_request_timestamp = util.stamp(True)
+    else:
+        state._last_request_timestamp = now
