@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-20
-| Modified: 2024-05-20
+| Modified: 2025-08-04
 
 - Various functions not directly related to any API
 - You don't need to import this module - simply call these from the main module like `nadeo_api.<function>`
@@ -70,4 +70,4 @@ def valid_uuid(uuid: str) -> bool:
         - whether given string looks like a valid UUID
     '''
 
-    return bool(re.match('^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$', uuid))
+    return bool(re.match('^[0-9A-Fa-f]{8}-([0-9A-Fa-f]{4}-){3}[0-9A-Fa-f]{12}$', uuid))
