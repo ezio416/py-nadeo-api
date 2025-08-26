@@ -331,11 +331,11 @@ def get_trophies_history(token: auth.Token, account_id: str, count: int, offset:
         - history entries sorted newest to oldest
     '''
 
-    if not util.valid_uuid(account_id):
-        raise ValueError(f'Given account ID is invalid: {account_id}')
-
     if token.server_account:
         raise auth.UsageError('This endpoint requires a Ubisoft account (client usage)')
+
+    if not util.valid_uuid(account_id):
+        raise ValueError(f'Given account ID is invalid: {account_id}')
 
     return get(token, f'accounts/{account_id}/trophies', {'offset': offset, 'count': count})
 
@@ -359,11 +359,11 @@ def get_trophies_last_year_summary(token: auth.Token, account_id: str) -> dict:
         - data on given account
     '''
 
-    if not util.valid_uuid(account_id):
-        raise ValueError(f'Given account ID is invalid: {account_id}')
-
     if token.server_account:
         raise auth.UsageError('This endpoint requires a Ubisoft account (client usage)')
+
+    if not util.valid_uuid(account_id):
+        raise ValueError(f'Given account ID is invalid: {account_id}')
 
     return get(token, f'accounts/{account_id}/trophies/lastYearSummary')
 
