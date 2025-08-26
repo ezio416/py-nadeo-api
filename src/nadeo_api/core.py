@@ -239,6 +239,48 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
 ###################################################### ENDPOINTS #######################################################
 
 
+def get_account_records(token: auth.Token, gameMode: str = 'TimeAttack', length: int = 1_000, offset: int = 0) -> list[dict]:
+    '''
+    - gets records for the currently authenticated account
+    - requires a Ubisoft account (client usage)
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token`
+
+    gameMode: str
+        - game mode
+        - valid: `'TimeAttack'`, `'Stunt'`, `'Platform'`
+        - default: `'TimeAttack'`
+
+    length: int
+        - number of records to get
+        - maximum: `1,000`
+        - default: `1,000`
+
+    offset: int
+        - number of records to skip
+        - default: `0`
+
+    Returns
+    -------
+    list[dict]
+        - records
+    '''
+
+    if token.server_account:
+        raise error.UsageError('This endpoint requires a Ubisoft account (client usage)')
+
+    if gameMode not in ('TimeAttack', 'Stunt', 'Platform'):
+        raise error.ParameterError(f'Given game mode is invalid: {gameMode}')
+
+    if length > 1_000:
+        raise error.ParameterError('You can only request 1,000 records at a time')
+
+    return get(token, f'v2/accounts/{token.account_id}/mapRecords', {'gameMode': gameMode, 'length': length, 'offset': offset})
+
+
 def get_map_info(token: auth.Token, uids: typing.Iterable[str]) -> list[dict]:
     '''
     - gets info on multiple maps from their UIDs
