@@ -365,7 +365,7 @@ def get_trophies_history(token: auth.Token, account_id: str = '', count: int = 1
 
     count: int
         - number of history entries to get
-        - if you set this too high, the request may time out (response 504)
+        - maximum: `1,000`
         - default: `100`
 
     offset: int
@@ -387,7 +387,10 @@ def get_trophies_history(token: auth.Token, account_id: str = '', count: int = 1
     if not account_id:
         account_id = token.account_id
 
-    return get(token, f'accounts/{account_id}/trophies', {'offset': offset, 'count': count})
+    if count > 1_000:
+        raise error.ParameterError('You can only request 1,000 history entries at a time')
+
+    return get(token, f'accounts/{account_id}/trophies', {'count': count, 'offset': offset})
 
 
 def get_trophies_last_year_summary(token: auth.Token, account_id: str = '') -> dict:
