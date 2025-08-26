@@ -9,6 +9,7 @@
 import typing
 
 from . import auth
+from . import error
 from . import util
 
 
@@ -299,7 +300,7 @@ def get_routes(token: auth.Token, usage: str = 'Client') -> dict:
     '''
 
     if usage not in ('Client', 'Server'):
-        raise ValueError(f'Given usage is invalid: {usage}')
+        raise error.ParameterError(f'Given usage is invalid: {usage}')
 
     return get(token, 'api/routes', {'usage': usage})
 
@@ -332,10 +333,10 @@ def get_trophies_history(token: auth.Token, account_id: str, count: int, offset:
     '''
 
     if token.server_account:
-        raise auth.UsageError('This endpoint requires a Ubisoft account (client usage)')
+        raise error.UsageError('This endpoint requires a Ubisoft account (client usage)')
 
     if not util.valid_uuid(account_id):
-        raise ValueError(f'Given account ID is invalid: {account_id}')
+        raise error.ParameterError(f'Given account ID is invalid: {account_id}')
 
     return get(token, f'accounts/{account_id}/trophies', {'offset': offset, 'count': count})
 
@@ -360,10 +361,10 @@ def get_trophies_last_year_summary(token: auth.Token, account_id: str) -> dict:
     '''
 
     if token.server_account:
-        raise auth.UsageError('This endpoint requires a Ubisoft account (client usage)')
+        raise error.UsageError('This endpoint requires a Ubisoft account (client usage)')
 
     if not util.valid_uuid(account_id):
-        raise ValueError(f'Given account ID is invalid: {account_id}')
+        raise error.ParameterError(f'Given account ID is invalid: {account_id}')
 
     return get(token, f'accounts/{account_id}/trophies/lastYearSummary')
 

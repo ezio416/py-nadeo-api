@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-15
-| Modified: 2025-08-05
+| Modified: 2025-08-26
 
 - Functions for interacting with the public Trackmania API
 '''
@@ -9,6 +9,7 @@
 import typing
 
 from . import auth
+from . import error
 
 
 AUDIENCE: str = auth.audience_oauth
@@ -270,10 +271,10 @@ def get_account_names_from_ids(token: auth.Token, account_ids: typing.Iterable[s
     token: auth.Token
         - authentication token from `auth.get_token`
 
-    account_ids: str | Iterable[str]
-        - account IDs (max 50)
-        - raises a `ValueError` if you try to request more than 50 names
+    account_ids: Iterable[str]
+        - account IDs
         - if an ID is not found, it will be omitted from the results
+        - maximum: `50`
 
     Returns
     -------
@@ -281,9 +282,8 @@ def get_account_names_from_ids(token: auth.Token, account_ids: typing.Iterable[s
         - returned account names as values with given account IDs as keys
     '''
 
-    num_ids: int = len(account_ids)
-    if num_ids > 50:
-        raise ValueError(f'You can request a maximum of 50 account names. Requested: {num_ids}')
+    if len(account_ids) > 50:
+        raise error.ParameterError('You can only request 50 account names at a time')
 
     return get(token, f'api/display-names?accountId[]={'&accountId[]='.join(account_ids)}')
 

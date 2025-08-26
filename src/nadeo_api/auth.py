@@ -16,6 +16,7 @@ import time
 import requests
 
 from . import config
+from . import error
 from . import util
 
 
@@ -132,10 +133,6 @@ class Token():
         except UnicodeDecodeError:
             self.expiration = 0
             self.token_decoded = {}
-
-
-class UsageError(ValueError):
-    pass
 
 
 def decode_jwt_from_token(token: str) -> dict:
@@ -262,7 +259,7 @@ def get_token(audience: str, username: str, password: str, agent: str = '', serv
     elif aud_lower in ('oauth', 'oauth2'):
         audience = audience_oauth
     else:
-        raise ValueError(f'Given audience is not valid: {audience}')
+        raise error.ParameterError(f'Given audience is invalid: {audience}')
 
     util._log(audience)
 
@@ -283,8 +280,8 @@ def get_token(audience: str, username: str, password: str, agent: str = '', serv
         json: dict = req.json()
         return Token(json['access_token'], audience, expiration=int(time.time()) + json['expires_in'])
 
-    if agent == '':
-        raise ValueError('For web services endpoints, you must specify a user agent')
+    if not agent:
+        raise error.ParameterError('For web services endpoints, you must specify a user agent')
 
     req: requests.Response = requests.post(
         f'{url_core}/v2/authentication/token/basic' if server_account else 'https://public-ubiservices.ubi.com/v3/profiles/sessions',
@@ -543,26 +540,26 @@ def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, meth
     util._log(f'{method.upper()} {base_url}/{endpoint} | params: {params} | body: {body}')
 
     if (base_url := base_url.lower()) not in (url_core, url_live, url_meet, url_oauth):
-        raise ValueError(f'Given base URL is invalid: {base_url}')
+        raise error.ParameterError(f'Given base URL is invalid: {base_url}')
 
     if (method := method.lower()) not in ('delete', 'get', 'head', 'options', 'patch', 'post', 'put'):
-        raise ValueError(f'Given method is invalid: {method}')
+        raise error.ParameterError(f'Given method is invalid: {method}')
 
     base_name: str = 'Core'
 
     if base_url == url_core:
         if token.audience != audience_core:
-            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
+            raise error.AudienceError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
 
     elif base_url in (url_live, url_meet):
         if token.audience != audience_live:
-            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
+            raise error.AudienceError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
 
         base_name = 'Live' if base_url == url_live else 'Meet'
 
     else:
         if token.audience != audience_oauth:
-            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
+            raise error.AudienceError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
 
         base_name = audience_oauth
 

@@ -7,6 +7,7 @@
 '''
 
 from . import auth
+from . import error
 
 
 AUDIENCE: str = auth.audience_live
@@ -284,7 +285,8 @@ def get_map_leaderboard(token: auth.Token, mapUid: str, groupUid: str = 'Persona
         - default: `True`
 
     length: int
-        - number of records to get (max 100)
+        - number of records to get
+        - maximum: `100`
         - default: `5`
 
     offset: int
@@ -294,15 +296,15 @@ def get_map_leaderboard(token: auth.Token, mapUid: str, groupUid: str = 'Persona
 
     if onlyWorld:
         if length > 100:
-            raise ValueError('You can only request 100 records at a time')
+            raise error.ParameterError('You can only request 100 records at a time')
 
         if length + offset > 10_000:
-            raise ValueError('You can only retrieve records in the top 10,000')
+            raise error.ParameterError('You can only retrieve records in the top 10,000')
 
         return get(token, f'api/token/leaderboard/group/{groupUid}/map/{mapUid}/top?onlyWorld=true&length={length}&offset={offset}')
 
     if token.server_account:
-        raise auth.UsageError('This endpoint requires a Ubisoft account when onlyWorld is False')
+        raise error.UsageError('This endpoint requires a Ubisoft account when onlyWorld is False')
 
     return get(token, f'api/token/leaderboard/group/{groupUid}/map/{mapUid}/top?onlyWorld=false')
 

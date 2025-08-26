@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-20
-| Modified: 2025-08-05
+| Modified: 2025-08-26
 
 - Various functions not directly related to any API
 - You don't need to import this module - simply call these from the main module like `nadeo_api.<function>`
@@ -14,6 +14,7 @@ import time
 import traceback as tb
 
 from . import config
+from . import error
 
 
 def account_id_from_login(account_login: str) -> str:
@@ -32,7 +33,7 @@ def account_id_from_login(account_login: str) -> str:
     '''
 
     if not bool(re.match('^[0-9A-Za-z\\-_]{22}$', account_login)):
-        raise ValueError(f'Given account login is invalid: {account_login}')
+        raise error.ParameterError(f'Given account login is invalid: {account_login}')
 
     b: str = bytes.hex(base64.urlsafe_b64decode(f'{account_login}=='))
 
@@ -55,7 +56,7 @@ def account_login_from_id(account_id: str) -> str:
     '''
 
     if not valid_uuid(account_id):
-        raise ValueError(f'Given account ID is invalid: {account_id}')
+        raise error.ParameterError(f'Given account ID is invalid: {account_id}')
 
     return base64.urlsafe_b64encode(bytes.fromhex(account_id.replace('-', ''))).decode()[:-2]
 
