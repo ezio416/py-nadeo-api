@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-07
-| Modified: 2025-08-05
+| Modified: 2025-08-26
 
 - Functions for interacting with authentication tokens to use with the API
 - Also contains variables and functions intended for internal use
@@ -59,11 +59,13 @@ class Token():
     '''
 
     access_token:   str
+    account_id:     str
     audience:       str
     expiration:     int
     refresh_token:  str
     server_account: bool
     token_decoded:  dict
+    username:       str
 
     def __init__(self, access_token: str, audience: str, refresh_token: str = '', server_account: bool = False, expiration: int = 0):
         self.access_token = access_token
@@ -76,13 +78,19 @@ class Token():
         except UnicodeDecodeError:
             pass
 
-        if expiration != 0:
-            self.expiration = expiration
-        else:
-            try:
-                self.expiration = self.token_decoded['exp']
-            except KeyError:
-                self.expiration = int(time.time()) + 3600
+        if self.audience != 'uplay':
+            self.username = self.token_decoded['aun']
+
+            if not self.server_account:
+                self.account_id = self.token_decoded['sub']
+
+            if expiration != 0:
+                self.expiration = expiration
+            else:
+                try:
+                    self.expiration = self.token_decoded['exp']
+                except KeyError:
+                    self.expiration = int(time.time()) + 3600
 
     def __repr__(self) -> str:
         return f"nadeo_api.auth.Token('{self.audience}')"
