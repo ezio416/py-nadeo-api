@@ -347,7 +347,7 @@ def get_routes(token: auth.Token, usage: str = 'Client') -> dict:
     return get(token, 'api/routes', {'usage': usage})
 
 
-def get_trophies_history(token: auth.Token, account_id: str, count: int, offset: int = 0) -> dict:
+def get_trophies_history(token: auth.Token, account_id: str = '', count: int = 100, offset: int = 0) -> dict:
     '''
     - gets a list of trophy gain history
     - requires a Ubisoft account (client usage)
@@ -359,10 +359,14 @@ def get_trophies_history(token: auth.Token, account_id: str, count: int, offset:
 
     account_id: str
         - account ID to get data for
+        - may be a different ID to the one being used for authentication
+        - if not given, the currently authenticated account will be used
+        - default: `''` (empty)
 
     count: int
         - number of history entries to get
         - if you set this too high, the request may time out (response 504)
+        - default: `100`
 
     offset: int
         - number of history entries to skip, looking backwards from the most recent
@@ -377,13 +381,16 @@ def get_trophies_history(token: auth.Token, account_id: str, count: int, offset:
     if token.server_account:
         raise error.UsageError('This endpoint requires a Ubisoft account (client usage)')
 
-    if not util.valid_uuid(account_id):
+    if account_id and not util.valid_uuid(account_id):
         raise error.ParameterError(f'Given account ID is invalid: {account_id}')
+
+    if not account_id:
+        account_id = token.account_id
 
     return get(token, f'accounts/{account_id}/trophies', {'offset': offset, 'count': count})
 
 
-def get_trophies_last_year_summary(token: auth.Token, account_id: str) -> dict:
+def get_trophies_last_year_summary(token: auth.Token, account_id: str = '') -> dict:
     '''
     - gets a summary of the trophies gained in the last year
     - requires a Ubisoft account (client usage)
@@ -395,6 +402,9 @@ def get_trophies_last_year_summary(token: auth.Token, account_id: str) -> dict:
 
     account_id: str
         - account ID to get data for
+        - may be a different ID to the one being used for authentication
+        - if not given, the currently authenticated account will be used
+        - default: `''` (empty)
 
     Returns
     -------
@@ -405,8 +415,11 @@ def get_trophies_last_year_summary(token: auth.Token, account_id: str) -> dict:
     if token.server_account:
         raise error.UsageError('This endpoint requires a Ubisoft account (client usage)')
 
-    if not util.valid_uuid(account_id):
+    if account_id and not util.valid_uuid(account_id):
         raise error.ParameterError(f'Given account ID is invalid: {account_id}')
+
+    if not account_id:
+        account_id = token.account_id
 
     return get(token, f'accounts/{account_id}/trophies/lastYearSummary')
 
