@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-14
-| Modified: 2025-08-05
+| Modified: 2025-08-26
 
 - Functions for interacting with the web services Core API
 '''
@@ -335,7 +335,7 @@ def get_trophies_history(token: auth.Token, account_id: str, count: int, offset:
         raise ValueError(f'Given account ID is invalid: {account_id}')
 
     if token.server_account:
-        raise ValueError('This endpoint requires a Ubisoft account (client usage)')
+        raise auth.UsageError('This endpoint requires a Ubisoft account (client usage)')
 
     return get(token, f'accounts/{account_id}/trophies', {'offset': offset, 'count': count})
 
@@ -363,7 +363,7 @@ def get_trophies_last_year_summary(token: auth.Token, account_id: str) -> dict:
         raise ValueError(f'Given account ID is invalid: {account_id}')
 
     if token.server_account:
-        raise ValueError('This endpoint requires a Ubisoft account (client usage)')
+        raise auth.UsageError('This endpoint requires a Ubisoft account (client usage)')
 
     return get(token, f'accounts/{account_id}/trophies/lastYearSummary')
 

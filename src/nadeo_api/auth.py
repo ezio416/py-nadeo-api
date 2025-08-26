@@ -134,6 +134,10 @@ class Token():
             self.token_decoded = {}
 
 
+class UsageError(ValueError):
+    pass
+
+
 def decode_jwt_from_token(token: str) -> dict:
     '''
     - decodes a JSON web token into a dictionary using its payload section

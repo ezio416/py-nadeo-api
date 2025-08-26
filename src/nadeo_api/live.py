@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-15
-| Modified: 2025-08-05
+| Modified: 2025-08-26
 
 - Functions for interacting with the web services Live API
 '''
@@ -302,7 +302,7 @@ def get_map_leaderboard(token: auth.Token, mapUid: str, groupUid: str = 'Persona
         return get(token, f'api/token/leaderboard/group/{groupUid}/map/{mapUid}/top?onlyWorld=true&length={length}&offset={offset}')
 
     if token.server_account:
-        raise ValueError('This endpoint requires a Ubisoft account when onlyWorld is False')
+        raise auth.UsageError('This endpoint requires a Ubisoft account when onlyWorld is False')
 
     return get(token, f'api/token/leaderboard/group/{groupUid}/map/{mapUid}/top?onlyWorld=false')
 
