@@ -344,7 +344,7 @@ def get_routes(token: auth.WebServicesToken, usage: str = 'Client') -> dict:
     return get(token, 'api/routes', {'usage': usage})
 
 
-def get_trophies_history(token: auth.ServiceToken, account_id: str, count: int, offset: int = 0) -> dict:
+def get_trophies_history(token: auth.ServiceToken, account_id: str = '', count: int = 100, offset: int = 0) -> dict:
     '''
     - gets a list of trophy gain history
     - https://webservices.openplanet.dev/core/accounts/trophy-history
@@ -356,10 +356,14 @@ def get_trophies_history(token: auth.ServiceToken, account_id: str, count: int, 
 
     account_id: str
         - account ID to get data for
+        - may be a different ID to the one being used for authentication
+        - if not given, the currently authenticated account will be used
+        - default: `''` (empty)
 
     count: int
         - number of history entries to get
         - if you set this too high, the request may time out (response 504)
+        - default: `100`
 
     offset: int
         - number of history entries to skip, looking backwards from the most recent
@@ -371,16 +375,19 @@ def get_trophies_history(token: auth.ServiceToken, account_id: str, count: int, 
         - history entries sorted newest to oldest
     '''
 
-    if not util.valid_uuid(account_id):
-        raise error.ParameterError(f'invalid account ID: {account_id}')
-
     if not isinstance(token, auth.ServiceToken):
         raise error.UsageError('this endpoint requires a service account token')
+
+    if account_id and not util.valid_uuid(account_id):
+        raise error.ParameterError(f'invalid account ID: {account_id}')
+
+    if not account_id:
+        account_id = token.account_id
 
     return get(token, f'accounts/{account_id}/trophies', {'offset': offset, 'count': count})
 
 
-def get_trophies_last_year_summary(token: auth.ServiceToken, account_id: str) -> dict:
+def get_trophies_last_year_summary(token: auth.ServiceToken, account_id: str = '') -> dict:
     '''
     - gets a summary of the trophies gained in the last year
     - https://webservices.openplanet.dev/core/accounts/trophy-summary
@@ -392,6 +399,9 @@ def get_trophies_last_year_summary(token: auth.ServiceToken, account_id: str) ->
 
     account_id: str
         - account ID to get data for
+        - may be a different ID to the one being used for authentication
+        - if not given, the currently authenticated account will be used
+        - default: `''` (empty)
 
     Returns
     -------
@@ -399,11 +409,14 @@ def get_trophies_last_year_summary(token: auth.ServiceToken, account_id: str) ->
         - data on given account
     '''
 
-    if not util.valid_uuid(account_id):
-        raise error.ParameterError(f'invalid account ID: {account_id}')
-
     if not isinstance(token, auth.ServiceToken):
         raise error.UsageError('this endpoint requires a service account token')
+
+    if account_id and not util.valid_uuid(account_id):
+        raise error.ParameterError(f'invalid account ID: {account_id}')
+
+    if not account_id:
+        account_id = token.account_id
 
     return get(token, f'accounts/{account_id}/trophies/lastYearSummary')
 

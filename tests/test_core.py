@@ -327,11 +327,11 @@ def get_routes_server(token: auth.WebServicesToken) -> dict:
 
 
 def get_trophies_history(token: auth.ServiceToken) -> dict:
-    return core.get_trophies_history(token, token.account_id, 100)
+    return core.get_trophies_history(token)
 
 
 def get_trophies_last_year_summary(token: auth.ServiceToken) -> dict:
-    return core.get_trophies_last_year_summary(token, token.account_id)
+    return core.get_trophies_last_year_summary(token)
 
 
 def get_zones(token: auth.WebServicesToken) -> list[dict]:
