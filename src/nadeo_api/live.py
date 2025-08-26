@@ -24,7 +24,7 @@ def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {})
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -56,7 +56,7 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -84,7 +84,7 @@ def head(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -112,7 +112,7 @@ def options(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -144,7 +144,7 @@ def patch(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) 
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -176,7 +176,7 @@ def post(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -208,7 +208,7 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -244,7 +244,7 @@ def get_club_campaign(token: auth.Token, club_id: int, campaign_id: int) -> dict
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     club_id: int
         - the ID of the club
@@ -270,7 +270,7 @@ def get_map_leaderboard(token: auth.Token, mapUid: str, groupUid: str = 'Persona
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     mapUid: str
         - the UID of the map
@@ -318,7 +318,7 @@ def get_maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     length: int
         - number of months to get
@@ -345,7 +345,7 @@ def get_maps_seasonal(token: auth.Token, length: int, offset: int = 0) -> dict:
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     length: int
         - number of campaigns to get
@@ -371,7 +371,7 @@ def get_maps_totd(token: auth.Token, length: int, offset: int = 0) -> dict:
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     length: int
         - number of months to get
@@ -397,7 +397,7 @@ def get_maps_weekly(token: auth.Token, length: int, offset: int = 0) -> dict:
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     length: int
         - number of weeks to get

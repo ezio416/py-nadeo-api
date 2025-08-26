@@ -26,7 +26,7 @@ def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {})
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -58,7 +58,7 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
     Parameters
     ----------
     token: auth.Token
-        - authentication token gotten from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -86,7 +86,7 @@ def head(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -114,7 +114,7 @@ def options(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -146,7 +146,7 @@ def patch(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) 
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -178,7 +178,7 @@ def post(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -210,7 +210,7 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -246,7 +246,7 @@ def get_account_ids_from_names(token: auth.Token, account_names: typing.Iterable
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     account_names: Iterable[str]
         - account names
@@ -269,7 +269,7 @@ def get_account_names_from_ids(token: auth.Token, account_ids: typing.Iterable[s
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     account_ids: Iterable[str]
         - account IDs

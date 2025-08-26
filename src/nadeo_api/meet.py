@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-15
-| Modified: 2025-08-05
+| Modified: 2025-08-26
 
 - Functions for interacting with the web services Meet API
 '''
@@ -23,7 +23,7 @@ def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {})
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -55,7 +55,7 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -83,7 +83,7 @@ def head(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -111,7 +111,7 @@ def options(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -143,7 +143,7 @@ def patch(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) 
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -175,7 +175,7 @@ def post(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -207,7 +207,7 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     endpoint: str
         - desired endpoint
@@ -243,7 +243,7 @@ def get_current_cotd(token: auth.Token) -> dict:
     Parameters
     ----------
     token: auth.Token
-        - authentication token from `auth.get_token`
+        - authentication token from `auth.get_token()`
 
     Returns
     -------
