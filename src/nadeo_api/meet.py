@@ -6,6 +6,8 @@
 - Functions for interacting with the web services Meet API
 '''
 
+import typing
+
 from . import auth
 from . import error
 
@@ -344,6 +346,46 @@ def send_matchmaking_cancel(token: auth.Token, matchmaking_type: int | str) -> l
         raise error.UsageError('This endpoint requires a Ubisoft account (client usage)')
 
     return post(token, f'api/matchmaking/{matchmaking_type}/cancel')
+
+
+def send_matchmaking_heartbeat(token: auth.Token, matchmaking_type: int | str, playWith: str | typing.Iterable[str] = '', code: str = '') -> dict:
+    '''
+    - send a heartbeat to start and persist a matchmaking queue
+    - you must be careful with this endpoint
+        - if you send heartbeats but do not join and complete a match when it becomes available, your account will be penalized
+    - requires a Ubisoft account (client usage)
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token()`
+
+    matchmaking_type: int | str
+        - either the ID or name for the type of matchmaking requested
+
+    playWith: str | Iterable[str]
+        - account ID(s) of the player(s) you wish to queue with
+        - leave blank to queue solo
+        - default: `''` (blank)
+
+    code: str
+        - party code
+        - may have been used for Royal, hard to test now
+        - default: `''` (blank)
+
+    Returns
+    -------
+    dict
+        - heartbeat status
+    '''
+
+    if token.server_account:
+        raise error.UsageError('This endpoint requires a Ubisoft account (client usage)')
+
+    if type(playWith) == str:
+        playWith = [playWith]
+
+    return post(token, f'api/matchmaking/{matchmaking_type}/heartbeat', body={'playWith': playWith, 'code': code})
 
 
 ###################################################### DEPRECATED ######################################################
