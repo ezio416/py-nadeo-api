@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2025-08-04
-| Modified: 2025-08-05
+| Modified: 2025-08-26
 
 - Tests for nadeo_api.meet
 '''
@@ -16,6 +16,8 @@ import src.nadeo_api.meet as meet
 
 
 def main() -> None:
+    config.debug_logging = True
+
     token: auth.Token = auth.get_token(
         'meet',
         os.environ['TM_E416DEV_SERVER_USERNAME'],
@@ -24,7 +26,7 @@ def main() -> None:
         True
     )
 
-    config.debug_logging = True
+    # req = meet.get_matchmaking_ids(token)
 
     pass
 

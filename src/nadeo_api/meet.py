@@ -254,6 +254,25 @@ def get_current_cotd(token: auth.Token) -> dict:
     return get(token, 'api/cup-of-the-day/current')
 
 
+def get_matchmaking_ids(token: auth.Token) -> dict:
+    '''
+    - gets the available IDs for matchmaking
+    - https://webservices.openplanet.dev/meet/matchmaking/summary
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token()`
+
+    Returns
+    -------
+    dict
+        - matchmaking IDs
+    '''
+
+    return get(token, 'api/official/summary')
+
+
 ###################################################### DEPRECATED ######################################################
 
 
