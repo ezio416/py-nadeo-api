@@ -28,6 +28,7 @@ def main() -> None:
 
     # req = meet.get_matchmaking_ids(token)
     # req = meet.get_matchmaking_divisions(token, 'ranked-2v2')
+    # req = meet.get_matchmaking_player_status(token, 'ranked-2v2')
 
     pass
 

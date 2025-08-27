@@ -7,6 +7,7 @@
 '''
 
 from . import auth
+from . import error
 
 
 AUDIENCE: str = auth.audience_live
@@ -293,6 +294,31 @@ def get_matchmaking_ids(token: auth.Token) -> dict:
     '''
 
     return get(token, 'api/official/summary')
+
+
+def get_matchmaking_player_status(token: auth.Token, matchmaking_type: int | str) -> dict:
+    '''
+    - gets the matchmaking status of the currently authenticated user
+    - requires a Ubisoft account (client usage)
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token()`
+
+    matchmaking_type: int | str
+        - either the ID or name for the type of matchmaking requested
+
+    Returns
+    -------
+    dict
+        - player matchmaking status
+    '''
+
+    if token.server_account:
+        raise error.UsageError('This endpoint requires a Ubisoft account (client usage)')
+
+    return get(token, f'api/matchmaking/{matchmaking_type}/player-status')
 
 
 ###################################################### DEPRECATED ######################################################
