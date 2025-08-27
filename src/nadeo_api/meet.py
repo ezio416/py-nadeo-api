@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-15
-| Modified: 2025-08-26
+| Modified: 2025-08-27
 
 - Functions for interacting with the web services Meet API
 '''
@@ -319,6 +319,31 @@ def get_matchmaking_player_status(token: auth.Token, matchmaking_type: int | str
         raise error.UsageError('This endpoint requires a Ubisoft account (client usage)')
 
     return get(token, f'api/matchmaking/{matchmaking_type}/player-status')
+
+
+def send_matchmaking_cancel(token: auth.Token, matchmaking_type: int | str) -> list:
+    '''
+    - cancel the current matchmaking queue
+    - requires a Ubisoft account (client usage)
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token()`
+
+    matchmaking_type: int | str
+        - either the ID or name for the type of matchmaking requested
+
+    Returns
+    -------
+    list
+        - empty response
+    '''
+
+    if token.server_account:
+        raise error.UsageError('This endpoint requires a Ubisoft account (client usage)')
+
+    return post(token, f'api/matchmaking/{matchmaking_type}/cancel')
 
 
 ###################################################### DEPRECATED ######################################################

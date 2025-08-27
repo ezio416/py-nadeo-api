@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2025-08-04
-| Modified: 2025-08-26
+| Modified: 2025-08-27
 
 - Tests for nadeo_api.meet
 '''
@@ -29,6 +29,7 @@ def main() -> None:
     # req = meet.get_matchmaking_ids(token)
     # req = meet.get_matchmaking_divisions(token, 'ranked-2v2')
     # req = meet.get_matchmaking_player_status(token, 'ranked-2v2')
+    # req = meet.send_matchmaking_cancel(token, 'ranked-2v2')
 
     pass
 
