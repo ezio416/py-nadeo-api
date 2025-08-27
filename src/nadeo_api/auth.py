@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-07
-| Modified: 2025-08-26
+| Modified: 2025-08-27
 
 - Functions for interacting with authentication tokens to use with the API
 - Also contains variables and functions intended for internal use
@@ -589,6 +589,9 @@ def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, meth
 
     if req.status_code >= 400:
         raise ConnectionError(f'Bad response from {base_name} API: code {req.status_code}, response {req.text}')
+
+    if req.status_code == 204 and not req.text:
+        return []
 
     return req.json()
 
