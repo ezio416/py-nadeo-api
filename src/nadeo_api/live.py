@@ -473,6 +473,32 @@ def get_server_accounts(token: auth.Token) -> dict:
     return get(token, '/api/token/server/player-server/account')
 
 
+def map_review_connect(token: auth.Token, review_type: str) -> dict:
+    '''
+    - gets information to connect to a map review server
+    - requires a Ubisoft account (client usage)
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token()`
+
+    review_type: str
+        - type of review server
+        - examples: `'totd'`, `'weekly-shorts'`
+
+    Returns
+    -------
+    dict
+        - info on active server
+    '''
+
+    if token.server_account:
+        raise error.UsageError('This endpoint requires a Ubisoft account (client usage)')
+
+    return get(token, f'api/token/map-review/{review_type}/connect')
+
+
 ###################################################### DEPRECATED ######################################################
 
 
