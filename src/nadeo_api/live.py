@@ -1,7 +1,7 @@
 '''
 | Author:   Ezio416
 | Created:  2024-05-15
-| Modified: 2025-08-26
+| Modified: 2025-08-28
 
 - Functions for interacting with the web services Live API
 '''
@@ -416,6 +416,39 @@ def get_maps_weekly(token: auth.Token, length: int = 1, offset: int = 0) -> dict
     '''
 
     return get(token, '/api/campaign/weekly-shorts', {'length': length, 'offset': offset})
+
+
+def get_player_club_record(token: auth.Token, map_uid: str, club_id: int, group_uid: str = 'Personal_Best') -> dict:
+    '''
+    - gets the currently authenticated user's map record and leaderboard position in reference to a club
+    - requires a Ubisoft account (client usage)
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token()`
+
+    map_uid: str
+        - the UID of the map
+
+    club_id: int
+        - the ID of the club
+        - the current user must be a member of this club
+
+    group_uid: str
+        - the UID of the group/season
+        - default: `'Personal_Best'`
+
+    Returns
+    -------
+    dict
+        - record info
+    '''
+
+    if token.server_account:
+        raise error.UsageError('This endpoint requires a Ubisoft account (client usage)')
+
+    return get(token, f'api/token/leaderboard/group/{group_uid}/map/{map_uid}/club/{club_id}')
 
 
 def get_server_accounts(token: auth.Token) -> dict:
