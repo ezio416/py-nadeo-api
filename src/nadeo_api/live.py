@@ -335,6 +335,50 @@ def get_map_review_connect(token: auth.Token, review_type: str) -> dict:
     return get(token, f'api/token/map-review/{review_type}/connect')
 
 
+def get_map_review_submitted(token: auth.Token, review_type: str, length: int = 144, offset: int = 0, withFeedback: bool = True, withMapInfo: bool = True) -> dict:
+    '''
+    - gets information to on maps submitted to map review
+    - requires a Ubisoft account (client usage)
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token()`
+
+    review_type: str
+        - type of review server
+        - examples: `'totd'`, `'weekly-shorts'`
+
+    length: int
+        - number of maps to get
+        - default: `144`
+
+    offset: int
+        - number of maps to skip
+        - default: `0`
+
+    withFeedback: bool
+        - whether to include given feedback for each applicable map
+        - does not seem to change what is returned in the response
+        - default: `True`
+
+    withMapInfo: bool
+        - whether to include detailed info on each map
+        - does not seem to change what is returned in the response
+        - default: `True`
+
+    Returns
+    -------
+    dict
+        - info on submitted maps
+    '''
+
+    if token.server_account:
+        raise error.UsageError('This endpoint requires a Ubisoft account (client usage)')
+
+    return get(token, f'api/token/map-review/{review_type}/submitted-map', {'length': length, 'offset': offset, 'withFeedback': withFeedback, 'withMapInfo': withMapInfo})
+
+
 def get_maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
     '''
     - gets Royal maps
