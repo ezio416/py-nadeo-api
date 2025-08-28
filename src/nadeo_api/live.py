@@ -309,6 +309,32 @@ def get_map_leaderboard(token: auth.Token, mapUid: str, groupUid: str = 'Persona
     return get(token, f'api/token/leaderboard/group/{groupUid}/map/{mapUid}/top?onlyWorld=false')
 
 
+def get_map_review_connect(token: auth.Token, review_type: str) -> dict:
+    '''
+    - gets information to connect to a map review server
+    - requires a Ubisoft account (client usage)
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token()`
+
+    review_type: str
+        - type of review server
+        - examples: `'totd'`, `'weekly-shorts'`
+
+    Returns
+    -------
+    dict
+        - info on active server
+    '''
+
+    if token.server_account:
+        raise error.UsageError('This endpoint requires a Ubisoft account (client usage)')
+
+    return get(token, f'api/token/map-review/{review_type}/connect')
+
+
 def get_maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
     '''
     - gets Royal maps
@@ -471,32 +497,6 @@ def get_server_accounts(token: auth.Token) -> dict:
         raise error.UsageError('This endpoint requires a Ubisoft account (client usage)')
 
     return get(token, '/api/token/server/player-server/account')
-
-
-def map_review_connect(token: auth.Token, review_type: str) -> dict:
-    '''
-    - gets information to connect to a map review server
-    - requires a Ubisoft account (client usage)
-
-    Parameters
-    ----------
-    token: auth.Token
-        - authentication token from `auth.get_token()`
-
-    review_type: str
-        - type of review server
-        - examples: `'totd'`, `'weekly-shorts'`
-
-    Returns
-    -------
-    dict
-        - info on active server
-    '''
-
-    if token.server_account:
-        raise error.UsageError('This endpoint requires a Ubisoft account (client usage)')
-
-    return get(token, f'api/token/map-review/{review_type}/connect')
 
 
 ###################################################### DEPRECATED ######################################################
