@@ -418,6 +418,28 @@ def get_maps_weekly(token: auth.Token, length: int = 1, offset: int = 0) -> dict
     return get(token, '/api/campaign/weekly-shorts', {'length': length, 'offset': offset})
 
 
+def get_server_accounts(token: auth.Token) -> dict:
+    '''
+    - gets the currently authenticated user's dedicated server accounts
+    - requires a Ubisoft account (client usage)
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token()`
+
+    Returns
+    -------
+    dict
+        - dedicated server accounts
+    '''
+
+    if token.server_account:
+        raise error.UsageError('This endpoint requires a Ubisoft account (client usage)')
+
+    return get(token, '/api/token/server/player-server/account')
+
+
 ###################################################### DEPRECATED ######################################################
 
 
