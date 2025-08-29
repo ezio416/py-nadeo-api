@@ -379,6 +379,28 @@ def get_map_review_submitted(token: auth.Token, review_type: str, length: int = 
     return get(token, f'api/token/map-review/{review_type}/submitted-map', {'length': length, 'offset': offset, 'withFeedback': withFeedback, 'withMapInfo': withMapInfo})
 
 
+def get_map_review_waiting_time(token: auth.Token, review_type: str) -> dict:
+    '''
+    - gets information on how long a player must wait before their map is the current one if they were to submit it to a map review server
+
+    Parameters
+    ----------
+    token: auth.Token
+        - authentication token from `auth.get_token()`
+
+    review_type: str
+        - type of review server
+        - examples: `'totd'`, `'weekly-shorts'`
+
+    Returns
+    -------
+    dict
+        - info on active server
+    '''
+
+    return get(token, f'api/token/map-review/{review_type}/waiting-time')
+
+
 def get_maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
     '''
     - gets Royal maps
