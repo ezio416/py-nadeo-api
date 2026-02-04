@@ -17,7 +17,7 @@ keywords = [
   "trackmania"
 ]
 readme = "README.md"
-license = "MIT"
+license = "BSD-2-Clause"
 license-files = [
   "LICENSE.txt"
 ]

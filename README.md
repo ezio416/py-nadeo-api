@@ -3,7 +3,7 @@
 <!-- [![tests](https://github.com/ezio416/py416/actions/workflows/tests.yml/badge.svg)](https://github.com/ezio416/py-nadeo-api/actions) -->
 [![docs](https://readthedocs.org/projects/nadeo-api/badge/?version=latest)](https://nadeo-api.readthedocs.io/en/latest/)
 [![PyPI](https://badge.fury.io/py/nadeo-api.svg)](https://pypi.org/project/nadeo-api/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/License-BSD_2--Clause-orange.svg)](https://opensource.org/licenses/BSD-2-Clause)
 
 A library to assist with accessing Nadeo's web services API and the public Trackmania API (OAuth2).
 
