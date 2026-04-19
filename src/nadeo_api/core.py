@@ -5,6 +5,7 @@
 import typing
 
 from . import auth
+from . import error
 from . import util
 
 
@@ -45,7 +46,10 @@ def delete(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body:
     '''
 
     if not isinstance(token, auth.WebServicesToken):
-        raise ValueError('web services endpoints require a web services token')
+        raise error.UsageError('web services endpoints require a web services token')
+
+    if token.audience != AUDIENCE:
+        raise error.AudienceError('Core endpoints require the Core audience')
 
     return auth._delete(token, URL, endpoint, params, body)
 
@@ -76,7 +80,10 @@ def get(token: auth.WebServicesToken, endpoint: str, params: dict = {}) -> dict 
     '''
 
     if not isinstance(token, auth.WebServicesToken):
-        raise ValueError('web services endpoints require a web services token')
+        raise error.UsageError('web services endpoints require a web services token')
+
+    if token.audience != AUDIENCE:
+        raise error.AudienceError('Core endpoints require the Core audience')
 
     return auth._get(token, URL, endpoint, params)
 
@@ -107,7 +114,10 @@ def head(token: auth.WebServicesToken, endpoint: str, params: dict = {}) -> dict
     '''
 
     if not isinstance(token, auth.WebServicesToken):
-        raise ValueError('web services endpoints require a web services token')
+        raise error.UsageError('web services endpoints require a web services token')
+
+    if token.audience != AUDIENCE:
+        raise error.AudienceError('Core endpoints require the Core audience')
 
     return auth._head(token, URL, endpoint, params)
 
@@ -142,7 +152,10 @@ def options(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body
     '''
 
     if not isinstance(token, auth.WebServicesToken):
-        raise ValueError('web services endpoints require a web services token')
+        raise error.UsageError('web services endpoints require a web services token')
+
+    if token.audience != AUDIENCE:
+        raise error.AudienceError('Core endpoints require the Core audience')
 
     return auth._options(token, URL, endpoint, params, body)
 
@@ -177,7 +190,10 @@ def patch(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: 
     '''
 
     if not isinstance(token, auth.WebServicesToken):
-        raise ValueError('web services endpoints require a web services token')
+        raise error.UsageError('web services endpoints require a web services token')
+
+    if token.audience != AUDIENCE:
+        raise error.AudienceError('Core endpoints require the Core audience')
 
     return auth._patch(token, URL, endpoint, params, body)
 
@@ -212,7 +228,10 @@ def post(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: d
     '''
 
     if not isinstance(token, auth.WebServicesToken):
-        raise ValueError('web services endpoints require a web services token')
+        raise error.UsageError('web services endpoints require a web services token')
+
+    if token.audience != AUDIENCE:
+        raise error.AudienceError('Core endpoints require the Core audience')
 
     return auth._post(token, URL, endpoint, params, body)
 
@@ -247,7 +266,10 @@ def put(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: di
     '''
 
     if not isinstance(token, auth.WebServicesToken):
-        raise ValueError('web services endpoints require a web services token')
+        raise error.UsageError('web services endpoints require a web services token')
+
+    if token.audience != AUDIENCE:
+        raise error.AudienceError('Core endpoints require the Core audience')
 
     return auth._put(token, URL, endpoint, params, body)
 
@@ -317,7 +339,7 @@ def get_routes(token: auth.WebServicesToken, usage: str = 'Client') -> dict:
     '''
 
     if usage not in ('Client', 'Server'):
-        raise ValueError(f'invalid usage: {usage}')
+        raise error.ParameterError(f'invalid usage: {usage}')
 
     return get(token, 'api/routes', {'usage': usage})
 
@@ -350,10 +372,10 @@ def get_trophies_history(token: auth.ServiceToken, account_id: str, count: int, 
     '''
 
     if not util.valid_uuid(account_id):
-        raise ValueError(f'invalid account ID: {account_id}')
+        raise error.ParameterError(f'invalid account ID: {account_id}')
 
     if not isinstance(token, auth.ServiceToken):
-        raise ValueError('this endpoint requires a service account token')
+        raise error.UsageError('this endpoint requires a service account token')
 
     return get(token, f'accounts/{account_id}/trophies', {'offset': offset, 'count': count})
 
@@ -378,10 +400,10 @@ def get_trophies_last_year_summary(token: auth.ServiceToken, account_id: str) ->
     '''
 
     if not util.valid_uuid(account_id):
-        raise ValueError(f'invalid account ID: {account_id}')
+        raise error.ParameterError(f'invalid account ID: {account_id}')
 
     if not isinstance(token, auth.ServiceToken):
-        raise ValueError('this endpoint requires a service account token')
+        raise error.UsageError('this endpoint requires a service account token')
 
     return get(token, f'accounts/{account_id}/trophies/lastYearSummary')
 

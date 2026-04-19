@@ -11,6 +11,7 @@ import time
 import requests
 
 from . import config
+from . import error
 from . import util
 
 
@@ -128,7 +129,7 @@ class Token:
         if lower in ('oauth', 'oauth2'):
             return AUDIENCE_OAUTH
 
-        raise ValueError(f'invalid audience: {audience}')
+        raise error.AudienceError(f'invalid audience: {audience}')
 
 
 class OAuthToken(Token):
@@ -264,7 +265,7 @@ class WebServicesToken(Token):
         Token.verify_audience(audience)
 
         if not agent:
-            raise ValueError('user agent is required')
+            raise error.ParameterError('user agent is required')
 
         req: requests.Response = requests.post(
             f'{URL_CORE}/v2/authentication/token/basic',
@@ -697,26 +698,26 @@ def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, meth
     util._log(f'{method.upper()} {base_url}/{endpoint} | params: {params} | body: {body}')
 
     if (base_url := base_url.lower()) not in (URL_CORE, URL_LIVE, URL_MEET, URL_OAUTH):
-        raise ValueError(f'invalid base URL: {base_url}')
+        raise error.ParameterError(f'invalid base URL: {base_url}')
 
     if (method := method.lower()) not in ('delete', 'get', 'head', 'options', 'patch', 'post', 'put'):
-        raise ValueError(f'invalid method: {method}')
+        raise error.ParameterError(f'invalid method: {method}')
 
     base_name: str = 'Core'
 
     if base_url == URL_CORE:
         if token.audience != AUDIENCE_CORE:
-            raise ValueError(f'mismatched audience and base URL: {token.audience} | {base_url}')
+            raise error.AudienceError(f'mismatched audience and base URL: {token.audience} | {base_url}')
 
     elif base_url in (URL_LIVE, URL_MEET):
         if token.audience != AUDIENCE_LIVE:
-            raise ValueError(f'mismatched audience and base URL: {token.audience} | {base_url}')
+            raise error.AudienceError(f'mismatched audience and base URL: {token.audience} | {base_url}')
 
         base_name = 'Live' if base_url == URL_LIVE else 'Meet'
 
     else:
         if token.audience != AUDIENCE_OAUTH:
-            raise ValueError(f'mismatched audience and base URL: {token.audience} | {base_url}')
+            raise error.AudienceError(f'mismatched audience and base URL: {token.audience} | {base_url}')
 
         base_name = AUDIENCE_OAUTH
 
@@ -724,7 +725,7 @@ def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, meth
         if isinstance(token, WebServicesToken):
             token.refresh()
         else:
-            raise ValueError('OAuth2 token is expired and cannot be refreshed')
+            raise Exception('OAuth2 token is expired and cannot be refreshed')
 
     if endpoint.startswith(base_url):
         endpoint = endpoint.split(base_url)[1]
@@ -747,7 +748,7 @@ def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, meth
         if isinstance(token, WebServicesToken):
             token.refresh()
         else:
-            raise ValueError('OAuth2 token is expired and cannot be refreshed')
+            raise Exception('OAuth2 token is expired and cannot be refreshed')
 
         req = __request()
 

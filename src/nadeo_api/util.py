@@ -10,6 +10,7 @@ import time
 import traceback as tb
 
 from . import config
+from . import error
 
 
 def account_id_from_login(account_login: str) -> str:
@@ -28,7 +29,7 @@ def account_id_from_login(account_login: str) -> str:
     '''
 
     if not bool(re.match('^[0-9A-Za-z\\-_]{22}$', account_login)):
-        raise ValueError(f'invalid account login: {account_login}')
+        raise error.ParameterError(f'invalid account login: {account_login}')
 
     b: str = bytes.hex(base64.urlsafe_b64decode(f'{account_login}=='))
 
@@ -51,7 +52,7 @@ def account_login_from_id(account_id: str) -> str:
     '''
 
     if not valid_uuid(account_id):
-        raise ValueError(f'invalid account ID: {account_id}')
+        raise error.ParameterError(f'invalid account ID: {account_id}')
 
     return base64.urlsafe_b64encode(bytes.fromhex(account_id.replace('-', ''))).decode()[:-2]
 

@@ -3,6 +3,7 @@
 '''
 
 from . import auth
+from . import error
 
 
 AUDIENCE: str = auth.AUDIENCE_LIVE
@@ -42,7 +43,10 @@ def delete(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body:
     '''
 
     if not isinstance(token, auth.WebServicesToken):
-        raise ValueError('web services endpoints require a web services token')
+        raise error.UsageError('web services endpoints require a web services token')
+
+    if token.audience != AUDIENCE:
+        raise error.AudienceError('Live endpoints require the Live audience')
 
     return auth._delete(token, URL, endpoint, params, body)
 
@@ -73,7 +77,10 @@ def get(token: auth.WebServicesToken, endpoint: str, params: dict = {}) -> dict 
     '''
 
     if not isinstance(token, auth.WebServicesToken):
-        raise ValueError('web services endpoints require a web services token')
+        raise error.UsageError('web services endpoints require a web services token')
+
+    if token.audience != AUDIENCE:
+        raise error.AudienceError('Live endpoints require the Live audience')
 
     return auth._get(token, URL, endpoint, params)
 
@@ -104,7 +111,10 @@ def head(token: auth.WebServicesToken, endpoint: str, params: dict = {}) -> dict
     '''
 
     if not isinstance(token, auth.WebServicesToken):
-        raise ValueError('web services endpoints require a web services token')
+        raise error.UsageError('web services endpoints require a web services token')
+
+    if token.audience != AUDIENCE:
+        raise error.AudienceError('Live endpoints require the Live audience')
 
     return auth._head(token, URL, endpoint, params)
 
@@ -139,7 +149,10 @@ def options(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body
     '''
 
     if not isinstance(token, auth.WebServicesToken):
-        raise ValueError('web services endpoints require a web services token')
+        raise error.UsageError('web services endpoints require a web services token')
+
+    if token.audience != AUDIENCE:
+        raise error.AudienceError('Live endpoints require the Live audience')
 
     return auth._options(token, URL, endpoint, params, body)
 
@@ -174,7 +187,10 @@ def patch(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: 
     '''
 
     if not isinstance(token, auth.WebServicesToken):
-        raise ValueError('web services endpoints require a web services token')
+        raise error.UsageError('web services endpoints require a web services token')
+
+    if token.audience != AUDIENCE:
+        raise error.AudienceError('Live endpoints require the Live audience')
 
     return auth._patch(token, URL, endpoint, params, body)
 
@@ -209,7 +225,10 @@ def post(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: d
     '''
 
     if not isinstance(token, auth.WebServicesToken):
-        raise ValueError('web services endpoints require a web services token')
+        raise error.UsageError('web services endpoints require a web services token')
+
+    if token.audience != AUDIENCE:
+        raise error.AudienceError('Live endpoints require the Live audience')
 
     return auth._post(token, URL, endpoint, params, body)
 
@@ -244,7 +263,10 @@ def put(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: di
     '''
 
     if not isinstance(token, auth.WebServicesToken):
-        raise ValueError('web services endpoints require a web services token')
+        raise error.UsageError('web services endpoints require a web services token')
+
+    if token.audience != AUDIENCE:
+        raise error.AudienceError('Live endpoints require the Live audience')
 
     return auth._put(token, URL, endpoint, params, body)
 
@@ -311,15 +333,15 @@ def get_map_leaderboard(token: auth.WebServicesToken, mapUid: str, groupUid: str
 
     if onlyWorld:
         if length > 100:
-            raise ValueError('you can only request 100 records at a time')
+            raise error.ParameterError('you can only request 100 records at a time')
 
         if length + offset > 10_000:
-            raise ValueError('you can only retrieve records in the top 10,000')
+            raise error.ParameterError('you can only retrieve records in the top 10,000')
 
         return get(token, f'api/token/leaderboard/group/{groupUid}/map/{mapUid}/top?onlyWorld=true&length={length}&offset={offset}')
 
     if not isinstance(token, auth.ServiceToken):
-        raise ValueError('this endpoint requires a service account when onlyWorld is False')
+        raise error.UsageError('this endpoint requires a service account when onlyWorld is False')
 
     return get(token, f'api/token/leaderboard/group/{groupUid}/map/{mapUid}/top?onlyWorld=false')
 
