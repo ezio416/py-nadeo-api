@@ -324,7 +324,7 @@ def get_map_leaderboard(token: auth.WebServicesToken, mapUid: str, groupUid: str
     return get(token, f'api/token/leaderboard/group/{groupUid}/map/{mapUid}/top?onlyWorld=false')
 
 
-def get_maps_royal(token: auth.WebServicesToken, length: int, offset: int = 0) -> dict:
+def get_maps_royal(token: auth.WebServicesToken, length: int = 51, offset: int = 0) -> dict:
     '''
     - gets Royal maps
     - note: no longer being updated so it's probably fine to cache this data permanently
@@ -337,6 +337,7 @@ def get_maps_royal(token: auth.WebServicesToken, length: int, offset: int = 0) -
 
     length: int
         - number of months to get
+        - default: `51`
 
     offset: int
         - number of months to skip, looking backwards from the current month

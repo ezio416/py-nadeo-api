@@ -20,7 +20,7 @@ def get_map_leaderboard(token: auth.WebServicesToken) -> dict:
 
 
 def get_maps_royal(token: auth.WebServicesToken) -> dict:
-    return live.get_maps_royal(token, 99)
+    return live.get_maps_royal(token)
 
 
 def get_maps_seasonal(token: auth.WebServicesToken) -> dict:
