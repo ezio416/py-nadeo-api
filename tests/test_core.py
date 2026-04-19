@@ -11,20 +11,8 @@ import src.nadeo_api.config as config
 import src.nadeo_api.core as core
 
 
-def main() -> None:
-    token: auth.Token = auth.get_token(
-        'core',
-        os.environ['TM_E416DEV_SERVER_USERNAME'],
-        os.environ['TM_E416DEV_SERVER_PASSWORD'],
-        os.environ['TM_E416DEV_AGENT'],
-        True
-    )
-
-    config.debug_logging = True
-
-    req = core.get_zones(token)
-
-    uids = (
+def get_map_info(token: auth.WebServicesToken) -> None:
+    UIDS = (
         'XJ_JEjWGoAexDWe8qfaOjEcq5l8',
         'zFK9sy3nRLa6FGSpuk_gw0cHLv7',
         'xfRvyL9ByoJoPhlAvcNzbc4xD88',
@@ -327,7 +315,39 @@ def main() -> None:
         'Bmy9m5jzyM2mKz3C2T7kEyJjg0k'  # 300
     )
 
-    req = core.get_map_info(token, uids)
+    req = core.get_map_info(token, UIDS)
+
+    pass
+
+
+def get_zones(token: auth.WebServicesToken) -> None:
+    req = core.get_zones(token)
+
+    pass
+
+
+def main() -> None:
+    config.debug_logging = True
+
+    token_dedi = auth.DedicatedServerToken.get(
+        auth.AUDIENCE_CORE,
+        os.environ['TM_E416DEV_SERVER_USERNAME'],
+        os.environ['TM_E416DEV_SERVER_PASSWORD'],
+        os.environ['TM_E416DEV_AGENT']
+    )
+
+    token_service = auth.ServiceToken.get(
+        auth.AUDIENCE_CORE,
+        os.environ['TM_SERVICE_USERNAME'],
+        os.environ['TM_SERVICE_PASSWORD'],
+        os.environ['TM_E416DEV_AGENT']
+    )
+
+    get_map_info(token_dedi)
+    get_map_info(token_service)
+
+    get_zones(token_dedi)
+    get_zones(token_service)
 
     pass
 
