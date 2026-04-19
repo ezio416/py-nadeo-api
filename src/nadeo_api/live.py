@@ -382,6 +382,29 @@ def get_map_review_submitted(token: auth.ServiceToken, review_type: str, length:
     return get(token, f'api/token/map-review/{review_type}/submitted-map', {'length': length, 'offset': offset})
 
 
+def get_map_review_waiting_time(token: auth.WebServicesToken, review_type: str) -> dict:
+    '''
+    - gets information on how long a player must wait before their map is the current one if they were to submit it to a map review server
+    - https://webservices.openplanet.dev/live/map-review/waiting-time
+
+    Parameters
+    ----------
+    token: auth.WebServicesToken
+        - authentication token
+
+    review_type: str
+        - type of review server
+        - examples: `'totd'`, `'weekly-shorts'`
+
+    Returns
+    -------
+    dict
+        - info on active server
+    '''
+
+    return get(token, f'api/token/map-review/{review_type}/waiting-time')
+
+
 def get_maps_royal(token: auth.WebServicesToken, length: int = 51, offset: int = 0) -> dict:
     '''
     - gets Royal maps
