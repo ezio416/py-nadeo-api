@@ -1,8 +1,4 @@
 '''
-| Author:   Ezio416
-| Created:  2024-05-07
-| Modified: 2025-08-05
-
 - Functions for interacting with authentication tokens to use with the API
 - Also contains variables and functions intended for internal use
 '''

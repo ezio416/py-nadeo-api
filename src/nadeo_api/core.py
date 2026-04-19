@@ -1,8 +1,4 @@
 '''
-| Author:   Ezio416
-| Created:  2024-05-14
-| Modified: 2025-08-05
-
 - Functions for interacting with the web services Core API
 '''
 

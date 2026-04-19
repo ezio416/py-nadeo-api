@@ -1,8 +1,4 @@
 '''
-| Author:   Ezio416
-| Created:  2024-05-20
-| Modified: 2025-08-05
-
 - Various functions not directly related to any API
 - You don't need to import this module - simply call these from the main module like `nadeo_api.<function>`
 '''

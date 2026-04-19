@@ -1,8 +1,4 @@
 '''
-| Author:   Ezio416
-| Created:  2024-05-15
-| Modified: 2026-02-04
-
 - Functions for interacting with the web services Live API
 '''
 

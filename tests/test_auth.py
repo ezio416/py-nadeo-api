@@ -1,8 +1,4 @@
 '''
-| Author:   Ezio416
-| Created:  2024-05-07
-| Modified: 2025-08-05
-
 - Tests for nadeo_api.auth
 '''
 
