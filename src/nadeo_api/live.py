@@ -311,15 +311,15 @@ def get_map_leaderboard(token: auth.WebServicesToken, mapUid: str, groupUid: str
 
     if onlyWorld:
         if length > 100:
-            raise ValueError('You can only request 100 records at a time')
+            raise ValueError('you can only request 100 records at a time')
 
         if length + offset > 10_000:
-            raise ValueError('You can only retrieve records in the top 10,000')
+            raise ValueError('you can only retrieve records in the top 10,000')
 
         return get(token, f'api/token/leaderboard/group/{groupUid}/map/{mapUid}/top?onlyWorld=true&length={length}&offset={offset}')
 
     if not isinstance(token, auth.ServiceToken):
-        raise ValueError('This endpoint requires a service account when onlyWorld is False')
+        raise ValueError('this endpoint requires a service account when onlyWorld is False')
 
     return get(token, f'api/token/leaderboard/group/{groupUid}/map/{mapUid}/top?onlyWorld=false')
 
