@@ -39,6 +39,10 @@ def get_maps_weekly_short(token: auth.WebServicesToken) -> dict:
     return live.get_maps_weekly_short(token, 99)
 
 
+def get_player_club_record(token: auth.ServiceToken) -> dict:
+    return live.get_player_club_record(token, 'YjdVxZlrR85ebY_7vr1ihNkElyj', 9)
+
+
 def get_server_accounts(token: auth.ServiceToken) -> dict:
     return live.get_server_accounts(token)
 
@@ -103,6 +107,9 @@ def main() -> None:
     maps_weekly_short_service = get_maps_weekly_short(token_service)
     assert maps_weekly_short_service
     # assert maps_weekly_short_dedi == maps_weekly_short_service  # relative timestamp is different
+
+    player_club_record = get_player_club_record(token_service)
+    assert player_club_record
 
     server_accounts = get_server_accounts(token_service)
     assert server_accounts
