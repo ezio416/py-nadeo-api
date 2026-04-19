@@ -3,7 +3,6 @@
 '''
 
 from . import auth
-from . import error
 
 
 AUDIENCE: str = auth.AUDIENCE_LIVE
