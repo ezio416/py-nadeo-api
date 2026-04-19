@@ -87,15 +87,13 @@ class Token:
         - default: `0`
     '''
 
-    access_token:  JSONWebToken
-    audience:      str
-    expiration:    int
-    refresh_token: JSONWebToken
+    access_token: JSONWebToken
+    audience:     str
+    expiration:   int
 
-    def __init__(self, audience: str, access_token: str, refresh_token: str = '', expiration: int = 0):
+    def __init__(self, audience: str, access_token: str, expiration: int = 0):
         self.audience = self.verify_audience(audience)
         self.access_token = JSONWebToken(access_token)
-        self.refresh_token = JSONWebToken(refresh_token)
 
         if expiration:
             self.expiration = expiration
@@ -107,7 +105,7 @@ class Token:
                 self.expiration = int(time.time()) + 3600
 
     def __repr__(self) -> str:
-        return f"nadeo_api.auth.Token('{self.audience}', '{self.access_token}', '{self.refresh_token}', {self.expiration})"
+        return f"nadeo_api.auth.Token('{self.audience}', '{self.access_token}', {self.expiration})"
 
     def __str__(self) -> str:
         return self.access_token.token
@@ -115,6 +113,13 @@ class Token:
     @property
     def expired(self) -> bool:
         return int(time.time()) >= self.expiration
+
+    def refresh(self) -> None:
+        '''
+        - refreshes token(s)
+        '''
+
+        raise error.UsageError('token is not of a specified type')
 
     @staticmethod
     def verify_audience(audience: str) -> str:
@@ -132,6 +137,7 @@ class Token:
         raise error.AudienceError(f'invalid audience: {audience}')
 
 
+@dataclass
 class OAuthToken(Token):
     '''
     - a token for the public Trackmania API
@@ -139,6 +145,12 @@ class OAuthToken(Token):
 
     Parameters
     ----------
+    identifier: str
+        - client ID (username)
+
+    secret: str
+        - client secret (password)
+
     access_token: str
         - main token used for authorization
 
@@ -148,11 +160,26 @@ class OAuthToken(Token):
         - default: `0`
     '''
 
-    def __init__(self, access_token: str, expiration: int = 0):
-        super().__init__(AUDIENCE_OAUTH, access_token, '', expiration)
+    identifier: str
+    secret:     str
+
+    def __init__(self, identifier: str, secret: str, access_token: str, expiration: int = 0):
+        super().__init__(AUDIENCE_OAUTH, access_token, expiration)
+        self.identifier = identifier
+        self.secret = secret
 
     def __repr__(self) -> str:
         return f"nadeo_api.auth.OAuthToken('{self.access_token}', {self.expiration})"
+
+    def refresh(self) -> None:
+        '''
+        - refreshes token
+        - doesn't actually refresh, rather this requests a new token
+        '''
+
+        new_token: OAuthToken = self.get(self.identifier, self.secret)
+        self.access_token = new_token.access_token
+        self.expiration = new_token.expiration
 
     @staticmethod
     def check_type(token: Token, msg: str = '') -> None:
@@ -201,9 +228,11 @@ class OAuthToken(Token):
 
         json: dict = req.json()
         util._log('got OAuth2 token')
-        return OAuthToken(json['access_token'], int(time.time()) + json['expires_in'])
+
+        return OAuthToken(identifier, secret, json['access_token'], int(time.time()) + json['expires_in'])
 
 
+@dataclass
 class WebServicesToken(Token):
     '''
     - a token for the private web services API
@@ -225,13 +254,16 @@ class WebServicesToken(Token):
         - default: `0`
     '''
 
+    refresh_token: JSONWebToken
+
     def __init__(self, audience: str, access_token: str, refresh_token: str, expiration: int = 0):
-        super().__init__(audience, access_token, refresh_token, expiration)
+        super().__init__(audience, access_token, expiration)
+        self.refresh_token = JSONWebToken(refresh_token)
 
     def __repr__(self) -> str:
         return f"nadeo_api.auth.WebServicesToken('{self.audience}', '{self.access_token}', '{self.refresh_token}', {self.expiration})"
 
-    def check_audience(self: WebServicesToken, audience: str) -> None:
+    def check_audience(self, audience: str) -> None:
         '''
         - checks that the token has the expected audience and throws an AudienceError otherwise
 
@@ -254,8 +286,7 @@ class WebServicesToken(Token):
 
         req: requests.Response = requests.post(
             f'{URL_CORE}/v2/authentication/token/refresh',
-            headers={'Authorization': self.refresh_token},
-            # json={'audience': self.audience}  # seems to not actually be required
+            headers={'Authorization': self.refresh_token}
         )
 
         if req.status_code >= 400:
@@ -334,6 +365,7 @@ class WebServicesToken(Token):
 
         json: dict = req.json()
         util._log('got web services token')
+
         return WebServicesToken(audience, f'nadeo_v1 t={json['accessToken']}', f'nadeo_v1 t={json['refreshToken']}')
 
 
@@ -390,6 +422,7 @@ class DedicatedServerToken(WebServicesToken):
 
         token: WebServicesToken = WebServicesToken.get(audience, login, password, agent)
         util._log('got dedicated server token')
+
         return DedicatedServerToken(token.audience, token.access_token.token, token.refresh_token.token, token.expiration)
 
 
@@ -472,6 +505,7 @@ class ServiceToken(WebServicesToken):
 
         token: WebServicesToken = WebServicesToken.get(audience, login, password, agent)
         util._log('got service token')
+
         return ServiceToken(token.audience, token.access_token.token, token.refresh_token.token, token.expiration)
 
 
@@ -792,10 +826,7 @@ def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, meth
         base_name = AUDIENCE_OAUTH
 
     if token.expired:
-        if isinstance(token, WebServicesToken):
-            token.refresh()
-        else:
-            raise Exception('OAuth2 token is expired and cannot be refreshed')  # TODO
+        token.refresh()
 
     if endpoint.startswith(base_url):
         endpoint = endpoint.split(base_url)[1]
@@ -815,11 +846,7 @@ def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, meth
     req: requests.Response = __request()
 
     if req.status_code == 401:  # token may have expired prematurely
-        if isinstance(token, WebServicesToken):
-            token.refresh()
-        else:
-            raise Exception('OAuth2 token is expired and cannot be refreshed')
-
+        token.refresh()
         req = __request()
 
     if req.status_code >= 400:
