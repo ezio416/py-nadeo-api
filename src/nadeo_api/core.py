@@ -307,7 +307,7 @@ def get_routes(token: auth.WebServicesToken, usage: str = 'Client') -> dict:
 
     usage: str
         - which authorization type to get routes for
-        - `'Client'` is for an Ubisoft account, while `'Server'` is for a dedicated server account
+        - `'Client'` is for a Ubisoft/service account, while `'Server'` is for a dedicated server account
         - valid: `'Client'`, `'Server'`
         - default: `'Client'`
 
