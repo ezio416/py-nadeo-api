@@ -12,15 +12,25 @@ import src.nadeo_api.meet as meet
 
 
 def main() -> None:
-    token: auth.Token = auth.get_token(
-        'meet',
+    config.debug_logging = True
+
+    token_dedi = auth.DedicatedServerToken.get(
+        meet.AUDIENCE,
         os.environ['TM_E416DEV_SERVER_USERNAME'],
         os.environ['TM_E416DEV_SERVER_PASSWORD'],
-        os.environ['TM_E416DEV_AGENT'],
-        True
+        os.environ['TM_E416DEV_AGENT']
     )
+    assert token_dedi.access_token.token
 
-    config.debug_logging = True
+    token_service = auth.ServiceToken.get(
+        meet.AUDIENCE,
+        os.environ['TM_SERVICE_USERNAME'],
+        os.environ['TM_SERVICE_PASSWORD'],
+        os.environ['TM_E416DEV_AGENT']
+    )
+    assert token_service.access_token.token
+
+    ...
 
     pass
 

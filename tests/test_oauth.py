@@ -12,13 +12,15 @@ import src.nadeo_api.oauth as oauth
 
 
 def main() -> None:
-    token: auth.Token = auth.get_token(
-        auth.AUDIENCE_OAUTH,
+    config.debug_logging = True
+
+    token = auth.OAuthToken.get(
         os.environ['TM_OAUTH_IDENTIFIER'],
         os.environ['TM_OAUTH_SECRET']
     )
+    assert token.access_token.token
 
-    config.debug_logging = True
+    ...
 
     pass
 
