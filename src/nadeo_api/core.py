@@ -255,7 +255,7 @@ def put(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: di
 ###################################################### ENDPOINTS #######################################################
 
 
-def get_map_info(token: auth.WebServicesToken, uids: typing.Iterable[str]) -> list[dict]:  # FIXME deprecated endpoint
+def get_map_info(token: auth.WebServicesToken, uids: typing.Iterable[str]) -> list[dict]:
     '''
     - gets info on multiple maps from their UIDs
 
@@ -276,7 +276,7 @@ def get_map_info(token: auth.WebServicesToken, uids: typing.Iterable[str]) -> li
     UID_LIMIT: int = 291
 
     if len(uids) <= UID_LIMIT:
-        return get(token, f'maps/?mapUidList={','.join(uids)}')
+        return get(token, f'maps/by-uid/?mapUidList={','.join(uids)}')
 
     ret: list[dict] = []
 
@@ -284,7 +284,7 @@ def get_map_info(token: auth.WebServicesToken, uids: typing.Iterable[str]) -> li
         uid_count: int = min(len(uids), UID_LIMIT)
         uids_this_req: list[str] = uids[:uid_count]
         uids = uids[uid_count:]
-        endpoint: str = f'maps/?mapUidList={','.join(uids_this_req)}'
+        endpoint: str = f'maps/by-uid/?mapUidList={','.join(uids_this_req)}'
 
         req: list[dict] = get(token, endpoint)
         for map in req:
