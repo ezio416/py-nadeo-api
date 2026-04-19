@@ -19,6 +19,7 @@ def main() -> None:
         os.environ['TM_E416DEV_SERVER_PASSWORD'],
         os.environ['TM_E416DEV_AGENT']
     )
+    assert token_dedi_core.access_token.token
 
     token_dedi_live = auth.DedicatedServerToken.get(
         auth.AUDIENCE_LIVE,
@@ -26,6 +27,7 @@ def main() -> None:
         os.environ['TM_E416DEV_SERVER_PASSWORD'],
         os.environ['TM_E416DEV_AGENT']
     )
+    assert token_dedi_live.access_token.token
 
     token_service_core = auth.ServiceToken.get(
         auth.AUDIENCE_CORE,
@@ -33,6 +35,7 @@ def main() -> None:
         os.environ['TM_SERVICE_PASSWORD'],
         os.environ['TM_E416DEV_AGENT']
     )
+    assert token_service_core.access_token.token
 
     token_service_live = auth.ServiceToken.get(
         auth.AUDIENCE_LIVE,
@@ -40,11 +43,13 @@ def main() -> None:
         os.environ['TM_SERVICE_PASSWORD'],
         os.environ['TM_E416DEV_AGENT']
     )
+    assert token_service_live.access_token.token
 
     token_oauth = auth.OAuthToken.get(
         os.environ['TM_OAUTH_IDENTIFIER'],
         os.environ['TM_OAUTH_SECRET']
     )
+    assert token_oauth.access_token.token
 
     pass
 
