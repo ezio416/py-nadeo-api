@@ -356,7 +356,7 @@ def get_maps_royal(token: auth.WebServicesToken, length: int = 51, offset: int =
 def get_maps_seasonal(token: auth.WebServicesToken, length: int, offset: int = 0) -> dict:
     '''
     - gets official Nadeo seasonal campaigns
-    - https://webservices.openplanet.dev/live/campaigns/campaigns
+    - https://webservices.openplanet.dev/live/campaigns/campaigns-v2
 
     Parameters
     ----------
