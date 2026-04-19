@@ -2,6 +2,7 @@
 - Custom exception types
 '''
 
+
 class AudienceError(ValueError):
     '''
     - a token with the wrong audience was passed to a request
