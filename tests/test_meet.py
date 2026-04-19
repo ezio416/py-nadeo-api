@@ -15,6 +15,10 @@ def get_current_cotd(token: auth.WebServicesToken) -> dict:
     return meet.get_current_cotd(token)
 
 
+def get_matchmaking_ids(token: auth.WebServicesToken) -> dict:
+    return meet.get_matchmaking_ids(token)
+
+
 def main() -> None:
     config.debug_logging = True
 
@@ -39,6 +43,12 @@ def main() -> None:
     current_cotd_service = get_current_cotd(token_service)
     assert current_cotd_service
     assert current_cotd_dedi == current_cotd_service
+
+    matchmaking_ids_dedi = get_matchmaking_ids(token_dedi)
+    assert matchmaking_ids_dedi
+    matchmaking_ids_service = get_matchmaking_ids(token_service)
+    assert matchmaking_ids_service
+    assert matchmaking_ids_dedi == matchmaking_ids_service
 
     pass
 
