@@ -23,6 +23,7 @@ class ParameterError(ValueError):
 class UsageError(ValueError):
     '''
     - an invalid token type was passed to a function
+    - may also be used if an endpoint is only useful with a service account, but a dedicated server account was used
     - inherits from `ValueError`
     '''
 
