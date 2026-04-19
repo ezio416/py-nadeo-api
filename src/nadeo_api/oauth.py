@@ -44,8 +44,7 @@ def delete(token: auth.OAuthToken, endpoint: str, params: dict = {}, body: dict 
         - response body
     '''
 
-    if not isinstance(token, auth.OAuthToken):
-        raise error.UsageError('OAuth2 endpoints require an OAuth2 token')
+    auth.OAuthToken.check_type(token)
 
     return auth._delete(token, URL, endpoint, params, body)
 
@@ -75,8 +74,7 @@ def get(token: auth.OAuthToken, endpoint: str, params: dict = {}) -> dict | list
         - response body
     '''
 
-    if not isinstance(token, auth.OAuthToken):
-        raise error.UsageError('OAuth2 endpoints require an OAuth2 token')
+    auth.OAuthToken.check_type(token)
 
     return auth._get(token, URL, endpoint, params)
 
@@ -106,8 +104,7 @@ def head(token: auth.OAuthToken, endpoint: str, params: dict = {}) -> dict | lis
         - response body
     '''
 
-    if not isinstance(token, auth.OAuthToken):
-        raise error.UsageError('OAuth2 endpoints require an OAuth2 token')
+    auth.OAuthToken.check_type(token)
 
     return auth._head(token, URL, endpoint, params)
 
@@ -141,8 +138,7 @@ def options(token: auth.OAuthToken, endpoint: str, params: dict = {}, body: dict
         - response body
     '''
 
-    if not isinstance(token, auth.OAuthToken):
-        raise error.UsageError('OAuth2 endpoints require an OAuth2 token')
+    auth.OAuthToken.check_type(token)
 
     return auth._options(token, URL, endpoint, params, body)
 
@@ -176,8 +172,7 @@ def patch(token: auth.OAuthToken, endpoint: str, params: dict = {}, body: dict =
         - response body
     '''
 
-    if not isinstance(token, auth.OAuthToken):
-        raise error.UsageError('OAuth2 endpoints require an OAuth2 token')
+    auth.OAuthToken.check_type(token)
 
     return auth._patch(token, URL, endpoint, params, body)
 
@@ -211,8 +206,7 @@ def post(token: auth.OAuthToken, endpoint: str, params: dict = {}, body: dict = 
         - response body
     '''
 
-    if not isinstance(token, auth.OAuthToken):
-        raise error.UsageError('OAuth2 endpoints require an OAuth2 token')
+    auth.OAuthToken.check_type(token)
 
     return auth._post(token, URL, endpoint, params, body)
 
@@ -246,8 +240,7 @@ def put(token: auth.OAuthToken, endpoint: str, params: dict = {}, body: dict = {
         - response body
     '''
 
-    if not isinstance(token, auth.OAuthToken):
-        raise error.UsageError('OAuth2 endpoints require an OAuth2 token')
+    auth.OAuthToken.check_type(token)
 
     return auth._put(token, URL, endpoint, params, body)
 
@@ -298,8 +291,7 @@ def get_account_names_from_ids(token: auth.OAuthToken, account_ids: typing.Itera
         - returned account names as values with given account IDs as keys
     '''
 
-    num_ids: int = len(account_ids)
-    if num_ids > 50:
+    if (num_ids := len(account_ids)) > 50:
         raise error.ParameterError(f'you can request a maximum of 50 account names, not: {num_ids}')
 
     return get(token, f'api/display-names?accountId[]={'&accountId[]='.join(account_ids)}')

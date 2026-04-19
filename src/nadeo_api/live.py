@@ -42,11 +42,8 @@ def delete(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body:
         - response body
     '''
 
-    if not isinstance(token, auth.WebServicesToken):
-        raise error.UsageError('web services endpoints require a web services token')
-
-    if token.audience != AUDIENCE:
-        raise error.AudienceError('Live endpoints require the Live audience')
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
 
     return auth._delete(token, URL, endpoint, params, body)
 
@@ -76,11 +73,8 @@ def get(token: auth.WebServicesToken, endpoint: str, params: dict = {}) -> dict 
         - response body
     '''
 
-    if not isinstance(token, auth.WebServicesToken):
-        raise error.UsageError('web services endpoints require a web services token')
-
-    if token.audience != AUDIENCE:
-        raise error.AudienceError('Live endpoints require the Live audience')
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
 
     return auth._get(token, URL, endpoint, params)
 
@@ -110,11 +104,8 @@ def head(token: auth.WebServicesToken, endpoint: str, params: dict = {}) -> dict
         - response body
     '''
 
-    if not isinstance(token, auth.WebServicesToken):
-        raise error.UsageError('web services endpoints require a web services token')
-
-    if token.audience != AUDIENCE:
-        raise error.AudienceError('Live endpoints require the Live audience')
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
 
     return auth._head(token, URL, endpoint, params)
 
@@ -148,11 +139,8 @@ def options(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body
         - response body
     '''
 
-    if not isinstance(token, auth.WebServicesToken):
-        raise error.UsageError('web services endpoints require a web services token')
-
-    if token.audience != AUDIENCE:
-        raise error.AudienceError('Live endpoints require the Live audience')
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
 
     return auth._options(token, URL, endpoint, params, body)
 
@@ -186,11 +174,8 @@ def patch(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: 
         - response body
     '''
 
-    if not isinstance(token, auth.WebServicesToken):
-        raise error.UsageError('web services endpoints require a web services token')
-
-    if token.audience != AUDIENCE:
-        raise error.AudienceError('Live endpoints require the Live audience')
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
 
     return auth._patch(token, URL, endpoint, params, body)
 
@@ -224,11 +209,8 @@ def post(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: d
         - response body
     '''
 
-    if not isinstance(token, auth.WebServicesToken):
-        raise error.UsageError('web services endpoints require a web services token')
-
-    if token.audience != AUDIENCE:
-        raise error.AudienceError('Live endpoints require the Live audience')
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
 
     return auth._post(token, URL, endpoint, params, body)
 
@@ -262,11 +244,8 @@ def put(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: di
         - response body
     '''
 
-    if not isinstance(token, auth.WebServicesToken):
-        raise error.UsageError('web services endpoints require a web services token')
-
-    if token.audience != AUDIENCE:
-        raise error.AudienceError('Live endpoints require the Live audience')
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
 
     return auth._put(token, URL, endpoint, params, body)
 
@@ -340,8 +319,7 @@ def get_map_leaderboard(token: auth.WebServicesToken, map_uid: str, group_uid: s
 
         return get(token, f'api/token/leaderboard/group/{group_uid}/map/{map_uid}/top?onlyWorld=true&length={length}&offset={offset}')
 
-    if not isinstance(token, auth.ServiceToken):
-        raise error.UsageError('this endpoint requires a service account when onlyWorld is False')
+    auth.ServiceToken.check_type(token, 'this endpoint requires a service account when only_world is False')
 
     return get(token, f'api/token/leaderboard/group/{group_uid}/map/{map_uid}/top?onlyWorld=false')
 
@@ -366,8 +344,7 @@ def get_map_review_connect(token: auth.ServiceToken, review_type: str) -> dict:
         - info on active server
     '''
 
-    if not isinstance(token, auth.ServiceToken):
-        raise error.UsageError('this endpoint requires a service account token')
+    auth.ServiceToken.check_type(token)
 
     return get(token, f'api/token/map-review/{review_type}/connect')
 
@@ -400,8 +377,7 @@ def get_map_review_submitted(token: auth.ServiceToken, review_type: str, length:
         - info on submitted maps
     '''
 
-    if not isinstance(token, auth.ServiceToken):
-        raise error.UsageError('this endpoint requires a service account token')
+    auth.ServiceToken.check_type(token)
 
     return get(token, f'api/token/map-review/{review_type}/submitted-map', {'length': length, 'offset': offset})
 
@@ -432,7 +408,7 @@ def get_maps_royal(token: auth.WebServicesToken, length: int = 51, offset: int =
         - maps by month sorted newest to oldest
     '''
 
-    return get(token, '/api/token/campaign/month', {'length': length, 'offset': offset, 'royal': 'true'})
+    return get(token, 'api/token/campaign/month', {'length': length, 'offset': offset, 'royal': 'true'})
 
 
 def get_maps_seasonal(token: auth.WebServicesToken, length: int = 1, offset: int = 0) -> dict:
@@ -486,7 +462,7 @@ def get_maps_totd(token: auth.WebServicesToken, length: int = 1, offset: int = 0
         - maps by month sorted newest to oldest
     '''
 
-    return get(token, '/api/token/campaign/month', {'length': length, 'offset': offset})
+    return get(token, 'api/token/campaign/month', {'length': length, 'offset': offset})
 
 
 def get_maps_weekly_grand(token: auth.WebServicesToken, length: int = 1, offset: int = 0) -> dict:
@@ -513,7 +489,7 @@ def get_maps_weekly_grand(token: auth.WebServicesToken, length: int = 1, offset:
         - maps by week sorted newest to oldest
     '''
 
-    return get(token, '/api/campaign/weekly-grands', {'length': length, 'offset': offset})
+    return get(token, 'api/campaign/weekly-grands', {'length': length, 'offset': offset})
 
 
 def get_maps_weekly_short(token: auth.WebServicesToken, length: int = 1, offset: int = 0) -> dict:
@@ -540,7 +516,7 @@ def get_maps_weekly_short(token: auth.WebServicesToken, length: int = 1, offset:
         - maps by week sorted newest to oldest
     '''
 
-    return get(token, '/api/campaign/weekly-shorts', {'length': length, 'offset': offset})
+    return get(token, 'api/campaign/weekly-shorts', {'length': length, 'offset': offset})
 
 
 def get_player_club_record(token: auth.ServiceToken, map_uid: str, club_id: int, group_uid: str = 'Personal_Best') -> dict:
@@ -570,8 +546,7 @@ def get_player_club_record(token: auth.ServiceToken, map_uid: str, club_id: int,
         - record info
     '''
 
-    if not isinstance(token, auth.ServiceToken):
-        raise error.UsageError('this endpoint requires a service account token')
+    auth.ServiceToken.check_type(token)
 
     return get(token, f'api/token/leaderboard/group/{group_uid}/map/{map_uid}/club/{club_id}')
 
@@ -592,7 +567,6 @@ def get_server_accounts(token: auth.ServiceToken) -> dict:
         - dedicated server accounts
     '''
 
-    if not isinstance(token, auth.ServiceToken):
-        raise error.UsageError('this endpoint requires a service account token')
+    auth.ServiceToken.check_type(token)
 
-    return get(token, '/api/token/server/player-server/account')
+    return get(token, 'api/token/server/player-server/account')

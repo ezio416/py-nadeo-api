@@ -155,6 +155,24 @@ class OAuthToken(Token):
         return f"nadeo_api.auth.OAuthToken('{self.access_token}', {self.expiration})"
 
     @staticmethod
+    def check_type(token: Token, msg: str = '') -> None:
+        '''
+        - checks that a token is for OAuth2 and throws a UsageError otherwise
+
+        Parameters
+        ----------
+        token: Token
+            - authentication token
+
+        msg: str
+            - exception message to pass along if the check fails
+            - default: `''` (empty)
+        '''
+
+        if not isinstance(token, OAuthToken):
+            raise error.UsageError(msg if msg else 'OAuth2 endpoints require an OAuth2 token')
+
+    @staticmethod
     def get(identifier: str, secret: str) -> OAuthToken:
         '''
         - requests an authentication token
@@ -237,6 +255,40 @@ class WebServicesToken(Token):
         except KeyError:
             util._log("decoded token missing key 'exp'")
             self.expiration = 0
+
+    def check_audience(self: WebServicesToken, audience: str) -> None:
+        '''
+        - checks that the token has the expected audience and throws an AudienceError otherwise
+
+        Parameters
+        ----------
+        token: WebServicesToken
+            - authentication token
+
+        audience: str
+            - expected audience
+        '''
+
+        if self.audience != audience:
+            raise error.AudienceError('incorrect audience used for desired endpoint')
+
+    @staticmethod
+    def check_type(token: Token, msg: str = '') -> None:
+        '''
+        - checks that a token is for web services and throws a UsageError otherwise
+
+        Parameters
+        ----------
+        token: Token
+            - authentication token
+
+        msg: str
+            - exception message to pass along if the check fails
+            - default: `''` (empty)
+        '''
+
+        if not isinstance(token, WebServicesToken):
+            raise error.UsageError(msg if msg else 'web services endpoints require a web services token')
 
     @staticmethod
     def get(audience: str, login: str, password: str, agent: str) -> WebServicesToken:
@@ -376,6 +428,24 @@ class ServiceToken(WebServicesToken):
 
     def __repr__(self) -> str:
         return f"nadeo_api.auth.ServiceToken('{self.audience}', '{self.access_token}', '{self.refresh_token}', {self.expiration})"
+
+    @staticmethod
+    def check_type(token: Token, msg: str = '') -> None:
+        '''
+        - checks that a token is for a service account and throws a UsageError otherwise
+
+        Parameters
+        ----------
+        token: Token
+            - authentication token
+
+        msg: str
+            - exception message to pass along if the check fails
+            - default: `''` (empty)
+        '''
+
+        if not isinstance(token, ServiceToken):
+            raise error.UsageError(msg if msg else 'this endpoint requires a service account token')
 
     @staticmethod
     def get(audience: str, login: str, password: str, agent: str) -> ServiceToken:
@@ -659,7 +729,7 @@ def _put(token: Token, base_url: str, endpoint: str, params: dict = {}, body: di
 def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, method: str = 'get', body: dict = {}) -> dict | list:
     '''
     - sends a request to a specified API
-    - this is for internal use - you should use an explicit function like `core.get()` instead
+    - this is for internal use - you should use an API-specific function like `core.get()` instead
 
     Parameters
     ----------
@@ -725,7 +795,7 @@ def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, meth
         if isinstance(token, WebServicesToken):
             token.refresh()
         else:
-            raise Exception('OAuth2 token is expired and cannot be refreshed')
+            raise Exception('OAuth2 token is expired and cannot be refreshed')  # TODO
 
     if endpoint.startswith(base_url):
         endpoint = endpoint.split(base_url)[1]
