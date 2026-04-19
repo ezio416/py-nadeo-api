@@ -255,7 +255,7 @@ def put(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: di
 def get_current_cotd(token: auth.WebServicesToken) -> dict:
     '''
     - gets info on the current cross-platform Cup of the Day
-    - https://webservices.openplanet.dev/meet/cup-of-the-day/current
+    - https://webservices.openplanet.dev/meet/competitions/current-cotd
 
     Parameters
     ----------
