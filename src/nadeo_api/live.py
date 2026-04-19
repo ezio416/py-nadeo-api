@@ -486,6 +486,7 @@ def get_maps_weekly_short(token: auth.WebServicesToken, length: int = 1, offset:
 def get_player_club_record(token: auth.ServiceToken, map_uid: str, club_id: int, group_uid: str = 'Personal_Best') -> dict:
     '''
     - gets the currently authenticated user's map record and leaderboard position in reference to a club
+    - https://webservices.openplanet.dev/live/leaderboards/player-club-record
 
     Parameters
     ----------
