@@ -11,6 +11,10 @@ import src.nadeo_api.config as config
 import src.nadeo_api.meet as meet
 
 
+def get_current_cotd(token: auth.WebServicesToken) -> dict:
+    return meet.get_current_cotd(token)
+
+
 def main() -> None:
     config.debug_logging = True
 
@@ -30,7 +34,11 @@ def main() -> None:
     )
     assert token_service.access_token.token
 
-    ...
+    current_cotd_dedi = get_current_cotd(token_dedi)
+    assert current_cotd_dedi
+    current_cotd_service = get_current_cotd(token_service)
+    assert current_cotd_service
+    assert current_cotd_dedi == current_cotd_service
 
     pass
 
