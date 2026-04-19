@@ -13,7 +13,7 @@ import src.nadeo_api.oauth as oauth
 
 def main() -> None:
     token: auth.Token = auth.get_token(
-        auth.audience_oauth,
+        auth.AUDIENCE_OAUTH,
         os.environ['TM_OAUTH_IDENTIFIER'],
         os.environ['TM_OAUTH_SECRET']
     )

@@ -15,14 +15,13 @@ from . import config
 from . import util
 
 
-audience_core:  str = 'NadeoServices'
-audience_live:  str = 'NadeoLiveServices'  # also used for Meet endpoints (formerly known as Club)
-audience_oauth: str = 'OAuth2'
-tmnext_app_id:  str = '86263886-327a-4328-ac69-527f0d20a237'
-url_core:       str = 'https://prod.trackmania.core.nadeo.online'
-url_live:       str = 'https://live-services.trackmania.nadeo.live'
-url_meet:       str = 'https://meet.trackmania.nadeo.club'
-url_oauth:      str = 'https://api.trackmania.com'
+AUDIENCE_CORE:  str = 'NadeoServices'
+AUDIENCE_LIVE:  str = 'NadeoLiveServices'  # also used for Meet endpoints (formerly known as Club)
+AUDIENCE_OAUTH: str = 'OAuth2'
+URL_CORE:       str = 'https://prod.trackmania.core.nadeo.online'
+URL_LIVE:       str = 'https://live-services.trackmania.nadeo.live'
+URL_MEET:       str = 'https://meet.trackmania.nadeo.club'
+URL_OAUTH:      str = 'https://api.trackmania.com'
 
 
 @dataclass

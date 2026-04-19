@@ -7,8 +7,8 @@ import typing
 from . import auth
 
 
-AUDIENCE: str = auth.audience_oauth
-URL:      str = auth.url_oauth
+AUDIENCE: str = auth.AUDIENCE_OAUTH
+URL:      str = auth.URL_OAUTH
 
 
 ######################################################### BASE #########################################################

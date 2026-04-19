@@ -8,8 +8,8 @@ from . import auth
 from . import util
 
 
-AUDIENCE: str = auth.audience_core
-URL:      str = auth.url_core
+AUDIENCE: str = auth.AUDIENCE_CORE
+URL:      str = auth.URL_CORE
 
 
 ######################################################### BASE #########################################################

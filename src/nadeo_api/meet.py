@@ -5,8 +5,8 @@
 from . import auth
 
 
-AUDIENCE: str = auth.audience_live
-URL:      str = auth.url_meet
+AUDIENCE: str = auth.AUDIENCE_LIVE
+URL:      str = auth.URL_MEET
 
 
 ######################################################### BASE #########################################################
