@@ -14,14 +14,14 @@ URL:      str = auth.URL_OAUTH
 ######################################################### BASE #########################################################
 
 
-def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def delete(token: auth.OAuthToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a DELETE request to the OAuth2 API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.OAuthToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -43,17 +43,20 @@ def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {})
         - response body
     '''
 
+    if not isinstance(token, auth.OAuthToken):
+        raise ValueError('OAuth2 endpoints require an OAuth2 token')
+
     return auth._delete(token, URL, endpoint, params, body)
 
 
-def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
+def get(token: auth.OAuthToken, endpoint: str, params: dict = {}) -> dict | list:
     '''
     - sends a GET request to the OAuth2 API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token gotten from `auth.get_token`
+    token: auth.OAuthToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -71,17 +74,20 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
         - response body
     '''
 
+    if not isinstance(token, auth.OAuthToken):
+        raise ValueError('OAuth2 endpoints require an OAuth2 token')
+
     return auth._get(token, URL, endpoint, params)
 
 
-def head(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
+def head(token: auth.OAuthToken, endpoint: str, params: dict = {}) -> dict | list:
     '''
     - sends a HEAD request to the OAuth2 API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.OAuthToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -99,17 +105,20 @@ def head(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
         - response body
     '''
 
+    if not isinstance(token, auth.OAuthToken):
+        raise ValueError('OAuth2 endpoints require an OAuth2 token')
+
     return auth._head(token, URL, endpoint, params)
 
 
-def options(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def options(token: auth.OAuthToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends an OPTIONS request to the OAuth2 API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.OAuthToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -131,17 +140,20 @@ def options(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}
         - response body
     '''
 
+    if not isinstance(token, auth.OAuthToken):
+        raise ValueError('OAuth2 endpoints require an OAuth2 token')
+
     return auth._options(token, URL, endpoint, params, body)
 
 
-def patch(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def patch(token: auth.OAuthToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a PATCH request to the OAuth2 API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.OAuthToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -163,17 +175,20 @@ def patch(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) 
         - response body
     '''
 
+    if not isinstance(token, auth.OAuthToken):
+        raise ValueError('OAuth2 endpoints require an OAuth2 token')
+
     return auth._patch(token, URL, endpoint, params, body)
 
 
-def post(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def post(token: auth.OAuthToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a POST request to the OAuth2 API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.OAuthToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -195,17 +210,20 @@ def post(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -
         - response body
     '''
 
+    if not isinstance(token, auth.OAuthToken):
+        raise ValueError('OAuth2 endpoints require an OAuth2 token')
+
     return auth._post(token, URL, endpoint, params, body)
 
 
-def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def put(token: auth.OAuthToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a PUT request to the OAuth2 API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.OAuthToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -226,6 +244,9 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
     dict | list
         - response body
     '''
+
+    if not isinstance(token, auth.OAuthToken):
+        raise ValueError('OAuth2 endpoints require an OAuth2 token')
 
     return auth._put(token, URL, endpoint, params, body)
 
@@ -233,15 +254,15 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
 ###################################################### ENDPOINTS #######################################################
 
 
-def get_account_ids_from_names(token: auth.Token, account_names: typing.Iterable[str]) -> dict:
+def get_account_ids_from_names(token: auth.OAuthToken, account_names: typing.Iterable[str]) -> dict:
     '''
     - gets Ubisoft account IDs (UUID) given account names
     - https://webservices.openplanet.dev/oauth/reference/accounts/name-to-id
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.OAuthToken
+        - authentication token
 
     account_names: Iterable[str]
         - account names
@@ -256,15 +277,15 @@ def get_account_ids_from_names(token: auth.Token, account_names: typing.Iterable
     return get(token, f'api/display-names/account-ids?displayName[]={'&displayName[]='.join(account_names)}')
 
 
-def get_account_names_from_ids(token: auth.Token, account_ids: typing.Iterable[str]) -> dict:
+def get_account_names_from_ids(token: auth.OAuthToken, account_ids: typing.Iterable[str]) -> dict:
     '''
     - gets Ubisoft account names given account IDs (UUID)
     - https://webservices.openplanet.dev/oauth/reference/accounts/id-to-name
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.OAuthToken
+        - authentication token
 
     account_ids: str | Iterable[str]
         - account IDs (max 50)

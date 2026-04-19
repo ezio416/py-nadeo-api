@@ -12,14 +12,14 @@ URL:      str = auth.URL_MEET
 ######################################################### BASE #########################################################
 
 
-def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def delete(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a DELETE request to the Meet API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -41,17 +41,20 @@ def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {})
         - response body
     '''
 
+    if not isinstance(token, auth.WebServicesToken):
+        raise ValueError('web services endpoints require a web services token')
+
     return auth._delete(token, URL, endpoint, params, body)
 
 
-def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
+def get(token: auth.WebServicesToken, endpoint: str, params: dict = {}) -> dict | list:
     '''
     - sends a GET request to the Meet API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -69,17 +72,20 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
         - response body
     '''
 
+    if not isinstance(token, auth.WebServicesToken):
+        raise ValueError('web services endpoints require a web services token')
+
     return auth._get(token, URL, endpoint, params)
 
 
-def head(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
+def head(token: auth.WebServicesToken, endpoint: str, params: dict = {}) -> dict | list:
     '''
     - sends a HEAD request to the Meet API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -97,17 +103,20 @@ def head(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
         - response body
     '''
 
+    if not isinstance(token, auth.WebServicesToken):
+        raise ValueError('web services endpoints require a web services token')
+
     return auth._head(token, URL, endpoint, params)
 
 
-def options(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def options(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends an OPTIONS request to the Meet API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -129,17 +138,20 @@ def options(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}
         - response body
     '''
 
+    if not isinstance(token, auth.WebServicesToken):
+        raise ValueError('web services endpoints require a web services token')
+
     return auth._options(token, URL, endpoint, params, body)
 
 
-def patch(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def patch(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a PATCH request to the Meet API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -161,17 +173,20 @@ def patch(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) 
         - response body
     '''
 
+    if not isinstance(token, auth.WebServicesToken):
+        raise ValueError('web services endpoints require a web services token')
+
     return auth._patch(token, URL, endpoint, params, body)
 
 
-def post(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def post(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a POST request to the Meet API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -193,17 +208,20 @@ def post(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -
         - response body
     '''
 
+    if not isinstance(token, auth.WebServicesToken):
+        raise ValueError('web services endpoints require a web services token')
+
     return auth._post(token, URL, endpoint, params, body)
 
 
-def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def put(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a PUT request to the Meet API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -224,6 +242,9 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
     dict | list
         - response body
     '''
+
+    if not isinstance(token, auth.WebServicesToken):
+        raise ValueError('web services endpoints require a web services token')
 
     return auth._put(token, URL, endpoint, params, body)
 
@@ -231,15 +252,15 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
 ###################################################### ENDPOINTS #######################################################
 
 
-def get_current_cotd(token: auth.Token) -> dict:
+def get_current_cotd(token: auth.WebServicesToken) -> dict:
     '''
     - gets info on the current cross-platform Cup of the Day
     - https://webservices.openplanet.dev/meet/cup-of-the-day/current
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     Returns
     -------
