@@ -25,14 +25,14 @@ def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {})
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     body: dict
-        - request body if applicable
+        - request body, if applicable
         - default: `{}` (empty)
 
     Returns
@@ -57,10 +57,10 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     Returns
@@ -85,10 +85,10 @@ def head(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     Returns
@@ -113,14 +113,14 @@ def options(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     body: dict
-        - request body if applicable
+        - request body, if applicable
         - default: `{}` (empty)
 
     Returns
@@ -145,14 +145,14 @@ def patch(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) 
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     body: dict
-        - request body if applicable
+        - request body, if applicable
         - default: `{}` (empty)
 
     Returns
@@ -177,14 +177,14 @@ def post(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     body: dict
-        - request body if applicable
+        - request body, if applicable
         - default: `{}` (empty)
 
     Returns
@@ -209,14 +209,14 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     body: dict
-        - request body if applicable
+        - request body, if applicable
         - default: `{}` (empty)
 
     Returns

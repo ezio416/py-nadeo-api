@@ -28,7 +28,7 @@ def delete(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body:
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
         - request parameters, if applicable
@@ -63,7 +63,7 @@ def get(token: auth.WebServicesToken, endpoint: str, params: dict = {}) -> dict 
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
         - request parameters, if applicable
@@ -94,7 +94,7 @@ def head(token: auth.WebServicesToken, endpoint: str, params: dict = {}) -> dict
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
         - request parameters, if applicable
@@ -125,7 +125,7 @@ def options(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
         - request parameters, if applicable
@@ -160,7 +160,7 @@ def patch(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: 
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
         - request parameters, if applicable
@@ -195,7 +195,7 @@ def post(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: d
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
         - request parameters, if applicable
@@ -230,7 +230,7 @@ def put(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: di
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
         - request parameters, if applicable
