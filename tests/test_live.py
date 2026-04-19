@@ -39,6 +39,10 @@ def get_maps_weekly_short(token: auth.WebServicesToken) -> dict:
     return live.get_maps_weekly_short(token, 99)
 
 
+def get_server_accounts(token: auth.ServiceToken) -> dict:
+    return live.get_server_accounts(token)
+
+
 def main() -> None:
     config.debug_logging = True
 
@@ -99,6 +103,9 @@ def main() -> None:
     maps_weekly_short_service = get_maps_weekly_short(token_service)
     assert maps_weekly_short_service
     # assert maps_weekly_short_dedi == maps_weekly_short_service  # relative timestamp is different
+
+    server_accounts = get_server_accounts(token_service)
+    assert server_accounts
 
     pass
 

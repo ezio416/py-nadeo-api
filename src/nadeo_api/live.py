@@ -481,3 +481,25 @@ def get_maps_weekly_short(token: auth.WebServicesToken, length: int = 1, offset:
     '''
 
     return get(token, '/api/campaign/weekly-shorts', {'length': length, 'offset': offset})
+
+
+def get_server_accounts(token: auth.ServiceToken) -> dict:
+    '''
+    - gets the currently authenticated user's dedicated server accounts
+    - https://webservices.openplanet.dev/live/accounts/server
+
+    Parameters
+    ----------
+    token: auth.ServiceToken
+        - authentication token
+
+    Returns
+    -------
+    dict
+        - dedicated server accounts
+    '''
+
+    if not isinstance(token, auth.ServiceToken):
+        raise error.UsageError('this endpoint requires a service account token')
+
+    return get(token, '/api/token/server/player-server/account')
