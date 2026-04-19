@@ -374,7 +374,6 @@ class ServiceToken(WebServicesToken):
         except KeyError:
             util._log("decoded token missing key 'sub'")
 
-
     def __repr__(self) -> str:
         return f"nadeo_api.auth.ServiceToken('{self.audience}', '{self.access_token}', '{self.refresh_token}', {self.expiration})"
 
