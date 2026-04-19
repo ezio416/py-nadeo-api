@@ -258,6 +258,7 @@ def put(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: di
 def get_map_info(token: auth.WebServicesToken, uids: typing.Iterable[str]) -> list[dict]:
     '''
     - gets info on multiple maps from their UIDs
+    - https://webservices.openplanet.dev/core/maps/info-multiple-uid
 
     Parameters
     ----------
