@@ -299,7 +299,7 @@ def get_club_campaign(token: auth.WebServicesToken, club_id: int, campaign_id: i
     return get(token, f'api/token/club/{club_id}/campaign/{campaign_id}')
 
 
-def get_map_leaderboard(token: auth.WebServicesToken, mapUid: str, groupUid: str = 'Personal_Best', onlyWorld: bool = True, length: int = 5, offset: int = 0) -> dict:
+def get_map_leaderboard(token: auth.WebServicesToken, map_uid: str, group_uid: str = 'Personal_Best', only_world: bool = True, length: int = 5, offset: int = 0) -> dict:
     '''
     - gets the top leaderboard records for a map
     - can only retrieve records in the top 10,000
@@ -310,14 +310,14 @@ def get_map_leaderboard(token: auth.WebServicesToken, mapUid: str, groupUid: str
     token: auth.WebServicesToken
         - authentication token
 
-    mapUid: str
+    map_uid: str
         - the UID of the map
 
-    groupUid: str
+    group_uid: str
         - the UID of the group/season
         - default: `'Personal_Best'`
 
-    onlyWorld: bool
+    only_world: bool
         - whether to only get records from the global leaderboard
         - if `False`, a service account is required and `length` and `offset` are ignored
         - default: `True`
@@ -331,19 +331,19 @@ def get_map_leaderboard(token: auth.WebServicesToken, mapUid: str, groupUid: str
         - default: `0`
     '''
 
-    if onlyWorld:
+    if only_world:
         if length > 100:
             raise error.ParameterError('you can only request 100 records at a time')
 
         if length + offset > 10_000:
             raise error.ParameterError('you can only retrieve records in the top 10,000')
 
-        return get(token, f'api/token/leaderboard/group/{groupUid}/map/{mapUid}/top?onlyWorld=true&length={length}&offset={offset}')
+        return get(token, f'api/token/leaderboard/group/{group_uid}/map/{map_uid}/top?onlyWorld=true&length={length}&offset={offset}')
 
     if not isinstance(token, auth.ServiceToken):
         raise error.UsageError('this endpoint requires a service account when onlyWorld is False')
 
-    return get(token, f'api/token/leaderboard/group/{groupUid}/map/{mapUid}/top?onlyWorld=false')
+    return get(token, f'api/token/leaderboard/group/{group_uid}/map/{map_uid}/top?onlyWorld=false')
 
 
 def get_maps_royal(token: auth.WebServicesToken, length: int = 51, offset: int = 0) -> dict:
