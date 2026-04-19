@@ -62,7 +62,7 @@ def _log(msg: str) -> None:
 
     summary: tb.StackSummary = tb.extract_stack(sys._getframe())
     print(
-        f'nadeo_api.{
+        f'{[stamp(True)]} nadeo_api.{
             summary[-2].filename.replace('\\', '/').split('/')[-1].replace('.py', '')}.{
             summary[-2].name}: {msg}'
     )
