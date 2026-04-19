@@ -12,14 +12,14 @@ URL:      str = auth.URL_LIVE
 ######################################################### BASE #########################################################
 
 
-def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def delete(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a DELETE request to the Live API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -41,17 +41,20 @@ def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {})
         - response body
     '''
 
+    if not isinstance(token, auth.WebServicesToken):
+        raise ValueError('web services endpoints require a web services token')
+
     return auth._delete(token, URL, endpoint, params, body)
 
 
-def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
+def get(token: auth.WebServicesToken, endpoint: str, params: dict = {}) -> dict | list:
     '''
     - sends a GET request to the Live API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -69,17 +72,20 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
         - response body
     '''
 
+    if not isinstance(token, auth.WebServicesToken):
+        raise ValueError('web services endpoints require a web services token')
+
     return auth._get(token, URL, endpoint, params)
 
 
-def head(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
+def head(token: auth.WebServicesToken, endpoint: str, params: dict = {}) -> dict | list:
     '''
     - sends a HEAD request to the Live API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -97,17 +103,20 @@ def head(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
         - response body
     '''
 
+    if not isinstance(token, auth.WebServicesToken):
+        raise ValueError('web services endpoints require a web services token')
+
     return auth._head(token, URL, endpoint, params)
 
 
-def options(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def options(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends an OPTIONS request to the Live API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -129,17 +138,20 @@ def options(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}
         - response body
     '''
 
+    if not isinstance(token, auth.WebServicesToken):
+        raise ValueError('web services endpoints require a web services token')
+
     return auth._options(token, URL, endpoint, params, body)
 
 
-def patch(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def patch(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a PATCH request to the Live API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -161,17 +173,20 @@ def patch(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) 
         - response body
     '''
 
+    if not isinstance(token, auth.WebServicesToken):
+        raise ValueError('web services endpoints require a web services token')
+
     return auth._patch(token, URL, endpoint, params, body)
 
 
-def post(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def post(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a POST request to the Live API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -193,17 +208,20 @@ def post(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -
         - response body
     '''
 
+    if not isinstance(token, auth.WebServicesToken):
+        raise ValueError('web services endpoints require a web services token')
+
     return auth._post(token, URL, endpoint, params, body)
 
 
-def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def put(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a PUT request to the Live API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
@@ -224,6 +242,9 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
     dict | list
         - response body
     '''
+
+    if not isinstance(token, auth.WebServicesToken):
+        raise ValueError('web services endpoints require a web services token')
 
     return auth._put(token, URL, endpoint, params, body)
 
@@ -231,15 +252,15 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
 ###################################################### ENDPOINTS #######################################################
 
 
-def get_club_campaign(token: auth.Token, club_id: int, campaign_id: int) -> dict:
+def get_club_campaign(token: auth.WebServicesToken, club_id: int, campaign_id: int) -> dict:
     '''
     - gets info on a campaign in a club
     - https://webservices.openplanet.dev/live/clubs/campaign-by-id
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     club_id: int
         - the ID of the club
@@ -256,7 +277,7 @@ def get_club_campaign(token: auth.Token, club_id: int, campaign_id: int) -> dict
     return get(token, f'api/token/club/{club_id}/campaign/{campaign_id}')
 
 
-def get_map_leaderboard(token: auth.Token, mapUid: str, groupUid: str = 'Personal_Best', onlyWorld: bool = True, length: int = 5, offset: int = 0) -> dict:
+def get_map_leaderboard(token: auth.WebServicesToken, mapUid: str, groupUid: str = 'Personal_Best', onlyWorld: bool = True, length: int = 5, offset: int = 0) -> dict:
     '''
     - gets the top leaderboard records for a map
     - can only retrieve records in the top 10,000
@@ -264,8 +285,8 @@ def get_map_leaderboard(token: auth.Token, mapUid: str, groupUid: str = 'Persona
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     mapUid: str
         - the UID of the map
@@ -276,7 +297,7 @@ def get_map_leaderboard(token: auth.Token, mapUid: str, groupUid: str = 'Persona
 
     onlyWorld: bool
         - whether to only get records from the global leaderboard
-        - if `False`, a Ubisoft account is required and `length` and `offset` are ignored
+        - if `False`, a service account is required and `length` and `offset` are ignored
         - default: `True`
 
     length: int
@@ -297,13 +318,13 @@ def get_map_leaderboard(token: auth.Token, mapUid: str, groupUid: str = 'Persona
 
         return get(token, f'api/token/leaderboard/group/{groupUid}/map/{mapUid}/top?onlyWorld=true&length={length}&offset={offset}')
 
-    if token.server_account:
-        raise ValueError('This endpoint requires a Ubisoft account when onlyWorld is False')
+    if not isinstance(token, auth.ServiceToken):
+        raise ValueError('This endpoint requires a service account when onlyWorld is False')
 
     return get(token, f'api/token/leaderboard/group/{groupUid}/map/{mapUid}/top?onlyWorld=false')
 
 
-def get_maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
+def get_maps_royal(token: auth.WebServicesToken, length: int, offset: int = 0) -> dict:
     '''
     - gets Royal maps
     - note: no longer being updated so it's probably fine to cache this data permanently
@@ -311,8 +332,8 @@ def get_maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     length: int
         - number of months to get
@@ -331,15 +352,15 @@ def get_maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
     return get(token, '/api/token/campaign/month', {'length': length, 'offset': offset, 'royal': 'true'})
 
 
-def get_maps_seasonal(token: auth.Token, length: int, offset: int = 0) -> dict:
+def get_maps_seasonal(token: auth.WebServicesToken, length: int, offset: int = 0) -> dict:
     '''
     - gets official Nadeo seasonal campaigns
     - https://webservices.openplanet.dev/live/campaigns/campaigns
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     length: int
         - number of campaigns to get
@@ -357,15 +378,15 @@ def get_maps_seasonal(token: auth.Token, length: int, offset: int = 0) -> dict:
     return get(token, 'api/campaign/official', {'length': length, 'offset': offset})
 
 
-def get_maps_totd(token: auth.Token, length: int, offset: int = 0) -> dict:
+def get_maps_totd(token: auth.WebServicesToken, length: int, offset: int = 0) -> dict:
     '''
     - gets Tracks of the Day
     - https://webservices.openplanet.dev/live/campaigns/totds
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     length: int
         - number of months to get
@@ -383,15 +404,15 @@ def get_maps_totd(token: auth.Token, length: int, offset: int = 0) -> dict:
     return get(token, '/api/token/campaign/month', {'length': length, 'offset': offset})
 
 
-def get_maps_weekly_grand(token: auth.Token, length: int, offset: int = 0) -> dict:
+def get_maps_weekly_grand(token: auth.WebServicesToken, length: int, offset: int = 0) -> dict:
     '''
     - gets Weekly Grands
     - https://webservices.openplanet.dev/live/campaigns/weekly-grands
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     length: int
         - number of weeks to get
@@ -409,15 +430,15 @@ def get_maps_weekly_grand(token: auth.Token, length: int, offset: int = 0) -> di
     return get(token, '/api/campaign/weekly-grands', {'length': length, 'offset': offset})
 
 
-def get_maps_weekly_short(token: auth.Token, length: int, offset: int = 0) -> dict:
+def get_maps_weekly_short(token: auth.WebServicesToken, length: int, offset: int = 0) -> dict:
     '''
     - gets Weekly Shorts
     - https://webservices.openplanet.dev/live/campaigns/weekly-shorts
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     length: int
         - number of weeks to get
