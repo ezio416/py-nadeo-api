@@ -34,12 +34,13 @@ class JSONWebToken:
     token:   str
 
     def __init__(self, token: str):
-        self.token = token
+        if token:
+            self.token = token
 
-        try:
-            self.decoded = self.decode(token)
-        except IndexError, UnicodeDecodeError:
-            util._log(f'failed to decode token: {self.token}')
+            try:
+                self.decoded = self.decode(token)
+            except IndexError, UnicodeDecodeError:
+                util._log(f'failed to decode token: {self.token}')
 
     def __repr__(self) -> str:
         return f"nadeo_api.auth.JSONWebToken('{self.token}')"
@@ -86,10 +87,10 @@ class Token:
         - default: `0`
     '''
 
-    access_token:   JSONWebToken
-    audience:       str
-    expiration:     int
-    refresh_token:  JSONWebToken
+    access_token:  JSONWebToken
+    audience:      str
+    expiration:    int
+    refresh_token: JSONWebToken
 
     def __init__(self, audience: str, access_token: str, refresh_token: str = '', expiration: int = 0):
         self.audience = self.verify_audience(audience)
@@ -340,6 +341,7 @@ class DedicatedServerToken(WebServicesToken):
         return DedicatedServerToken(token.audience, token.access_token.token, token.refresh_token.token, token.expiration)
 
 
+@dataclass
 class ServiceToken(WebServicesToken):
     '''
     - a token for the private web services API
@@ -362,8 +364,16 @@ class ServiceToken(WebServicesToken):
         - default: `0`
     '''
 
+    account_id: str
+
     def __init__(self, audience: str, access_token: str, refresh_token: str, expiration: int = 0):
         super().__init__(audience, access_token, refresh_token, expiration)
+
+        try:
+            self.account_id = self.access_token.decoded['sub']
+        except KeyError:
+            util._log("decoded token missing key 'sub'")
+
 
     def __repr__(self) -> str:
         return f"nadeo_api.auth.ServiceToken('{self.audience}', '{self.access_token}', '{self.refresh_token}', {self.expiration})"
