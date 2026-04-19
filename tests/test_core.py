@@ -342,7 +342,7 @@ def main() -> None:
     config.debug_logging = True
 
     token_dedi = auth.DedicatedServerToken.get(
-        auth.AUDIENCE_CORE,
+        core.AUDIENCE,
         os.environ['TM_E416DEV_SERVER_USERNAME'],
         os.environ['TM_E416DEV_SERVER_PASSWORD'],
         os.environ['TM_E416DEV_AGENT']
@@ -350,7 +350,7 @@ def main() -> None:
     assert token_dedi.access_token.token
 
     token_service = auth.ServiceToken.get(
-        auth.AUDIENCE_CORE,
+        core.AUDIENCE,
         os.environ['TM_SERVICE_USERNAME'],
         os.environ['TM_SERVICE_PASSWORD'],
         os.environ['TM_E416DEV_AGENT']
