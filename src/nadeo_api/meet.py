@@ -317,6 +317,7 @@ def get_matchmaking_ids(token: auth.WebServicesToken) -> dict:
 def get_matchmaking_player_status(token: auth.ServiceToken, matchmaking_type: int | str) -> dict:
     '''
     - gets the matchmaking status of the currently authenticated user
+    - https://webservices.openplanet.dev/meet/matchmaking/player-status
 
     Parameters
     ----------
