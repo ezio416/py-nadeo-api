@@ -713,7 +713,7 @@ def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, meth
         base_name = AUDIENCE_OAUTH
 
     if token.expired:
-        if issubclass(token, WebServicesToken):
+        if isinstance(token, WebServicesToken):
             token.refresh()
         else:
             raise ValueError('OAuth2 token is expired and cannot be refreshed')
@@ -729,14 +729,14 @@ def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, meth
         return getattr(requests, method)(  # trust that requests never breaks this
             url=f'{base_url}/{endpoint}',
             params=params,
-            headers={'Authorization': token.access_token},
+            headers={'Authorization': token.access_token.token},
             json=body
         )
 
     req: requests.Response = __request()
 
     if req.status_code == 401:  # token may have expired prematurely
-        if issubclass(token, WebServicesToken):
+        if isinstance(token, WebServicesToken):
             token.refresh()
         else:
             raise ValueError('OAuth2 token is expired and cannot be refreshed')
