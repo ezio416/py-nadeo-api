@@ -231,6 +231,22 @@ class WebServicesToken(Token):
     def __repr__(self) -> str:
         return f"nadeo_api.auth.WebServicesToken('{self.audience}', '{self.access_token}', '{self.refresh_token}', {self.expiration})"
 
+    def check_audience(self: WebServicesToken, audience: str) -> None:
+        '''
+        - checks that the token has the expected audience and throws an AudienceError otherwise
+
+        Parameters
+        ----------
+        token: WebServicesToken
+            - authentication token
+
+        audience: str
+            - expected audience
+        '''
+
+        if self.audience != audience:
+            raise error.AudienceError('incorrect audience used for desired endpoint')
+
     def refresh(self) -> None:
         '''
         - refreshes access and refresh tokens
@@ -255,22 +271,6 @@ class WebServicesToken(Token):
         except KeyError:
             util._log("decoded token missing key 'exp'")
             self.expiration = 0
-
-    def check_audience(self: WebServicesToken, audience: str) -> None:
-        '''
-        - checks that the token has the expected audience and throws an AudienceError otherwise
-
-        Parameters
-        ----------
-        token: WebServicesToken
-            - authentication token
-
-        audience: str
-            - expected audience
-        '''
-
-        if self.audience != audience:
-            raise error.AudienceError('incorrect audience used for desired endpoint')
 
     @staticmethod
     def check_type(token: Token, msg: str = '') -> None:
