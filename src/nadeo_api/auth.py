@@ -1,94 +1,114 @@
 '''
-| Author:   Ezio416
-| Created:  2024-05-07
-| Modified: 2025-08-05
-
 - Functions for interacting with authentication tokens to use with the API
 - Also contains variables and functions intended for internal use
 '''
 
 from base64 import b64encode, urlsafe_b64decode
 from dataclasses import dataclass
-from datetime import datetime as dt
 import json
 import time
 
 import requests
 
 from . import config
+from . import error
 from . import util
 
 
-audience_core:  str = 'NadeoServices'
-audience_live:  str = 'NadeoLiveServices'  # also used for Meet endpoints (formerly known as Club)
-audience_oauth: str = 'OAuth2'
-tmnext_app_id:  str = '86263886-327a-4328-ac69-527f0d20a237'
-url_core:       str = 'https://prod.trackmania.core.nadeo.online'
-url_live:       str = 'https://live-services.trackmania.nadeo.live'
-url_meet:       str = 'https://meet.trackmania.nadeo.club'
-url_oauth:      str = 'https://api.trackmania.com'
+AUDIENCE_CORE:  str = 'NadeoServices'
+AUDIENCE_LIVE:  str = 'NadeoLiveServices'  # also used for Meet endpoints (formerly known as Club)
+AUDIENCE_OAUTH: str = 'OAuth2'
+URL_CORE:       str = 'https://prod.trackmania.core.nadeo.online'
+URL_LIVE:       str = 'https://live-services.trackmania.nadeo.live'
+URL_MEET:       str = 'https://meet.trackmania.nadeo.club'
+URL_OAUTH:      str = 'https://api.trackmania.com'
 
 
 @dataclass
-class Token():
+class JSONWebToken:
     '''
-    - holds data on an authentication token
+    - a JSON web token in a base64-encoded string
+    '''
+
+    decoded: dict
+    token:   str
+
+    def __init__(self, token: str):
+        if token:
+            self.token = token
+
+            try:
+                self.decoded = self.decode(token)
+            except IndexError, UnicodeDecodeError:
+                util._log(f'failed to decode token: {self.token}')
+
+    def __repr__(self) -> str:
+        return f"nadeo_api.auth.JSONWebToken('{self.token}')"
+
+    def __str__(self) -> str:
+        return self.token
+
+    @staticmethod
+    def decode(token: str) -> dict:
+        '''
+        - decodes a JSON web token into a dictionary using its payload section
+        - will fail if passed an invalid token
+        '''
+
+        payload:       str = token.split('.')[1]
+        decoded_bytes: bytes = urlsafe_b64decode(f'{payload}==')
+        decoded_str:   str = decoded_bytes.decode('utf-8')
+        result:        dict = json.loads(decoded_str)
+
+        return result
+
+
+@dataclass
+class Token:
+    '''
+    - a general authentication token
     - does not contain a base URL as a token could be used for multiple
-    - if you wish to use this with other request libraries (such as `requests`), add to the request header: `{'Authorization': token.access_token}`
 
     Parameters
     ----------
-    access_token: str
-        - access token/ticket
-
     audience: str
         - audience for which token is valid
 
+    access_token: str
+        - main token used for authorization
+
     refresh_token: str
-        - token used to refresh access token if applicable
+        - token used to refresh access token (if applicable)
         - default: `''` (empty)
 
-    server_account: bool
-        - whether the token is for a dedicated server account instead of a Ubisoft account
-        - default: `False`
-
     expiration: int
-        - time at which access token/ticket will expire
+        - time at which access token will expire
         - if not given, will be decoded from the token's payload
         - default: `0`
     '''
 
-    access_token:   str
-    audience:       str
-    expiration:     int
-    refresh_token:  str
-    server_account: bool
-    token_decoded:  dict
+    access_token: JSONWebToken
+    audience:     str
+    expiration:   int
 
-    def __init__(self, access_token: str, audience: str, refresh_token: str = '', server_account: bool = False, expiration: int = 0):
-        self.access_token = access_token
-        self.audience = audience
-        self.refresh_token = refresh_token
-        self.server_account = server_account
+    def __init__(self, audience: str, access_token: str, expiration: int = 0):
+        self.audience = self.verify_audience(audience)
+        self.access_token = JSONWebToken(access_token)
 
-        try:
-            self.token_decoded = decode_jwt_from_token(self.access_token)
-        except UnicodeDecodeError:
-            pass
-
-        if expiration != 0:
+        if expiration:
             self.expiration = expiration
         else:
             try:
-                self.expiration = self.token_decoded['exp']
+                self.expiration = self.access_token.decoded['exp']
             except KeyError:
+                util._log("decoded token missing key 'exp'")
                 self.expiration = int(time.time()) + 3600
 
     def __repr__(self) -> str:
-        return f"nadeo_api.auth.Token('{self.audience}')"
+        return f"nadeo_api.auth.Token('{self.audience}', '{self.access_token}', {self.expiration})"
 
     def __str__(self) -> str:
-        return self.access_token
+        return self.access_token.token
 
     @property
     def expired(self) -> bool:
@@ -96,48 +116,397 @@ class Token():
 
     def refresh(self) -> None:
         '''
-        - refreshes a set of tokens if applicable
-        - raises a `ValueError` if called on an OAuth2 token
+        - refreshes token(s)
         '''
 
-        if self.audience == audience_oauth:
-            raise ValueError('You may not refresh an OAuth2 token - request a new one instead.')
+        raise error.UsageError('token is not of a specified type')
+
+    @staticmethod
+    def verify_audience(audience: str) -> str:
+        lower: str = audience.lower()
+
+        if lower in ('nadeoservices', 'core', 'prod'):
+            return AUDIENCE_CORE
+
+        if lower in ('nadeoliveservices', 'live', 'meet', 'club'):
+            return AUDIENCE_LIVE
+
+        if lower in ('oauth', 'oauth2'):
+            return AUDIENCE_OAUTH
+
+        raise error.AudienceError(f'invalid audience: {audience}')
+
+
+@dataclass
+class OAuthToken(Token):
+    '''
+    - a token for the public Trackmania API
+    - learn more about the API here: https://webservices.openplanet.dev/oauth/auth
+
+    Parameters
+    ----------
+    identifier: str
+        - client ID (username)
+
+    secret: str
+        - client secret (password)
+
+    access_token: str
+        - main token used for authorization
+
+    expiration: int
+        - time at which access token will expire
+        - if not given, will be decoded from the token's payload
+        - default: `0`
+    '''
+
+    identifier: str
+    secret:     str
+
+    def __init__(self, identifier: str, secret: str, access_token: str, expiration: int = 0):
+        super().__init__(AUDIENCE_OAUTH, access_token, expiration)
+        self.identifier = identifier
+        self.secret = secret
+
+    def __repr__(self) -> str:
+        return f"nadeo_api.auth.OAuthToken('{self.access_token}', {self.expiration})"
+
+    def refresh(self) -> None:
+        '''
+        - refreshes token
+        - doesn't actually refresh, rather this requests a new token
+        '''
+
+        new_token: OAuthToken = self.get(self.identifier, self.secret)
+        self.access_token = new_token.access_token
+        self.expiration = new_token.expiration
+
+    @staticmethod
+    def check_type(token: Token, msg: str = '') -> None:
+        '''
+        - checks that a token is for OAuth2 and throws a UsageError otherwise
+
+        Parameters
+        ----------
+        token: Token
+            - authentication token
+
+        msg: str
+            - exception message to pass along if the check fails
+            - default: `''` (empty)
+        '''
+
+        if not isinstance(token, OAuthToken):
+            raise error.UsageError(msg if msg else 'OAuth2 endpoints require an OAuth2 token')
+
+    @staticmethod
+    def get(identifier: str, secret: str) -> OAuthToken:
+        '''
+        - requests an authentication token
+
+        Parameters
+        ----------
+        identifier: str
+            - username
+
+        secret: str
+            - password
+        '''
 
         req: requests.Response = requests.post(
-            f'{url_core}/v2/authentication/token/refresh',
-            headers={'Authorization': self.refresh_token},
-            # json={'audience': self.audience}  # seems to not actually be required
+            f'{URL_OAUTH}/api/access_token',
+            headers={'Content-Type': 'application/x-www-form-urlencoded'},
+            data={
+                'grant_type':    'client_credentials',
+                'client_id':     identifier,
+                'client_secret': secret
+            }
         )
 
         if req.status_code >= 400:
-            raise ConnectionError(f'Bad response refreshing token for {self.audience}: code {req.status_code}, response {req.text}')
+            raise ConnectionError(f'failed to get token: code {req.status_code}, response {req.text}')
 
         json: dict = req.json()
-        self.access_token = f'nadeo_v1 t={json['accessToken']}'
-        self.refresh_token = f'nadeo_v1 t={json['refreshToken']}'
+        util._log('got OAuth2 token')
+
+        return OAuthToken(identifier, secret, json['access_token'], int(time.time()) + json['expires_in'])
+
+
+@dataclass
+class WebServicesToken(Token):
+    '''
+    - a token for the private web services API
+
+    Parameters
+    ----------
+    audience: str
+        - audience for which token is valid
+
+    access_token: str
+        - main token used for authorization
+
+    refresh_token: str
+        - token used to refresh access token
+
+    expiration: int
+        - time at which access token will expire
+        - if not given, will be decoded from the token's payload
+        - default: `0`
+    '''
+
+    refresh_token: JSONWebToken
+
+    def __init__(self, audience: str, access_token: str, refresh_token: str, expiration: int = 0):
+        super().__init__(audience, access_token, expiration)
+        self.refresh_token = JSONWebToken(refresh_token)
+
+    def __repr__(self) -> str:
+        return f"nadeo_api.auth.WebServicesToken('{self.audience}', '{self.access_token}', '{self.refresh_token}', {self.expiration})"
+
+    def check_audience(self, audience: str) -> None:
+        '''
+        - checks that the token has the expected audience and throws an AudienceError otherwise
+
+        Parameters
+        ----------
+        token: WebServicesToken
+            - authentication token
+
+        audience: str
+            - expected audience
+        '''
+
+        if self.audience != audience:
+            raise error.AudienceError('incorrect audience used for desired endpoint')
+
+    def refresh(self) -> None:
+        '''
+        - refreshes access and refresh tokens
+        '''
+
+        req: requests.Response = requests.post(
+            f'{URL_CORE}/v2/authentication/token/refresh',
+            headers={'Authorization': self.refresh_token}
+        )
+
+        if req.status_code >= 400:
+            raise ConnectionError(f'failed to refresh token: code {req.status_code}, response {req.text}')
+
+        json: dict = req.json()
+        self.access_token = JSONWebToken(f'nadeo_v1 t={json['accessToken']}')
+        self.refresh_token = JSONWebToken(f'nadeo_v1 t={json['refreshToken']}')
+        util._log('refreshed token')
 
         try:
-            self.token_decoded = decode_jwt_from_token(self.access_token)
-            self.expiration = self.token_decoded['exp']
+            self.expiration = self.access_token.decoded['exp']
         except KeyError:
+            util._log("decoded token missing key 'exp'")
             self.expiration = 0
-        except UnicodeDecodeError:
-            self.expiration = 0
-            self.token_decoded = {}
+
+    @staticmethod
+    def check_type(token: Token, msg: str = '') -> None:
+        '''
+        - checks that a token is for web services and throws a UsageError otherwise
+
+        Parameters
+        ----------
+        token: Token
+            - authentication token
+
+        msg: str
+            - exception message to pass along if the check fails
+            - default: `''` (empty)
+        '''
+
+        if not isinstance(token, WebServicesToken):
+            raise error.UsageError(msg if msg else 'web services endpoints require a web services token')
+
+    @staticmethod
+    def get(audience: str, login: str, password: str, agent: str) -> WebServicesToken:
+        '''
+        - requests a web services token for a given audience
+        - this token is not useful on its own, instead use a token for a specific account type
+
+        Parameters
+        ----------
+        audience: str
+            - desired audience for token use
+            - capitalization is ignored
+            - valid: `'NadeoServices'`/`'core'`/`'prod'`, `'NadeoLiveServices'`/`'live'`/`'meet'`/`'club'`
+
+        login: str
+            - account username
+
+        password: str
+            - account password
+
+        agent: str
+            - user agent, ideally with your program's name and a way to contact you
+            - Nadeo can block your request without this being properly set
+        '''
+
+        Token.verify_audience(audience)
+
+        if not agent:
+            raise error.ParameterError('user agent is required')
+
+        req: requests.Response = requests.post(
+            f'{URL_CORE}/v2/authentication/token/basic',
+            headers={
+                'Authorization': f'Basic {b64encode(f'{login}:{password}'.encode('utf-8')).decode('ascii')}',
+                'Content-Type':  'application/json',
+                'User-Agent':    agent,
+            },
+            json={'audience': audience}
+        )
+
+        if req.status_code >= 400:
+            raise ConnectionError(f'failed getting token: code {req.status_code}, response {req.text}')
+
+        json: dict = req.json()
+        util._log('got web services token')
+
+        return WebServicesToken(audience, f'nadeo_v1 t={json['accessToken']}', f'nadeo_v1 t={json['refreshToken']}')
 
 
-def decode_jwt_from_token(token: str) -> dict:
+class DedicatedServerToken(WebServicesToken):
     '''
-    - decodes a JSON web token into a dictionary using its payload section
-    - will fail if passed an invalid token such as an Ubisoft ticket
+    - a token for the private web services API
+    - learn more about a dedicated server account here: https://webservices.openplanet.dev/auth/dedi
+
+    Parameters
+    ----------
+    audience: str
+        - audience for which token is valid
+
+    access_token: str
+        - main token used for authorization
+
+    refresh_token: str
+        - token used to refresh access token
+
+    expiration: int
+        - time at which access token will expire
+        - if not given, will be decoded from the token's payload
+        - default: `0`
     '''
 
-    payload:       str = token.split('.')[1]
-    decoded_bytes: bytes = urlsafe_b64decode(f'{payload}==')
-    decoded_str:   str = decoded_bytes.decode('utf-8')
-    result:        dict = json.loads(decoded_str)
+    def __init__(self, audience: str, access_token: str, refresh_token: str, expiration: int = 0):
+        super().__init__(audience, access_token, refresh_token, expiration)
 
-    return result
+    def __repr__(self) -> str:
+        return f"nadeo_api.auth.DedicatedServerToken('{self.audience}', '{self.access_token}', '{self.refresh_token}', {self.expiration})"
+
+    @staticmethod
+    def get(audience: str, login: str, password: str, agent: str) -> DedicatedServerToken:
+        '''
+        - requests a dedicated server account token for a given audience
+
+        Parameters
+        ----------
+        audience: str
+            - desired audience for token use
+            - capitalization is ignored
+            - valid: `'NadeoServices'`/`'core'`/`'prod'`, `'NadeoLiveServices'`/`'live'`/`'meet'`/`'club'`
+
+        login: str
+            - dedicated server account username
+
+        password: str
+            - dedicated server account password
+
+        agent: str
+            - user agent, ideally with your program's name and a way to contact you
+            - Nadeo can block your request without this being properly set
+        '''
+
+        token: WebServicesToken = WebServicesToken.get(audience, login, password, agent)
+        util._log('got dedicated server token')
+
+        return DedicatedServerToken(token.audience, token.access_token.token, token.refresh_token.token, token.expiration)
+
+
+@dataclass
+class ServiceToken(WebServicesToken):
+    '''
+    - a token for the private web services API
+    - learn more about a service account here: https://webservices.openplanet.dev/auth/service
+
+    Parameters
+    ----------
+    audience: str
+        - audience for which token is valid
+
+    access_token: str
+        - main token used for authorization
+
+    refresh_token: str
+        - token used to refresh access token
+
+    expiration: int
+        - time at which access token will expire
+        - if not given, will be decoded from the token's payload
+        - default: `0`
+    '''
+
+    account_id: str
+
+    def __init__(self, audience: str, access_token: str, refresh_token: str, expiration: int = 0):
+        super().__init__(audience, access_token, refresh_token, expiration)
+
+        try:
+            self.account_id = self.access_token.decoded['sub']
+        except KeyError:
+            util._log("decoded token missing key 'sub'")
+
+    def __repr__(self) -> str:
+        return f"nadeo_api.auth.ServiceToken('{self.audience}', '{self.access_token}', '{self.refresh_token}', {self.expiration})"
+
+    @staticmethod
+    def check_type(token: Token, msg: str = '') -> None:
+        '''
+        - checks that a token is for a service account and throws a UsageError otherwise
+
+        Parameters
+        ----------
+        token: Token
+            - authentication token
+
+        msg: str
+            - exception message to pass along if the check fails
+            - default: `''` (empty)
+        '''
+
+        if not isinstance(token, ServiceToken):
+            raise error.UsageError(msg if msg else 'this endpoint requires a service account token')
+
+    @staticmethod
+    def get(audience: str, login: str, password: str, agent: str) -> ServiceToken:
+        '''
+        - requests a service account token for a given audience
+
+        Parameters
+        ----------
+        audience: str
+            - desired audience for token use
+            - capitalization is ignored
+            - valid: `'NadeoServices'`/`'core'`/`'prod'`, `'NadeoLiveServices'`/`'live'`/`'meet'`/`'club'`
+
+        login: str
+            - service account username
+
+        password: str
+            - service account password
+
+        agent: str
+            - user agent, ideally with your program's name and a way to contact you
+            - Nadeo can block your request without this being properly set
+        '''
+
+        token: WebServicesToken = WebServicesToken.get(audience, login, password, agent)
+        util._log('got service token')
+
+        return ServiceToken(token.audience, token.access_token.token, token.refresh_token.token, token.expiration)
 
 
 def _delete(token: Token, base_url: str, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
@@ -148,12 +517,12 @@ def _delete(token: Token, base_url: str, endpoint: str, params: dict = {}, body:
     Parameters
     ----------
     token: Token
-        - authentication token from `auth.get_token()`
+        - authentication token
 
     base_url: str
         - base URL of desired API
         - must match your token's audience
-        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+        - valid: `URL_CORE`, `URL_LIVE`, `URL_MEET`, `URL_OAUTH`
 
     endpoint: str
         - desired endpoint or full URL
@@ -185,12 +554,12 @@ def _get(token: Token, base_url: str, endpoint: str, params: dict = {}) -> dict 
     Parameters
     ----------
     token: Token
-        - authentication token from `auth.get_token()`
+        - authentication token
 
     base_url: str
         - base URL of desired API
         - must match your token's audience
-        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+        - valid: `URL_CORE`, `URL_LIVE`, `URL_MEET`, `URL_OAUTH`
 
     endpoint: str
         - desired endpoint or full URL
@@ -210,104 +579,6 @@ def _get(token: Token, base_url: str, endpoint: str, params: dict = {}) -> dict 
     return _request(token, base_url, endpoint, params)
 
 
-def get_token(audience: str, username: str, password: str, agent: str = '', server_account: bool = False) -> Token:
-    '''
-    - requests an authentication token for a given audience
-
-    Parameters
-    ----------
-    audience: str
-        - desired audience for token use
-        - capitalization is ignored
-        - valid: `'NadeoServices'`/`'core'`/`'prod'`, `'NadeoLiveServices'`/`'live'`/`'meet'`/`'club'`, `'OAuth'`/`'OAuth2'`
-
-    username: str
-        - Ubisoft/dedicated server account username
-        - for OAuth2, this is the identifier
-
-    password: str
-        - Ubisoft/dedicated server account password
-        - for OAuth2, this is the secret
-
-    agent: str
-        - user agent with your program's name and a way to contact you
-        - Ubisoft can block your request without this being properly set
-        - not required for OAuth2
-        - default: `''` (empty)
-
-    server_account: bool
-        - whether you're using a dedicated server account (Server usage) instead of a Ubisoft account (Client usage)
-        - ignored when using OAuth2
-        - default: `False`
-    '''
-
-    aud_lower: str = audience.lower()
-
-    if aud_lower in ('nadeoservices', 'core', 'prod'):
-        audience = audience_core
-    elif aud_lower in ('nadeoliveservices', 'live', 'meet', 'club'):
-        audience = audience_live
-    elif aud_lower in ('oauth', 'oauth2'):
-        audience = audience_oauth
-    else:
-        raise ValueError(f'Given audience is not valid: {audience}')
-
-    util._log(audience)
-
-    if audience == audience_oauth:
-        req: requests.Response = requests.post(
-            'https://api.trackmania.com/api/access_token',
-            headers={'Content-Type': 'application/x-www-form-urlencoded'},
-            data={
-                'grant_type':    'client_credentials',
-                'client_id':     username,
-                'client_secret': password
-            }
-        )
-
-        if req.status_code >= 400:
-            raise ConnectionError(f'Bad response getting token for {audience}: code {req.status_code}, response {req.text}')
-
-        json: dict = req.json()
-        return Token(json['access_token'], audience, expiration=int(time.time()) + json['expires_in'])
-
-    if agent == '':
-        raise ValueError('For web services endpoints, you must specify a user agent')
-
-    req: requests.Response = requests.post(
-        f'{url_core}/v2/authentication/token/basic' if server_account else 'https://public-ubiservices.ubi.com/v3/profiles/sessions',
-        headers={
-            'Authorization': f'Basic {b64encode(f'{username}:{password}'.encode('utf-8')).decode('ascii')}',
-            'Content-Type':  'application/json',
-            'Ubi-AppId':     tmnext_app_id,
-            'User-Agent':    agent,
-        },
-        json={'audience': audience}
-    )
-
-    if req.status_code >= 400:
-        raise ConnectionError(f'Bad response getting ticket for {audience}: code {req.status_code}, response {req.text}')
-
-    json: dict = req.json()
-
-    if server_account:
-        return Token(f'nadeo_v1 t={json['accessToken']}', audience, f'nadeo_v1 t={json['refreshToken']}', True)
-
-    ticket: Token = Token(f'ubi_v1 t={json['ticket']}', json['platformType'], expiration=int(dt.fromisoformat(json['expiration']).timestamp()))
-
-    req2: requests.Response = requests.post(
-        f'{url_core}/v2/authentication/token/ubiservices',
-        headers={'Authorization': ticket.access_token},
-        json={'audience': audience}
-    )
-
-    if req2.status_code >= 400:
-        raise ConnectionError(f'Bad response getting token for {audience}: code {req.status_code}, response {req.text}')
-
-    json2: dict = req2.json()
-    return Token(f'nadeo_v1 t={json2['accessToken']}', audience, f'nadeo_v1 t={json2['refreshToken']}')
-
-
 def _head(token: Token, base_url: str, endpoint: str, params: dict = {}) -> dict | list:
     '''
     - sends a HEAD request to a specified API
@@ -316,12 +587,12 @@ def _head(token: Token, base_url: str, endpoint: str, params: dict = {}) -> dict
     Parameters
     ----------
     token: Token
-        - authentication token from `auth.get_token()`
+        - authentication token
 
     base_url: str
         - base URL of desired API
         - must match your token's audience
-        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+        - valid: `URL_CORE`, `URL_LIVE`, `URL_MEET`, `URL_OAUTH`
 
     endpoint: str
         - desired endpoint or full URL
@@ -349,12 +620,12 @@ def _options(token: Token, base_url: str, endpoint: str, params: dict = {}, body
     Parameters
     ----------
     token: Token
-        - authentication token from `auth.get_token()`
+        - authentication token
 
     base_url: str
         - base URL of desired API
         - must match your token's audience
-        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+        - valid: `URL_CORE`, `URL_LIVE`, `URL_MEET`, `URL_OAUTH`
 
     endpoint: str
         - desired endpoint or full URL
@@ -386,12 +657,12 @@ def _patch(token: Token, base_url: str, endpoint: str, params: dict = {}, body: 
     Parameters
     ----------
     token: Token
-        - authentication token from `auth.get_token()`
+        - authentication token
 
     base_url: str
         - base URL of desired API
         - must match your token's audience
-        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+        - valid: `URL_CORE`, `URL_LIVE`, `URL_MEET`, `URL_OAUTH`
 
     endpoint: str
         - desired endpoint or full URL
@@ -423,12 +694,12 @@ def _post(token: Token, base_url: str, endpoint: str, params: dict = {}, body: d
     Parameters
     ----------
     token: Token
-        - authentication token from `auth.get_token()`
+        - authentication token
 
     base_url: str
         - base URL of desired API
         - must match your token's audience
-        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+        - valid: `URL_CORE`, `URL_LIVE`, `URL_MEET`, `URL_OAUTH`
 
     endpoint: str
         - desired endpoint or full URL
@@ -460,12 +731,12 @@ def _put(token: Token, base_url: str, endpoint: str, params: dict = {}, body: di
     Parameters
     ----------
     token: Token
-        - authentication token from `auth.get_token()`
+        - authentication token
 
     base_url: str
         - base URL of desired API
         - must match your token's audience
-        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+        - valid: `URL_CORE`, `URL_LIVE`, `URL_MEET`, `URL_OAUTH`
 
     endpoint: str
         - desired endpoint or full URL
@@ -492,17 +763,17 @@ def _put(token: Token, base_url: str, endpoint: str, params: dict = {}, body: di
 def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, method: str = 'get', body: dict = {}) -> dict | list:
     '''
     - sends a request to a specified API
-    - this is for internal use - you should use an explicit function like `core.get()` instead
+    - this is for internal use - you should use an API-specific function like `core.get()` instead
 
     Parameters
     ----------
     token: Token
-        - authentication token from `auth.get_token()`
+        - authentication token
 
     base_url: str
         - base URL of desired API
         - must match your token's audience
-        - valid: `url_core`, `url_live`, `url_meet`, `url_oauth`
+        - valid: `URL_CORE`, `URL_LIVE`, `URL_MEET`, `URL_OAUTH`
 
     endpoint: str
         - desired endpoint or full URL
@@ -530,29 +801,29 @@ def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, meth
 
     util._log(f'{method.upper()} {base_url}/{endpoint} | params: {params} | body: {body}')
 
-    if (base_url := base_url.lower()) not in (url_core, url_live, url_meet, url_oauth):
-        raise ValueError(f'Given base URL is invalid: {base_url}')
+    if (base_url := base_url.lower()) not in (URL_CORE, URL_LIVE, URL_MEET, URL_OAUTH):
+        raise error.ParameterError(f'invalid base URL: {base_url}')
 
     if (method := method.lower()) not in ('delete', 'get', 'head', 'options', 'patch', 'post', 'put'):
-        raise ValueError(f'Given method is invalid: {method}')
+        raise error.ParameterError(f'invalid method: {method}')
 
     base_name: str = 'Core'
 
-    if base_url == url_core:
-        if token.audience != audience_core:
-            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
+    if base_url == URL_CORE:
+        if token.audience != AUDIENCE_CORE:
+            raise error.AudienceError(f'mismatched audience and base URL: {token.audience} | {base_url}')
 
-    elif base_url in (url_live, url_meet):
-        if token.audience != audience_live:
-            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
+    elif base_url in (URL_LIVE, URL_MEET):
+        if token.audience != AUDIENCE_LIVE:
+            raise error.AudienceError(f'mismatched audience and base URL: {token.audience} | {base_url}')
 
-        base_name = 'Live' if base_url == url_live else 'Meet'
+        base_name = 'Live' if base_url == URL_LIVE else 'Meet'
 
     else:
-        if token.audience != audience_oauth:
-            raise ValueError(f'Mismatched audience and base URL: {token.audience} | {base_url}')
+        if token.audience != AUDIENCE_OAUTH:
+            raise error.AudienceError(f'mismatched audience and base URL: {token.audience} | {base_url}')
 
-        base_name = audience_oauth
+        base_name = AUDIENCE_OAUTH
 
     if token.expired:
         token.refresh()
@@ -568,7 +839,7 @@ def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, meth
         return getattr(requests, method)(  # trust that requests never breaks this
             url=f'{base_url}/{endpoint}',
             params=params,
-            headers={'Authorization': token.access_token},
+            headers={'Authorization': token.access_token.token},
             json=body
         )
 
@@ -579,7 +850,10 @@ def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, meth
         req = __request()
 
     if req.status_code >= 400:
-        raise ConnectionError(f'Bad response from {base_name} API: code {req.status_code}, response {req.text}')
+        raise ConnectionError(f'bad response from {base_name} API: code {req.status_code}, response {req.text}')
+
+    if req.status_code == 204 and not req.text:
+        return []
 
     return req.json()
 
@@ -587,7 +861,7 @@ def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, meth
 def _wait() -> None:
     now: int = util.stamp(True)
     if now - config._last_request_timestamp < config.wait_between_requests_ms:
-        util._log('')
+        util._log('waiting to send next request')
         time.sleep(float(config._last_request_timestamp + config.wait_between_requests_ms - now) / 1000.0)
         config._last_request_timestamp = util.stamp(True)
     else:

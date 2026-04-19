@@ -1,45 +1,42 @@
 '''
-| Author:   Ezio416
-| Created:  2024-05-14
-| Modified: 2025-08-05
-
 - Functions for interacting with the web services Core API
 '''
 
 import typing
 
 from . import auth
+from . import error
 from . import util
 
 
-AUDIENCE: str = auth.audience_core
-URL:      str = auth.url_core
+AUDIENCE: str = auth.AUDIENCE_CORE
+URL:      str = auth.URL_CORE
 
 
 ######################################################### BASE #########################################################
 
 
-def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def delete(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a DELETE request to the Core API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     body: dict
-        - request body if applicable
+        - request body if, applicable
         - default: `{}` (empty)
 
     Returns
@@ -48,26 +45,29 @@ def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {})
         - response body
     '''
 
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
+
     return auth._delete(token, URL, endpoint, params, body)
 
 
-def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
+def get(token: auth.WebServicesToken, endpoint: str, params: dict = {}) -> dict | list:
     '''
     - sends a GET request to the Core API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     Returns
@@ -76,26 +76,29 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
         - response body
     '''
 
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
+
     return auth._get(token, URL, endpoint, params)
 
 
-def head(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
+def head(token: auth.WebServicesToken, endpoint: str, params: dict = {}) -> dict | list:
     '''
     - sends a HEAD request to the Core API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     Returns
@@ -104,30 +107,33 @@ def head(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
         - response body
     '''
 
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
+
     return auth._head(token, URL, endpoint, params)
 
 
-def options(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def options(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends an OPTIONS request to the Core API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     body: dict
-        - request body if applicable
+        - request body, if applicable
         - default: `{}` (empty)
 
     Returns
@@ -136,30 +142,33 @@ def options(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}
         - response body
     '''
 
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
+
     return auth._options(token, URL, endpoint, params, body)
 
 
-def patch(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def patch(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a PATCH request to the Core API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     body: dict
-        - request body if applicable
+        - request body, if applicable
         - default: `{}` (empty)
 
     Returns
@@ -168,30 +177,33 @@ def patch(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) 
         - response body
     '''
 
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
+
     return auth._patch(token, URL, endpoint, params, body)
 
 
-def post(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def post(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a POST request to the Core API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     body: dict
-        - request body if applicable
+        - request body, if applicable
         - default: `{}` (empty)
 
     Returns
@@ -200,30 +212,33 @@ def post(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -
         - response body
     '''
 
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
+
     return auth._post(token, URL, endpoint, params, body)
 
 
-def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def put(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a PUT request to the Core API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     body: dict
-        - request body if applicable
+        - request body, if applicable
         - default: `{}` (empty)
 
     Returns
@@ -231,6 +246,9 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
     dict | list
         - response body
     '''
+
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
 
     return auth._put(token, URL, endpoint, params, body)
 
@@ -238,14 +256,15 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
 ###################################################### ENDPOINTS #######################################################
 
 
-def get_map_info(token: auth.Token, uids: typing.Iterable[str]) -> list[dict]:
+def get_map_info(token: auth.WebServicesToken, uids: typing.Iterable[str]) -> list[dict]:
     '''
     - gets info on multiple maps from their UIDs
+    - https://webservices.openplanet.dev/core/maps/info-multiple-uid
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     uids: Iterable[str]
         - map UIDs
@@ -259,7 +278,7 @@ def get_map_info(token: auth.Token, uids: typing.Iterable[str]) -> list[dict]:
     UID_LIMIT: int = 291
 
     if len(uids) <= UID_LIMIT:
-        return get(token, f'maps/?mapUidList={','.join(uids)}')
+        return get(token, f'maps/by-uid/?mapUidList={','.join(uids)}')
 
     ret: list[dict] = []
 
@@ -267,7 +286,7 @@ def get_map_info(token: auth.Token, uids: typing.Iterable[str]) -> list[dict]:
         uid_count: int = min(len(uids), UID_LIMIT)
         uids_this_req: list[str] = uids[:uid_count]
         uids = uids[uid_count:]
-        endpoint: str = f'maps/?mapUidList={','.join(uids_this_req)}'
+        endpoint: str = f'maps/by-uid/?mapUidList={','.join(uids_this_req)}'
 
         req: list[dict] = get(token, endpoint)
         for map in req:
@@ -276,19 +295,19 @@ def get_map_info(token: auth.Token, uids: typing.Iterable[str]) -> list[dict]:
     return ret
 
 
-def get_routes(token: auth.Token, usage: str = 'Client') -> dict:
+def get_routes(token: auth.WebServicesToken, usage: str = 'Client') -> dict:
     '''
     - gets the valid Core API routes
     - https://webservices.openplanet.dev/core/meta/routes
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     usage: str
         - which authorization type to get routes for
-        - `'Client'` is for an Ubisoft account, while `'Server'` is for a dedicated server account
+        - `'Client'` is for a Ubisoft/service account, while `'Server'` is for a dedicated server account
         - valid: `'Client'`, `'Server'`
         - default: `'Client'`
 
@@ -299,27 +318,32 @@ def get_routes(token: auth.Token, usage: str = 'Client') -> dict:
     '''
 
     if usage not in ('Client', 'Server'):
-        raise ValueError(f'Given usage is invalid: {usage}')
+        raise error.ParameterError(f'invalid usage: {usage}')
 
     return get(token, 'api/routes', {'usage': usage})
 
 
-def get_trophies_history(token: auth.Token, account_id: str, count: int, offset: int = 0) -> dict:
+def get_trophies_history(token: auth.ServiceToken, account_id: str = '', count: int = 100, offset: int = 0) -> dict:
     '''
     - gets a list of trophy gain history
-    - requires a Ubisoft account (client usage)
+    - https://webservices.openplanet.dev/core/accounts/trophy-history
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.ServiceToken
+        - authentication token
 
     account_id: str
         - account ID to get data for
+        - may be a different ID to the one being used for authentication
+        - if not given, the currently authenticated account will be used
+        - default: `''` (empty)
 
     count: int
         - number of history entries to get
         - if you set this too high, the request may time out (response 504)
+        - maximum: `1,000`
+        - default: `100`
 
     offset: int
         - number of history entries to skip, looking backwards from the most recent
@@ -331,27 +355,35 @@ def get_trophies_history(token: auth.Token, account_id: str, count: int, offset:
         - history entries sorted newest to oldest
     '''
 
-    if not util.valid_uuid(account_id):
-        raise ValueError(f'Given account ID is invalid: {account_id}')
+    auth.ServiceToken.check_type(token)
 
-    if token.server_account:
-        raise ValueError('This endpoint requires a Ubisoft account (client usage)')
+    if account_id and not util.valid_uuid(account_id):
+        raise error.ParameterError(f'invalid account ID: {account_id}')
 
-    return get(token, f'accounts/{account_id}/trophies', {'offset': offset, 'count': count})
+    if not account_id:
+        account_id = token.account_id
+
+    if count > 1_000:
+        raise error.ParameterError('you can only request 1,000 history entries at a time')
+
+    return get(token, f'accounts/{account_id}/trophies', {'count': count, 'offset': offset})
 
 
-def get_trophies_last_year_summary(token: auth.Token, account_id: str) -> dict:
+def get_trophies_last_year_summary(token: auth.ServiceToken, account_id: str = '') -> dict:
     '''
     - gets a summary of the trophies gained in the last year
-    - requires a Ubisoft account (client usage)
+    - https://webservices.openplanet.dev/core/accounts/trophy-summary
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.ServiceToken
+        - authentication token
 
     account_id: str
         - account ID to get data for
+        - may be a different ID to the one being used for authentication
+        - if not given, the currently authenticated account will be used
+        - default: `''` (empty)
 
     Returns
     -------
@@ -359,24 +391,26 @@ def get_trophies_last_year_summary(token: auth.Token, account_id: str) -> dict:
         - data on given account
     '''
 
-    if not util.valid_uuid(account_id):
-        raise ValueError(f'Given account ID is invalid: {account_id}')
+    auth.ServiceToken.check_type(token)
 
-    if token.server_account:
-        raise ValueError('This endpoint requires a Ubisoft account (client usage)')
+    if account_id and not util.valid_uuid(account_id):
+        raise error.ParameterError(f'invalid account ID: {account_id}')
+
+    if not account_id:
+        account_id = token.account_id
 
     return get(token, f'accounts/{account_id}/trophies/lastYearSummary')
 
 
-def get_zones(token: auth.Token) -> list[dict]:
+def get_zones(token: auth.WebServicesToken) -> list[dict]:
     '''
     - gets the valid regions a player may choose from
     - https://webservices.openplanet.dev/core/meta/zones
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     Returns
     -------
@@ -385,38 +419,3 @@ def get_zones(token: auth.Token) -> list[dict]:
     '''
 
     return get(token, 'zones')
-
-
-###################################################### DEPRECATED ######################################################
-
-
-def routes(token: auth.Token, usage: str = 'Client') -> dict:
-    '''
-    - DEPRECATED - use `get_routes` instead
-    '''
-
-    return get_routes(token, usage)
-
-
-def trophies_history(token: auth.Token, account_id: str, count: int, offset: int = 0) -> dict:
-    '''
-    - DEPRECATED - use `get_trophies_history` instead
-    '''
-
-    return get_trophies_history(token, account_id, count, offset)
-
-
-def trophies_last_year_summary(token: auth.Token, account_id: str) -> dict:
-    '''
-    - DEPRECATED - use `get_trophies_last_year_summary` instead
-    '''
-
-    return get_trophies_last_year_summary(token, account_id)
-
-
-def zones(token: auth.Token) -> list[dict]:
-    '''
-    - DEPRECATED - use `get_zones` instead
-    '''
-
-    return get_zones(token)

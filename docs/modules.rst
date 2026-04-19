@@ -6,6 +6,7 @@
    auth
    config
    core
+   error
    live
    meet
    oauth

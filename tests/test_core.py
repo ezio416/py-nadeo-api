@@ -1,8 +1,4 @@
 '''
-| Author:   Ezio416
-| Created:  2024-05-19
-| Modified: 2025-08-05
-
 - Tests for nadeo_api.core
 '''
 
@@ -15,20 +11,8 @@ import src.nadeo_api.config as config
 import src.nadeo_api.core as core
 
 
-def main() -> None:
-    token: auth.Token = auth.get_token(
-        'core',
-        os.environ['TM_E416DEV_SERVER_USERNAME'],
-        os.environ['TM_E416DEV_SERVER_PASSWORD'],
-        os.environ['TM_E416DEV_AGENT'],
-        True
-    )
-
-    config.debug_logging = True
-
-    req = core.get_zones(token)
-
-    uids = (
+def get_map_info(token: auth.WebServicesToken) -> list[dict]:
+    UIDS = (
         'XJ_JEjWGoAexDWe8qfaOjEcq5l8',
         'zFK9sy3nRLa6FGSpuk_gw0cHLv7',
         'xfRvyL9ByoJoPhlAvcNzbc4xD88',
@@ -331,7 +315,76 @@ def main() -> None:
         'Bmy9m5jzyM2mKz3C2T7kEyJjg0k'  # 300
     )
 
-    req = core.get_map_info(token, uids)
+    return core.get_map_info(token, UIDS)
+
+
+def get_routes_client(token: auth.WebServicesToken) -> dict:
+    return core.get_routes(token)
+
+
+def get_routes_server(token: auth.WebServicesToken) -> dict:
+    return core.get_routes(token, 'Server')
+
+
+def get_trophies_history(token: auth.ServiceToken) -> dict:
+    return core.get_trophies_history(token)
+
+
+def get_trophies_last_year_summary(token: auth.ServiceToken) -> dict:
+    return core.get_trophies_last_year_summary(token)
+
+
+def get_zones(token: auth.WebServicesToken) -> list[dict]:
+    return core.get_zones(token)
+
+
+def main() -> None:
+    config.debug_logging = True
+
+    token_dedi = auth.DedicatedServerToken.get(
+        core.AUDIENCE,
+        os.environ['TM_E416DEV_SERVER_USERNAME'],
+        os.environ['TM_E416DEV_SERVER_PASSWORD'],
+        os.environ['TM_E416DEV_AGENT']
+    )
+    assert token_dedi.access_token.token
+
+    token_service = auth.ServiceToken.get(
+        core.AUDIENCE,
+        os.environ['TM_SERVICE_USERNAME'],
+        os.environ['TM_SERVICE_PASSWORD'],
+        os.environ['TM_E416DEV_AGENT']
+    )
+    assert token_service.access_token.token
+
+    map_info_dedi = get_map_info(token_dedi)
+    assert map_info_dedi
+    map_info_service = get_map_info(token_service)
+    assert map_info_service
+    assert map_info_dedi == map_info_service
+
+    routes_dedi_client = get_routes_client(token_dedi)
+    assert routes_dedi_client
+    routes_dedi_server = get_routes_server(token_dedi)
+    assert routes_dedi_server
+    routes_service_client = get_routes_client(token_service)
+    assert routes_service_client
+    assert routes_dedi_client == routes_service_client
+    routes_service_server = get_routes_server(token_service)
+    assert routes_service_server
+    assert routes_dedi_server == routes_service_server
+
+    trophies_history = get_trophies_history(token_service)
+    assert trophies_history
+
+    trophies_summary = get_trophies_last_year_summary(token_service)
+    assert trophies_summary
+
+    zones_dedi = get_zones(token_dedi)
+    assert zones_dedi
+    zones_service = get_zones(token_service)
+    assert zones_service
+    assert zones_dedi == zones_service
 
     pass
 

@@ -1,42 +1,39 @@
 '''
-| Author:   Ezio416
-| Created:  2024-05-15
-| Modified: 2026-02-04
-
 - Functions for interacting with the web services Live API
 '''
 
 from . import auth
+from . import error
 
 
-AUDIENCE: str = auth.audience_live
-URL:      str = auth.url_live
+AUDIENCE: str = auth.AUDIENCE_LIVE
+URL:      str = auth.URL_LIVE
 
 
 ######################################################### BASE #########################################################
 
 
-def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def delete(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a DELETE request to the Live API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     body: dict
-        - request body if applicable
+        - request body, if applicable
         - default: `{}` (empty)
 
     Returns
@@ -45,26 +42,29 @@ def delete(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {})
         - response body
     '''
 
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
+
     return auth._delete(token, URL, endpoint, params, body)
 
 
-def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
+def get(token: auth.WebServicesToken, endpoint: str, params: dict = {}) -> dict | list:
     '''
     - sends a GET request to the Live API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     Returns
@@ -73,26 +73,29 @@ def get(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
         - response body
     '''
 
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
+
     return auth._get(token, URL, endpoint, params)
 
 
-def head(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
+def head(token: auth.WebServicesToken, endpoint: str, params: dict = {}) -> dict | list:
     '''
     - sends a HEAD request to the Live API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     Returns
@@ -101,30 +104,33 @@ def head(token: auth.Token, endpoint: str, params: dict = {}) -> dict | list:
         - response body
     '''
 
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
+
     return auth._head(token, URL, endpoint, params)
 
 
-def options(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def options(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends an OPTIONS request to the Live API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     body: dict
-        - request body if applicable
+        - request body, if applicable
         - default: `{}` (empty)
 
     Returns
@@ -133,30 +139,33 @@ def options(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}
         - response body
     '''
 
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
+
     return auth._options(token, URL, endpoint, params, body)
 
 
-def patch(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def patch(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a PATCH request to the Live API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     body: dict
-        - request body if applicable
+        - request body, if applicable
         - default: `{}` (empty)
 
     Returns
@@ -165,30 +174,33 @@ def patch(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) 
         - response body
     '''
 
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
+
     return auth._patch(token, URL, endpoint, params, body)
 
 
-def post(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def post(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a POST request to the Live API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     body: dict
-        - request body if applicable
+        - request body, if applicable
         - default: `{}` (empty)
 
     Returns
@@ -197,30 +209,33 @@ def post(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -
         - response body
     '''
 
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
+
     return auth._post(token, URL, endpoint, params, body)
 
 
-def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
+def put(token: auth.WebServicesToken, endpoint: str, params: dict = {}, body: dict = {}) -> dict | list:
     '''
     - sends a PUT request to the Live API
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     endpoint: str
         - desired endpoint
         - base URL is optional
         - leading forward slash is optional
-        - trailing parameters are optional, i.e. `?param1=true&param2=0`
+        - trailing parameters are optional, e.g. `?param1=true&param2=0`
 
     params: dict
-        - request parameters if applicable
+        - request parameters, if applicable
         - if you put parameters at the end of the `endpoint`, do not put them here or they will be duplicated
 
     body: dict
-        - request body if applicable
+        - request body, if applicable
         - default: `{}` (empty)
 
     Returns
@@ -228,6 +243,9 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
     dict | list
         - response body
     '''
+
+    auth.WebServicesToken.check_type(token)
+    token.check_audience(AUDIENCE)
 
     return auth._put(token, URL, endpoint, params, body)
 
@@ -235,15 +253,15 @@ def put(token: auth.Token, endpoint: str, params: dict = {}, body: dict = {}) ->
 ###################################################### ENDPOINTS #######################################################
 
 
-def get_club_campaign(token: auth.Token, club_id: int, campaign_id: int) -> dict:
+def get_club_campaign(token: auth.WebServicesToken, club_id: int, campaign_id: int) -> dict:
     '''
     - gets info on a campaign in a club
     - https://webservices.openplanet.dev/live/clubs/campaign-by-id
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     club_id: int
         - the ID of the club
@@ -260,7 +278,7 @@ def get_club_campaign(token: auth.Token, club_id: int, campaign_id: int) -> dict
     return get(token, f'api/token/club/{club_id}/campaign/{campaign_id}')
 
 
-def get_map_leaderboard(token: auth.Token, mapUid: str, groupUid: str = 'Personal_Best', onlyWorld: bool = True, length: int = 5, offset: int = 0) -> dict:
+def get_map_leaderboard(token: auth.WebServicesToken, map_uid: str, group_uid: str = 'Personal_Best', only_world: bool = True, length: int = 5, offset: int = 0) -> dict:
     '''
     - gets the top leaderboard records for a map
     - can only retrieve records in the top 10,000
@@ -268,19 +286,19 @@ def get_map_leaderboard(token: auth.Token, mapUid: str, groupUid: str = 'Persona
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
-    mapUid: str
+    map_uid: str
         - the UID of the map
 
-    groupUid: str
+    group_uid: str
         - the UID of the group/season
         - default: `'Personal_Best'`
 
-    onlyWorld: bool
+    only_world: bool
         - whether to only get records from the global leaderboard
-        - if `False`, a Ubisoft account is required and `length` and `offset` are ignored
+        - if `False`, a service account is required and `length` and `offset` are ignored
         - default: `True`
 
     length: int
@@ -292,22 +310,102 @@ def get_map_leaderboard(token: auth.Token, mapUid: str, groupUid: str = 'Persona
         - default: `0`
     '''
 
-    if onlyWorld:
+    if only_world:
         if length > 100:
-            raise ValueError('You can only request 100 records at a time')
+            raise error.ParameterError('you can only request 100 records at a time')
 
         if length + offset > 10_000:
-            raise ValueError('You can only retrieve records in the top 10,000')
+            raise error.ParameterError('you can only retrieve records in the top 10,000')
 
-        return get(token, f'api/token/leaderboard/group/{groupUid}/map/{mapUid}/top?onlyWorld=true&length={length}&offset={offset}')
+        return get(token, f'api/token/leaderboard/group/{group_uid}/map/{map_uid}/top?onlyWorld=true&length={length}&offset={offset}')
 
-    if token.server_account:
-        raise ValueError('This endpoint requires a Ubisoft account when onlyWorld is False')
+    auth.ServiceToken.check_type(token, 'this endpoint requires a service account when only_world is False')
 
-    return get(token, f'api/token/leaderboard/group/{groupUid}/map/{mapUid}/top?onlyWorld=false')
+    return get(token, f'api/token/leaderboard/group/{group_uid}/map/{map_uid}/top?onlyWorld=false')
 
 
-def get_maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
+def get_map_review_connect(token: auth.ServiceToken, review_type: str) -> dict:
+    '''
+    - gets information to connect to a map review server
+    - https://webservices.openplanet.dev/live/map-review/connect
+
+    Parameters
+    ----------
+    token: auth.ServiceToken
+        - authentication token
+
+    review_type: str
+        - type of review server
+        - examples: `'totd'`, `'weekly-shorts'`
+
+    Returns
+    -------
+    dict
+        - info on active server
+    '''
+
+    auth.ServiceToken.check_type(token)
+
+    return get(token, f'api/token/map-review/{review_type}/connect')
+
+
+def get_map_review_submitted(token: auth.ServiceToken, review_type: str, length: int = 144, offset: int = 0) -> dict:
+    '''
+    - gets information on maps submitted to map review
+    - https://webservices.openplanet.dev/live/map-review/submitted
+
+    Parameters
+    ----------
+    token: auth.ServiceToken
+        - authentication token
+
+    review_type: str
+        - type of review server
+        - examples: `'totd'`, `'weekly-shorts'`
+
+    length: int
+        - number of maps to get
+        - default: `144` (used by game)
+
+    offset: int
+        - number of maps to skip
+        - default: `0`
+
+    Returns
+    -------
+    dict
+        - info on submitted maps
+    '''
+
+    auth.ServiceToken.check_type(token)
+
+    return get(token, f'api/token/map-review/{review_type}/submitted-map', {'length': length, 'offset': offset})
+
+
+def get_map_review_waiting_time(token: auth.WebServicesToken, review_type: str) -> dict:
+    '''
+    - gets information on how long a player must wait before their map is the current one if they were to submit it to a map review server
+    - https://webservices.openplanet.dev/live/map-review/waiting-time
+
+    Parameters
+    ----------
+    token: auth.WebServicesToken
+        - authentication token
+
+    review_type: str
+        - type of review server
+        - examples: `'totd'`, `'weekly-shorts'`
+
+    Returns
+    -------
+    dict
+        - info on active server
+    '''
+
+    return get(token, f'api/token/map-review/{review_type}/waiting-time')
+
+
+def get_maps_royal(token: auth.WebServicesToken, length: int = 51, offset: int = 0) -> dict:
     '''
     - gets Royal maps
     - note: no longer being updated so it's probably fine to cache this data permanently
@@ -315,11 +413,12 @@ def get_maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     length: int
         - number of months to get
+        - default: `51` (total released)
 
     offset: int
         - number of months to skip, looking backwards from the current month
@@ -332,21 +431,22 @@ def get_maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
         - maps by month sorted newest to oldest
     '''
 
-    return get(token, '/api/token/campaign/month', {'length': length, 'offset': offset, 'royal': 'true'})
+    return get(token, 'api/token/campaign/month', {'length': length, 'offset': offset, 'royal': 'true'})
 
 
-def get_maps_seasonal(token: auth.Token, length: int, offset: int = 0) -> dict:
+def get_maps_seasonal(token: auth.WebServicesToken, length: int = 1, offset: int = 0) -> dict:
     '''
     - gets official Nadeo seasonal campaigns
-    - https://webservices.openplanet.dev/live/campaigns/campaigns
+    - https://webservices.openplanet.dev/live/campaigns/campaigns-v2
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     length: int
         - number of campaigns to get
+        - default: `1`
 
     offset: int
         - number of campaigns to skip, looking backwards from the current campaign
@@ -361,18 +461,19 @@ def get_maps_seasonal(token: auth.Token, length: int, offset: int = 0) -> dict:
     return get(token, 'api/campaign/official', {'length': length, 'offset': offset})
 
 
-def get_maps_totd(token: auth.Token, length: int, offset: int = 0) -> dict:
+def get_maps_totd(token: auth.WebServicesToken, length: int = 1, offset: int = 0) -> dict:
     '''
     - gets Tracks of the Day
     - https://webservices.openplanet.dev/live/campaigns/totds
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     length: int
         - number of months to get
+        - default: `1`
 
     offset: int
         - number of months to skip, looking backwards from the current month
@@ -384,47 +485,22 @@ def get_maps_totd(token: auth.Token, length: int, offset: int = 0) -> dict:
         - maps by month sorted newest to oldest
     '''
 
-    return get(token, '/api/token/campaign/month', {'length': length, 'offset': offset})
+    return get(token, 'api/token/campaign/month', {'length': length, 'offset': offset})
 
 
-def get_maps_weekly_short(token: auth.Token, length: int, offset: int = 0) -> dict:
-    '''
-    - gets Weekly Shorts
-    - https://webservices.openplanet.dev/live/campaigns/weekly-shorts
-
-    Parameters
-    ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
-
-    length: int
-        - number of weeks to get
-
-    offset: int
-        - number of weeks to skip, looking backwards from the current week
-        - default: `0`
-
-    Returns
-    -------
-    dict
-        - maps by week sorted newest to oldest
-    '''
-
-    return get(token, '/api/campaign/weekly-shorts', {'length': length, 'offset': offset})
-
-
-def get_maps_weekly_grand(token: auth.Token, length: int, offset: int = 0) -> dict:
+def get_maps_weekly_grand(token: auth.WebServicesToken, length: int = 1, offset: int = 0) -> dict:
     '''
     - gets Weekly Grands
     - https://webservices.openplanet.dev/live/campaigns/weekly-grands
 
     Parameters
     ----------
-    token: auth.Token
-        - authentication token from `auth.get_token`
+    token: auth.WebServicesToken
+        - authentication token
 
     length: int
         - number of weeks to get
+        - default: `1`
 
     offset: int
         - number of weeks to skip, looking backwards from the current week
@@ -436,39 +512,84 @@ def get_maps_weekly_grand(token: auth.Token, length: int, offset: int = 0) -> di
         - maps by week sorted newest to oldest
     '''
 
-    return get(token, '/api/campaign/weekly-grands', {'length': length, 'offset': offset})
+    return get(token, 'api/campaign/weekly-grands', {'length': length, 'offset': offset})
 
 
-###################################################### DEPRECATED ######################################################
-
-
-def maps_campaign(token: auth.Token, length: int, offset: int = 0) -> dict:
+def get_maps_weekly_short(token: auth.WebServicesToken, length: int = 1, offset: int = 0) -> dict:
     '''
-    - DEPRECATED - use `get_maps_seasonal` instead
-    '''
+    - gets Weekly Shorts
+    - https://webservices.openplanet.dev/live/campaigns/weekly-shorts
 
-    return get_maps_seasonal(token, length, offset)
+    Parameters
+    ----------
+    token: auth.WebServicesToken
+        - authentication token
 
+    length: int
+        - number of weeks to get
+        - default: `1`
 
-def maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
-    '''
-    - DEPRECATED - use `get_maps_royal` instead
-    '''
+    offset: int
+        - number of weeks to skip, looking backwards from the current week
+        - default: `0`
 
-    return get_maps_royal(token, length, offset)
-
-
-def maps_totd(token: auth.Token, length: int, offset: int = 0) -> dict:
-    '''
-    - DEPRECATED - use `get_maps_totd` instead
-    '''
-
-    return get_maps_totd(token, length, offset)
-
-
-def get_maps_weekly(token: auth.Token, length: int, offset: int = 0) -> dict:
-    '''
-    - DEPRECATED - use `get_maps_weekly_short` instead
+    Returns
+    -------
+    dict
+        - maps by week sorted newest to oldest
     '''
 
-    return get_maps_weekly_short(token, length, offset)
+    return get(token, 'api/campaign/weekly-shorts', {'length': length, 'offset': offset})
+
+
+def get_player_club_record(token: auth.ServiceToken, map_uid: str, club_id: int, group_uid: str = 'Personal_Best') -> dict:
+    '''
+    - gets the currently authenticated user's map record and leaderboard position in reference to a club
+    - https://webservices.openplanet.dev/live/leaderboards/player-club-record
+
+    Parameters
+    ----------
+    token: auth.ServiceToken
+        - authentication token
+
+    map_uid: str
+        - the UID of the map
+
+    club_id: int
+        - the ID of the club
+        - the current user must be a member of this club
+
+    group_uid: str
+        - the UID of the group/season
+        - default: `'Personal_Best'`
+
+    Returns
+    -------
+    dict
+        - record info
+    '''
+
+    auth.ServiceToken.check_type(token)
+
+    return get(token, f'api/token/leaderboard/group/{group_uid}/map/{map_uid}/club/{club_id}')
+
+
+def get_server_accounts(token: auth.ServiceToken) -> dict:
+    '''
+    - gets the currently authenticated user's dedicated server accounts
+    - https://webservices.openplanet.dev/live/accounts/server
+
+    Parameters
+    ----------
+    token: auth.ServiceToken
+        - authentication token
+
+    Returns
+    -------
+    dict
+        - dedicated server accounts
+    '''
+
+    auth.ServiceToken.check_type(token)
+
+    return get(token, 'api/token/server/player-server/account')

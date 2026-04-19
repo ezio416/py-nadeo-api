@@ -1,8 +1,4 @@
 '''
-| Author:   Ezio416
-| Created:  2024-05-20
-| Modified: 2025-08-05
-
 - Various functions not directly related to any API
 - You don't need to import this module - simply call these from the main module like `nadeo_api.<function>`
 '''
@@ -14,6 +10,7 @@ import time
 import traceback as tb
 
 from . import config
+from . import error
 
 
 def account_id_from_login(account_login: str) -> str:
@@ -32,7 +29,7 @@ def account_id_from_login(account_login: str) -> str:
     '''
 
     if not bool(re.match('^[0-9A-Za-z\\-_]{22}$', account_login)):
-        raise ValueError(f'Given account login is invalid: {account_login}')
+        raise error.ParameterError(f'invalid account login: {account_login}')
 
     b: str = bytes.hex(base64.urlsafe_b64decode(f'{account_login}=='))
 
@@ -55,7 +52,7 @@ def account_login_from_id(account_id: str) -> str:
     '''
 
     if not valid_uuid(account_id):
-        raise ValueError(f'Given account ID is invalid: {account_id}')
+        raise error.ParameterError(f'invalid account ID: {account_id}')
 
     return base64.urlsafe_b64encode(bytes.fromhex(account_id.replace('-', ''))).decode()[:-2]
 
@@ -66,7 +63,7 @@ def _log(msg: str) -> None:
 
     summary: tb.StackSummary = tb.extract_stack(sys._getframe())
     print(
-        f'nadeo_api.{
+        f'{[stamp(True)]} nadeo_api.{
             summary[-2].filename.replace('\\', '/').split('/')[-1].replace('.py', '')}.{
             summary[-2].name}: {msg}'
     )
