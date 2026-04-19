@@ -23,6 +23,10 @@ def get_map_review_connect(token: auth.ServiceToken) -> dict:
     return live.get_map_review_connect(token, 'totd')
 
 
+def get_map_review_submitted(token: auth.ServiceToken) -> dict:
+    return live.get_map_review_submitted(token, 'totd')
+
+
 def get_maps_royal(token: auth.WebServicesToken) -> dict:
     return live.get_maps_royal(token)
 
@@ -84,6 +88,9 @@ def main() -> None:
 
     map_review_connect = get_map_review_connect(token_service)
     assert map_review_connect
+
+    map_review_submitted = get_map_review_submitted(token_service)
+    assert map_review_submitted
 
     maps_royal_dedi = get_maps_royal(token_dedi)
     assert maps_royal_dedi

@@ -372,6 +372,40 @@ def get_map_review_connect(token: auth.ServiceToken, review_type: str) -> dict:
     return get(token, f'api/token/map-review/{review_type}/connect')
 
 
+def get_map_review_submitted(token: auth.ServiceToken, review_type: str, length: int = 144, offset: int = 0) -> dict:
+    '''
+    - gets information on maps submitted to map review
+    - https://webservices.openplanet.dev/live/map-review/submitted
+
+    Parameters
+    ----------
+    token: auth.ServiceToken
+        - authentication token
+
+    review_type: str
+        - type of review server
+        - examples: `'totd'`, `'weekly-shorts'`
+
+    length: int
+        - number of maps to get
+        - default: `144` (used by game)
+
+    offset: int
+        - number of maps to skip
+        - default: `0`
+
+    Returns
+    -------
+    dict
+        - info on submitted maps
+    '''
+
+    if not isinstance(token, auth.ServiceToken):
+        raise error.UsageError('this endpoint requires a service account token')
+
+    return get(token, f'api/token/map-review/{review_type}/submitted-map', {'length': length, 'offset': offset})
+
+
 def get_maps_royal(token: auth.WebServicesToken, length: int = 51, offset: int = 0) -> dict:
     '''
     - gets Royal maps
