@@ -293,6 +293,28 @@ def get_current_cotd(token: auth.WebServicesToken) -> dict:
     return get(token, 'api/cup-of-the-day/current')
 
 
+def get_matchmaking_divisions(token: auth.WebServicesToken, matchmaking_type: int | str) -> dict:
+    '''
+    - gets the available matchmaking divisions for a certain type
+    - https://webservices.openplanet.dev/meet/matchmaking/divisions
+
+    Parameters
+    ----------
+    token: auth.WebServicesToken
+        - authentication token
+
+    matchmaking_type: int | str
+        - either the ID or name for the type of matchmaking requested
+
+    Returns
+    -------
+    dict
+        - Cup of the Day info
+    '''
+
+    return get(token, f'api/matchmaking/{matchmaking_type}/division/display-rules')
+
+
 def get_matchmaking_ids(token: auth.WebServicesToken) -> dict:
     '''
     - gets the available IDs for matchmaking
