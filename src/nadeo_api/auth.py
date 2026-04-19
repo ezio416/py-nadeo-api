@@ -755,6 +755,9 @@ def _request(token: Token, base_url: str, endpoint: str, params: dict = {}, meth
     if req.status_code >= 400:
         raise ConnectionError(f'bad response from {base_name} API: code {req.status_code}, response {req.text}')
 
+    if req.status_code == 204 and not req.text:
+        return []
+
     return req.json()
 
 
