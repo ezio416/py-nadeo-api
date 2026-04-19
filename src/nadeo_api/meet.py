@@ -312,3 +312,26 @@ def get_matchmaking_ids(token: auth.WebServicesToken) -> dict:
     '''
 
     return get(token, 'api/official/summary')
+
+
+def get_matchmaking_player_status(token: auth.ServiceToken, matchmaking_type: int | str) -> dict:
+    '''
+    - gets the matchmaking status of the currently authenticated user
+
+    Parameters
+    ----------
+    token: auth.ServiceToken
+        - authentication token
+
+    matchmaking_type: int | str
+        - either the ID or name for the type of matchmaking requested
+
+    Returns
+    -------
+    dict
+        - player matchmaking status
+    '''
+
+    auth.ServiceToken.check_type(token)
+
+    return get(token, f'api/matchmaking/{matchmaking_type}/player-status')

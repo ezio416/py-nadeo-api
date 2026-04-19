@@ -23,6 +23,10 @@ def get_matchmaking_ids(token: auth.WebServicesToken) -> dict:
     return meet.get_matchmaking_ids(token)
 
 
+def get_matchmaking_player_status(token: auth.ServiceToken) -> dict:
+    return meet.get_matchmaking_player_status(token, 'ranked-2v2')
+
+
 def main() -> None:
     config.debug_logging = True
 
@@ -59,6 +63,9 @@ def main() -> None:
     matchmaking_ids_service = get_matchmaking_ids(token_service)
     assert matchmaking_ids_service
     assert matchmaking_ids_dedi == matchmaking_ids_service
+
+    matchmaking_player_status = get_matchmaking_player_status(token_service)
+    assert matchmaking_player_status
 
     pass
 
