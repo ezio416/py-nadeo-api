@@ -346,6 +346,32 @@ def get_map_leaderboard(token: auth.WebServicesToken, map_uid: str, group_uid: s
     return get(token, f'api/token/leaderboard/group/{group_uid}/map/{map_uid}/top?onlyWorld=false')
 
 
+def get_map_review_connect(token: auth.ServiceToken, review_type: str) -> dict:
+    '''
+    - gets information to connect to a map review server
+    - https://webservices.openplanet.dev/live/map-review/connect
+
+    Parameters
+    ----------
+    token: auth.ServiceToken
+        - authentication token
+
+    review_type: str
+        - type of review server
+        - examples: `'totd'`, `'weekly-shorts'`
+
+    Returns
+    -------
+    dict
+        - info on active server
+    '''
+
+    if not isinstance(token, auth.ServiceToken):
+        raise error.UsageError('this endpoint requires a service account token')
+
+    return get(token, f'api/token/map-review/{review_type}/connect')
+
+
 def get_maps_royal(token: auth.WebServicesToken, length: int = 51, offset: int = 0) -> dict:
     '''
     - gets Royal maps

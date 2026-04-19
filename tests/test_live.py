@@ -19,6 +19,10 @@ def get_map_leaderboard(token: auth.WebServicesToken) -> dict:
     return live.get_map_leaderboard(token, 'YjdVxZlrR85ebY_7vr1ihNkElyj')
 
 
+def get_map_review_connect(token: auth.ServiceToken) -> dict:
+    return live.get_map_review_connect(token, 'totd')
+
+
 def get_maps_royal(token: auth.WebServicesToken) -> dict:
     return live.get_maps_royal(token)
 
@@ -77,6 +81,9 @@ def main() -> None:
     map_leaderboard_service = get_map_leaderboard(token_service)
     assert map_leaderboard_service
     assert map_leaderboard_dedi == map_leaderboard_service
+
+    map_review_connect = get_map_review_connect(token_service)
+    assert map_review_connect
 
     maps_royal_dedi = get_maps_royal(token_dedi)
     assert maps_royal_dedi
