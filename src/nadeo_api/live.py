@@ -337,7 +337,7 @@ def get_maps_royal(token: auth.WebServicesToken, length: int = 51, offset: int =
 
     length: int
         - number of months to get
-        - default: `51`
+        - default: `51` (total released)
 
     offset: int
         - number of months to skip, looking backwards from the current month
@@ -353,7 +353,7 @@ def get_maps_royal(token: auth.WebServicesToken, length: int = 51, offset: int =
     return get(token, '/api/token/campaign/month', {'length': length, 'offset': offset, 'royal': 'true'})
 
 
-def get_maps_seasonal(token: auth.WebServicesToken, length: int, offset: int = 0) -> dict:
+def get_maps_seasonal(token: auth.WebServicesToken, length: int = 1, offset: int = 0) -> dict:
     '''
     - gets official Nadeo seasonal campaigns
     - https://webservices.openplanet.dev/live/campaigns/campaigns-v2
@@ -365,6 +365,7 @@ def get_maps_seasonal(token: auth.WebServicesToken, length: int, offset: int = 0
 
     length: int
         - number of campaigns to get
+        - default: `1`
 
     offset: int
         - number of campaigns to skip, looking backwards from the current campaign
@@ -379,7 +380,7 @@ def get_maps_seasonal(token: auth.WebServicesToken, length: int, offset: int = 0
     return get(token, 'api/campaign/official', {'length': length, 'offset': offset})
 
 
-def get_maps_totd(token: auth.WebServicesToken, length: int, offset: int = 0) -> dict:
+def get_maps_totd(token: auth.WebServicesToken, length: int = 1, offset: int = 0) -> dict:
     '''
     - gets Tracks of the Day
     - https://webservices.openplanet.dev/live/campaigns/totds
@@ -391,6 +392,7 @@ def get_maps_totd(token: auth.WebServicesToken, length: int, offset: int = 0) ->
 
     length: int
         - number of months to get
+        - default: `1`
 
     offset: int
         - number of months to skip, looking backwards from the current month
@@ -405,7 +407,7 @@ def get_maps_totd(token: auth.WebServicesToken, length: int, offset: int = 0) ->
     return get(token, '/api/token/campaign/month', {'length': length, 'offset': offset})
 
 
-def get_maps_weekly_grand(token: auth.WebServicesToken, length: int, offset: int = 0) -> dict:
+def get_maps_weekly_grand(token: auth.WebServicesToken, length: int = 1, offset: int = 0) -> dict:
     '''
     - gets Weekly Grands
     - https://webservices.openplanet.dev/live/campaigns/weekly-grands
@@ -417,6 +419,7 @@ def get_maps_weekly_grand(token: auth.WebServicesToken, length: int, offset: int
 
     length: int
         - number of weeks to get
+        - default: `1`
 
     offset: int
         - number of weeks to skip, looking backwards from the current week
@@ -431,7 +434,7 @@ def get_maps_weekly_grand(token: auth.WebServicesToken, length: int, offset: int
     return get(token, '/api/campaign/weekly-grands', {'length': length, 'offset': offset})
 
 
-def get_maps_weekly_short(token: auth.WebServicesToken, length: int, offset: int = 0) -> dict:
+def get_maps_weekly_short(token: auth.WebServicesToken, length: int = 1, offset: int = 0) -> dict:
     '''
     - gets Weekly Shorts
     - https://webservices.openplanet.dev/live/campaigns/weekly-shorts
@@ -443,6 +446,7 @@ def get_maps_weekly_short(token: auth.WebServicesToken, length: int, offset: int
 
     length: int
         - number of weeks to get
+        - default: `1`
 
     offset: int
         - number of weeks to skip, looking backwards from the current week
