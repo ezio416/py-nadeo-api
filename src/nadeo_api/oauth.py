@@ -282,28 +282,3 @@ def get_account_names_from_ids(token: auth.Token, account_ids: typing.Iterable[s
         raise ValueError(f'You can request a maximum of 50 account names. Requested: {num_ids}')
 
     return get(token, f'api/display-names?accountId[]={'&accountId[]='.join(account_ids)}')
-
-
-###################################################### DEPRECATED ######################################################
-
-
-def account_ids_from_names(token: auth.Token, account_names: str | typing.Iterable[str]) -> dict:
-    '''
-    - DEPRECATED - use `get_account_ids_from_names` instead
-    '''
-
-    if type(account_names) is str:
-        return get_account_ids_from_names(token, [account_names])
-
-    return get_account_ids_from_names(token, account_names)
-
-
-def account_names_from_ids(token: auth.Token, account_ids: str | typing.Iterable[str]) -> dict:
-    '''
-    - DEPRECATED - use `get_account_names_from_ids` instead
-    '''
-
-    if type(account_ids) is str:
-        return get_account_names_from_ids(token, [account_ids])
-
-    return get_account_names_from_ids(token, account_ids)

@@ -433,38 +433,3 @@ def get_maps_weekly_grand(token: auth.Token, length: int, offset: int = 0) -> di
     '''
 
     return get(token, '/api/campaign/weekly-grands', {'length': length, 'offset': offset})
-
-
-###################################################### DEPRECATED ######################################################
-
-
-def maps_campaign(token: auth.Token, length: int, offset: int = 0) -> dict:
-    '''
-    - DEPRECATED - use `get_maps_seasonal` instead
-    '''
-
-    return get_maps_seasonal(token, length, offset)
-
-
-def maps_royal(token: auth.Token, length: int, offset: int = 0) -> dict:
-    '''
-    - DEPRECATED - use `get_maps_royal` instead
-    '''
-
-    return get_maps_royal(token, length, offset)
-
-
-def maps_totd(token: auth.Token, length: int, offset: int = 0) -> dict:
-    '''
-    - DEPRECATED - use `get_maps_totd` instead
-    '''
-
-    return get_maps_totd(token, length, offset)
-
-
-def get_maps_weekly(token: auth.Token, length: int, offset: int = 0) -> dict:
-    '''
-    - DEPRECATED - use `get_maps_weekly_short` instead
-    '''
-
-    return get_maps_weekly_short(token, length, offset)

@@ -248,14 +248,3 @@ def get_current_cotd(token: auth.Token) -> dict:
     '''
 
     return get(token, 'api/cup-of-the-day/current')
-
-
-###################################################### DEPRECATED ######################################################
-
-
-def current_cotd(token: auth.Token) -> dict:
-    '''
-    - DEPRECATED - use `get_current_cotd` instead
-    '''
-
-    return get_current_cotd(token)
