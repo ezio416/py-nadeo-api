@@ -39,7 +39,7 @@ class JSONWebToken:
 
             try:
                 self.decoded = self.decode(token)
-            except IndexError, UnicodeDecodeError:
+            except (IndexError, UnicodeDecodeError):
                 util._log(f'failed to decode token: {self.token}')
 
     def __repr__(self) -> str:
