@@ -6,4 +6,4 @@
 from .util import *  # NOQA
 
 
-__version__: tuple = 1, 0, 0
+__version__: tuple = 1, 0, 1
